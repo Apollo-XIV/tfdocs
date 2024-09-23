@@ -27,3 +27,6 @@ jobs:
           message: "test: test pr commit"
           token: ${{secrets.GITHUB_TOKEN}}
           amend: true
+      - name: fail
+        run: exit 1
+        
