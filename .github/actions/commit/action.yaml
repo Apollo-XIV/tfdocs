@@ -30,7 +30,7 @@ runs:
     # - shell: bash
     #   run: git stash pop || true
 
-    - if: ${{inputs.amend == false}}
+    - if: ${{inputs.amend == 'false'}}
       name: Commit changes
       shell: bash
       run: |
@@ -44,7 +44,7 @@ runs:
       env:
         MESSAGE: ${{inputs.message}}
 
-    - if: ${{inputs.amend == true}}
+    - if: ${{inputs.amend == 'true'}}
       name: Commit changes
       shell: bash
       run: |
