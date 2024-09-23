@@ -1,0 +1,23 @@
+{
+  "name": "tfdocs",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "**_Terraform Documentation on the Command Line_**\r This is a command line tool and TUI for viewing Terraform Provider Documentation.\r ## Dependencies\r This repo uses `nix` for its dependency management. With nix installed, run the `nix develop` command. This will load all of the project requirements to the shell environment, including the Python environment, Terraform, and Just.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "author": "Apollo-XIV",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  },
+  "dependencies": {
+    "@commitlint/config-conventional": "^19.4.1"
+  }
+}
