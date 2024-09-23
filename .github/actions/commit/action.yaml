@@ -1,0 +1,47 @@
+name: Commit Changes
+description: Commit any changes made back to the repo
+inputs:
+  message:
+    description: Commit message to use
+    required: true
+  GITHUB_TOKEN:
+    description: PAT for repo access
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Git user
+      shell: bash
+      run: |
+        git config pull.rebase true
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - shell: bash
+      run: git stash
+
+    - name: Pull latest changes to avoid conflicts
+      shell: bash
+      run: git pull origin ${{ github.head_ref }}
+
+    - name: Commit changes
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+
+          # Check if the branch name matches "main" or starts with "release/"
+          if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == release/* || "$BRANCH_NAME" == "dev" ]]; then
+            echo "Error: There are linting errors that cannot be fixed automatically on a $BRANCH_NAME branch."
+            exit 1
+          fi              
+          git add .
+          git commit -m "$MESSAGE"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+      env:
+        MESSAGE: ${{inputs.message}}
+        GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
+
