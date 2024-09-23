@@ -21,12 +21,10 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{github.event.pull_request.head.ref}}
-      - run: echo 'hello world' >> test.txt
-      - uses: ./.github/actions/commit
-        with:
-          message: "test: test pr commit"
-          token: ${{secrets.GITHUB_TOKEN}}
-          amend: true
-      - name: fail
-        run: exit 1
+      - run: echo 'hello world'
+      # - uses: ./.github/actions/commit
+      #   with:
+      #     message: "test: test pr commit"
+      #     token: ${{secrets.GITHUB_TOKEN}}
+      #     amend: true
         
