@@ -13,22 +13,24 @@ jobs:
     name: Build Nix Store
     uses: ./.github/workflows/build-cache.yaml
     permissions: write-all
-  # install dependencies
-  # run code ci
-  # terraform plan
-  test-check:
-    name: Test PR Checks
-    runs-on: ubuntu-latest
+  code-ci:
+    name: Code CI Workflows
     permissions: write-all
+    needs: [flake-cache]
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-          ref: ${{github.event.pull_request.head.ref}}
-      - run: echo 'hello world'
-      # - uses: ./.github/actions/commit
+      - name: Test Python code
+        uses: ./.github/actions/just
+        with:
+          cmd: py-test-cov
+      # - name: Commit changes
+      #   uses: ./.github/actions/commit
       #   with:
-      #     message: "test: test pr commit"
+      #     message: "chore: lint code"
       #     token: ${{secrets.GITHUB_TOKEN}}
-      #     amend: true
         

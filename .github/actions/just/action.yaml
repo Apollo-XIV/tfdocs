@@ -1,0 +1,16 @@
+name: Run Just Command
+description: Runs a just command in the repo environment
+inputs:
+  cmd:
+    description: just subcommand to run
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: ./.github/actions/nix-setup
+
+    - shell: bash
+      run: |
+        just $CMD
+      env:
+        CMD: ${{inputs.cmd}}
