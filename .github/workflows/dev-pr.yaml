@@ -16,4 +16,8 @@ jobs:
     name: Test PR Checks
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'hello world'
+      - run: echo 'hello world' >> test.txt
+      - uses: ./.github/actions/commit
+        with:
+          message: "test: test pr commit"
+          token: ${{secrets.GITHUB_TOKEN}}

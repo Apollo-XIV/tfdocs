@@ -4,7 +4,7 @@ inputs:
   message:
     description: Commit message to use
     required: true
-  GITHUB_TOKEN:
+  token:
     description: PAT for repo access
     required: true
 runs:
