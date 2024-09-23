@@ -50,7 +50,7 @@ runs:
       run: |
         if [ -n "$(git status --porcelain)" ]; then
           git add .
-          git commit --amend
+          git commit --amend -m "$MESSAGE"
           echo "diff=true" >> $GITHUB_ENV
         else
           echo "No changes to commit"
