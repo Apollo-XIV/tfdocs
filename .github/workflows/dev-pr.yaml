@@ -1,0 +1,19 @@
+name: Dev PR Checks
+
+# Triggers
+on:
+  pull_request:
+    branches:
+      - dev
+  merge_group:
+
+# All jobs must pass before merge
+jobs:
+  # install dependencies
+  # run code ci
+  # terraform plan
+  test-check:
+    name: Test PR Checks
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'hello world'
