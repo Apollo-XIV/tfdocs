@@ -1,0 +1,24 @@
+name: Build Nix Store
+concurrency:
+  group: build-cache
+  cancel-in-progress: true
+on:
+  workflow_call:
+jobs:
+  flake-cache:
+    name: Build Flake cache
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Build nix cache
+        shell: bash
+        run: |
+          which just
+          echo "CACHE BUILT"

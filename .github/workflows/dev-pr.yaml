@@ -9,6 +9,10 @@ on:
 
 # All jobs must pass before merge
 jobs:
+  flake-cache:
+    name: Build Nix Store
+    uses: ./.github/workflows/build-cache.yaml
+    permissions: write-all
   # install dependencies
   # run code ci
   # terraform plan
