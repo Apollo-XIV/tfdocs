@@ -7,7 +7,7 @@ py-test:
 py-test-cov:
     #!/usr/bin/env bash
     mypy tfdocs
-    pytest --cov-report term:skip-covered --cov=tfdocs --no-cov-on-fail
+    pytest --cov-report term:skip-covered --cov=tfdocs --no-cov-on-fail --cov-fail-under=80
 
 py-test-cov-full:
     #!/usr/bin/env bash
