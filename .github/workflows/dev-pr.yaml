@@ -26,3 +26,4 @@ jobs:
         with:
           message: "test: test pr commit"
           token: ${{secrets.GITHUB_TOKEN}}
+          amend: true
