@@ -17,31 +17,33 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - shell: bash
-      run: git stash
+    # - shell: bash
+    #   run: git stash
 
-    - name: Pull latest changes to avoid conflicts
-      shell: bash
-      run: git pull origin ${{ github.head_ref }}
+    # - name: Pull latest changes to avoid conflicts
+    #   shell: bash
+    #   run: git pull origin ${{ github.event.pull_request.head.ref }}
+
+    # - shell: bash
+    #   run: git stash pop || true
 
     - name: Commit changes
       shell: bash
       run: |
         if [ -n "$(git status --porcelain)" ]; then
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-
-          # Check if the branch name matches "main" or starts with "release/"
-          if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == release/* || "$BRANCH_NAME" == "dev" ]]; then
-            echo "Error: There are linting errors that cannot be fixed automatically on a $BRANCH_NAME branch."
-            exit 1
-          fi              
           git add .
           git commit -m "$MESSAGE"
-          git push
+          echo "diff=true" >> $GITHUB_ENV
         else
           echo "No changes to commit"
         fi
       env:
         MESSAGE: ${{inputs.message}}
-        GITHUB_TOKEN: ${{inputs.GITHUB_TOKEN}}
 
+    - name: Push changes
+      if: ${{ env.diff == 'true' }}
+      shell: bash
+      run: |
+        git push origin ${{ github.event.pull_request.head.ref }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
