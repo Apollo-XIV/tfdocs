@@ -1,0 +1,68 @@
+name: Commit Changes
+description: Commit any changes made back to the repo
+inputs:
+  message:
+    description: Commit message to use
+    required: true
+  token:
+    description: PAT for repo access
+    required: true
+  amend:
+    description: Whether to create a new commit or amend the previous one
+    default: false
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Git user
+      shell: bash
+      run: |
+        git config pull.rebase true
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    # - shell: bash
+    #   run: git stash
+
+    # - name: Pull latest changes to avoid conflicts
+    #   shell: bash
+    #   run: git pull origin ${{ github.event.pull_request.head.ref }}
+
+    # - shell: bash
+    #   run: git stash pop || true
+
+    - if: ${{inputs.amend == 'false'}}
+      name: Commit changes
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          git add .
+          git commit -m "$MESSAGE"
+          echo "diff=true" >> $GITHUB_ENV
+        else
+          echo "No changes to commit"
+        fi
+      env:
+        MESSAGE: ${{inputs.message}}
+
+    - if: ${{inputs.amend == 'true'}}
+      name: Commit changes
+      shell: bash
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          git add .
+          git commit --amend -m "$MESSAGE"
+          git pull
+          echo "diff=true" >> $GITHUB_ENV
+        else
+          echo "No changes to commit"
+        fi
+      env:
+        MESSAGE: ${{inputs.message}}
+
+    - name: Push changes
+      if: ${{ env.diff == 'true' }}
+      shell: bash
+      run: |
+        git push origin ${{ github.event.pull_request.head.ref }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}

@@ -1,0 +1,30 @@
+name: Dev PR Checks
+
+# Triggers
+on:
+  pull_request:
+    branches:
+      - dev
+  merge_group:
+
+# All jobs must pass before merge
+jobs:
+  # install dependencies
+  # run code ci
+  # terraform plan
+  test-check:
+    name: Test PR Checks
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+      - run: echo 'hello world'
+      # - uses: ./.github/actions/commit
+      #   with:
+      #     message: "test: test pr commit"
+      #     token: ${{secrets.GITHUB_TOKEN}}
+      #     amend: true
+        
