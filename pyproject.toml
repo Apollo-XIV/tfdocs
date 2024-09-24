@@ -8,7 +8,7 @@ packages = [{include = "tfdocs"}]
 
 [tool.poetry.scripts]
 tfdocs = "tfdocs:main"
-watchlog = "tfdocs.logging.watch:main"
+watchlog = "tfdocs.logging.watcher:main"
 
 [tool.poetry.dependencies]
 python = "^3.12"

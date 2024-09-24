@@ -32,7 +32,18 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         query_dict = self._parse_query_params()
         log_record = makeLogRecord(query_dict)
         logger = logging.getLogger("log_watcher")
-        logger.log(level=int(log_record.levelno), msg=log_record.msg)
+        # print(log_record)
+        test_record = logging.LogRecord(
+            name=log_record.name,
+            level=int(log_record.levelno),
+            pathname=log_record.pathname,
+            lineno=log_record.lineno,
+            msg=log_record.msg,
+            args=None,
+            exc_info=None
+        )
+        logger.handle(test_record)
+        # logger.log(level=int(log_record.levelno), msg=log_record.msg)
 
     def _parse_query_params(self):
         """Helper function to parse query parameters into a dictionary."""

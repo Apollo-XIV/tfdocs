@@ -2,6 +2,7 @@ from logging import Logger
 import tempfile
 from tfdocs.logging import get_logger, cleanup_log_file
 
+log = get_logger()
 log = get_logger(__name__, log_level=20, stream=True)
 
 def test_get_logger():
@@ -21,8 +22,8 @@ def test_log_file_cleanup(monkeypatch):
 def test_differing_verbosity():
     for i in range(30, 0, -10):
         log = get_logger(__name__, log_level=i)
-        # print(f"{i} ------------------------")
-        # log.warning("I should always be visible")
-        # log.info("I should only show when verbosity is <=20")
-        # log.debug("I should only show when verbosity is <=10")
+        print(f"{i} ------------------------")
+        log.warning("I should always be visible")
+        log.info("I should only show when verbosity is <=20")
+        log.debug("I should only show when verbosity is <=10")
 

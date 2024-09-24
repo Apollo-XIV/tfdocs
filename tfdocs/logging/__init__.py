@@ -11,14 +11,17 @@ from tfdocs.utils import try_wrap
 
 traceback.install()
 
-def get_logger(name_override: str | None= None, log_level: int = logging.WARNING, stream=False) -> Logger:
+def get_logger(name_override: str | None= None, log_level: int | None = None, stream=False) -> Logger:
+
     propagate = True
     if name_override is None:
         name_override = __name__.split('.')[0]
         propagate = False
+        print(propagate)
+
     logger: Logger = logging.getLogger(name_override)
-    logger.setLevel(log_level)
-    logger.propagate = False
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = propagate
 
     # if it's a brand new logger then add all the required handlers
     if not logger.hasHandlers():
@@ -29,6 +32,7 @@ def get_logger(name_override: str | None= None, log_level: int = logging.WARNING
         
         if stream:
             http_handler = make_http_handler()
+            http_handler.setLevel(logging.DEBUG)
             logger.addHandler(http_handler)
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
@@ -40,17 +44,23 @@ def get_logger(name_override: str | None= None, log_level: int = logging.WARNING
     else:
         for handler in logger.handlers:
             if isinstance(handler, RichHandler):
-                handler.setLevel(log_level)
+                if log_level is not None:
+                    handler.setLevel(log_level)
+                else:
+                    handler.setLevel(logging.WARNING)
     return logger
 
 def make_file_handler() -> logging.FileHandler:
     # create tempfile
+    os.makedirs("/tmp/tfdocs", exist_ok=True)
     temp_log_file = tempfile.NamedTemporaryFile(
         delete = False,
         suffix = ".log",
-        mode = 'w'
+        mode = 'w',
+        dir="/tmp/tfdocs"
     )
 
+    # create file-handler
     handler = logging.FileHandler(temp_log_file.name)
     handler.setLevel(logging.DEBUG)
 
@@ -61,14 +71,17 @@ def make_file_handler() -> logging.FileHandler:
     return handler
 
 def make_console_handler():
+    # create rich formatted console handler
     handler = RichHandler(log_time_format="[%X]")
+    # default logging level is set to warning
+    handler.setLevel(logging.WARNING)
     return handler
 
 def make_http_handler():
+    # used to stream logs to a local http server, handy for development.
     handler = HTTPHandler("localhost:1234","log")
     format = "%(asctime)s %(levelname)s | %(message)s"
     handler.setFormatter(format)
-    handler.setLevel(logging.DEBUG)
     return handler
 
 def cleanup_log_file(log_file) -> Result[None, OSError]:
