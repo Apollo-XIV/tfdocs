@@ -6,6 +6,10 @@ authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"
 packages = [{include = "tfdocs"}]
 
+[tool.poetry.scripts]
+tfdocs = "tfdocs:main"
+watchlog = "tfdocs.logging.watch:main"
+
 [tool.poetry.dependencies]
 python = "^3.12"
 rich = "^13.8.1"
