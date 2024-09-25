@@ -17,7 +17,9 @@ jobs:
 
   sync-environment:
     name: Sync Terraform Environment
+    permissions: write-all
     uses: ./.github/workflows/sync-env.yaml
+    secrets: inherit
 
   code-ci:
     name: Code CI Workflows
