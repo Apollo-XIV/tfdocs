@@ -57,6 +57,8 @@ def setup_logs(
     log = logging.getLogger()
     log.info(f"Logging to {log_file}")
 
+    return
+
 def make_log_file() -> str:
     log_dir = "/tmp/tfdocs"
     # create logging directory
@@ -88,4 +90,5 @@ class VerbosityFilter(logging.Filter):
         self.level = level
 
     def filter(self, record):
+        # edit to use contextvar?
         return record.levelno >= self.level
