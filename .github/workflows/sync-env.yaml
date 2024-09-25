@@ -1,6 +1,9 @@
 name: Update backend.tf
 on:
   workflow_call:
+
+permissions: write-all
+
 jobs:
   update:
     name: Update backend.tf
