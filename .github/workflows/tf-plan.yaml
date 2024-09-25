@@ -1,0 +1,35 @@
+name: Update backend.tf
+on:
+  workflow_call:
+jobs:
+  tf-plan:
+    name: Terraform Plan
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Terraform plan
+        run: |
+          unset AWS_PROFILE
+          terraform init
+          terraform plan -out=plan
+        env:
+          TF_VAR_ENV: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Save plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: TfPlan-PR-${{github.event.pull_request_number}}
+          path: plan
+          overwrite: true
