@@ -17,6 +17,7 @@ jobs:
 
   sync-environment:
     name: Sync Terraform Environment
+    needs: flake-cache
     permissions: write-all
     uses: ./.github/workflows/sync-env.yaml
     secrets: inherit
@@ -24,7 +25,8 @@ jobs:
   code-ci:
     name: Code CI Workflows
     permissions: write-all
-    needs: [flake-cache]
+    needs:
+      - sync-environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,6 +42,8 @@ jobs:
         
   tf-plan:
     name: Terraform Plan
+    needs:
+      - sync-environment
     permissions: write-all
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
