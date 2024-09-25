@@ -24,6 +24,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
       - name: Test Python code
         uses: ./.github/actions/just
         with:
