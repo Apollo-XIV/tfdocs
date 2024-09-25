@@ -6,8 +6,14 @@ authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"
 packages = [{include = "tfdocs"}]
 
+[tool.poetry.scripts]
+tfdocs = "tfdocs:main"
+watchlog = "tfdocs.logging.watch_logs:main"
+
 [tool.poetry.dependencies]
 python = "^3.12"
+rich = "^13.8.1"
+result = "^0.17.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
@@ -26,7 +32,7 @@ testpaths = [
     "tests",
     "tfdocs/**/test_*.py",
 ]
-# asyncio_default_fixture_loop_scope = "function"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.mypy]
 ignore_missing_imports = true
