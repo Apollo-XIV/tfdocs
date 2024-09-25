@@ -5,7 +5,7 @@ variable "ENV" {
 
 module "backend" {
   source          = "Apollo-XIV/backend-manager/aws"
-  version         = "0.0.27"
+  version         = "0.0.28"
   prefix          = "tfdocs"
   force_destroy   = false
   enable_dynamodb = false
@@ -25,6 +25,7 @@ module "backend" {
   }
 
   approved_arns = [
-    "arn:aws:iam::013948180024:user/desktop"
+    "arn:aws:iam::013948180024:user/desktop",
+    "arn:aws:iam::013948180024:user/github"
   ]
 }
