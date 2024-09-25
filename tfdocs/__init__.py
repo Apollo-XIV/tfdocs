@@ -4,6 +4,7 @@ import logging
 def main():
     setup_logs(
         print_log_level=30,
+        enable_log_streaming=True
     )
     log = logging.getLogger(__name__)
     log.debug("test message")

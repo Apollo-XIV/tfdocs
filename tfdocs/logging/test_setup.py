@@ -38,13 +38,16 @@ def mock_tempfile():
         yield mock_tempfile
 
 @pytest.fixture
-def mock_logging():
-    """Fixture to mock the logging module."""
-    with mock.patch('logging.config.dictConfig') as mock_dictConfig, \
-         mock.patch('logging.getLogger') as mock_getLogger:
+def mock_logging_config():
+    """Fixture to mock the logging configuration."""
+    with mock.patch('tfdocs.logging.setup.logging.config.dictConfig') as mock_dictConfig, \
+         mock.patch('tfdocs.logging.setup.logging.getLogger') as mock_getLogger:
         mock_logger = mock.Mock()
         mock_getLogger.return_value = mock_logger
-        yield mock_logger
+        yield {
+            'dictConfig': mock_dictConfig,
+            'logger': mock_logger
+        }
 
 def test_make_log_file(mock_os, mock_tempfile, mock_time):
     """Test the make_log_file function."""
@@ -61,13 +64,40 @@ def test_make_log_file(mock_os, mock_tempfile, mock_time):
     mock_tempfile.assert_called_once()
     assert log_file == '/tmp/tfdocs/test.log'
 
-def test_setup_logs(mock_logging, mock_tempfile):
-    """Test the setup_logs function."""
+def test_setup_logs_no_streaming(mock_logging_config, mock_tempfile):
+    """Test the setup_logs function with log streaming disabled."""
     setup_logs(print_log_level=logging.INFO, enable_log_streaming=False)
 
-    # Assert logging configuration was called correctly
-    assert mock_logging.info.call_count == 1
-    assert "Logging to" in mock_logging.info.call_args[0][0]
+    # Ensure dictConfig was called
+    mock_logging_config['dictConfig'].assert_called_once()
+
+    # Retrieve the actual configuration passed to dictConfig
+    config_args = mock_logging_config['dictConfig'].call_args[0][0]
+
+    print(config_args['handlers'])
+    # Assert logging configuration was called correctly without streaming
+    assert "serve" not in config_args['loggers']['root']['handlers']  # No UDP handler
+    assert "file" in config_args['loggers']['root']['handlers']  # File logging is present
+    assert "console" in config_args['loggers']['root']['handlers']  # Console logging is present
+    mock_logging_config['logger'].info.assert_called_once()
+    assert "Logging to" in mock_logging_config['logger'].info.call_args[0][0]
+
+def test_setup_logs_with_streaming(mock_logging_config, mock_tempfile):
+    """Test the setup_logs function with log streaming enabled."""
+    setup_logs(print_log_level=logging.INFO, enable_log_streaming=True)
+
+    # Ensure dictConfig was called
+    mock_logging_config['dictConfig'].assert_called_once()
+
+    # Retrieve the actual configuration passed to dictConfig
+    config_args = mock_logging_config['dictConfig'].call_args[0][0]
+
+    # Assert logging configuration was called correctly with streaming
+    assert "serve" in config_args['loggers']['root']['handlers']  # UDP handler is present
+    assert "file" in config_args['loggers']['root']['handlers']  # File logging is present
+    assert "console" in config_args['loggers']['root']['handlers']  # Console logging is present
+    mock_logging_config['logger'].info.assert_called_once()
+    assert "Logging to" in mock_logging_config['logger'].info.call_args[0][0]
 
 def test_verbosity_filter():
     """Test the VerbosityFilter class."""

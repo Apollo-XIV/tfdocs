@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import logging.handlers
 import os
 import rich
 import time
@@ -14,6 +15,14 @@ def setup_logs(
     format_str = "%(asctime)s %(levelname)s | %(message)s"
     date_format_str = "[%X]"
     log_file = make_log_file()
+
+    # toggle whether the server handler is included based on param
+    root_handlers = [
+        "console",
+        "file"
+    ]
+    if enable_log_streaming == True:
+        root_handlers.append("serve")
     
     logging.config.dictConfig({
         "version": 1,
@@ -22,11 +31,15 @@ def setup_logs(
         "propagate" : True,
         "loggers" : {
             "root" : {
+                "handlers" : root_handlers,
+                "level" : 0,
+            },
+            "watch_logs" : {
                 "handlers" : [
-                    "console",
-                    "file"
+                    "watch_console"
                 ],
                 "level" : 0,
+                "propagate" : False,
             }
         },
         "handlers" : {
@@ -34,10 +47,18 @@ def setup_logs(
                 "class" : rich.logging.RichHandler,
                 "filters" : ["verbosity"]
             },
+            "watch_console" : {
+                "class" : rich.logging.RichHandler,
+            },
             "file" : {
                 "class" : logging.FileHandler,
                 "filename" : log_file,     
                 "formatter" : "precise",
+            },
+            "serve" : {
+                "class" : logging.handlers.DatagramHandler,
+                "host" : "localhost",
+                "port" : 1234
             }
         },
         "formatters" : {
@@ -56,6 +77,7 @@ def setup_logs(
 
     log = logging.getLogger()
     log.info(f"Logging to {log_file}")
+    # log.warn(f"{log.handlers}")
 
     return
 
