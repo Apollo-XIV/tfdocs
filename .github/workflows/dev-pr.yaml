@@ -24,10 +24,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+
       - name: Test Python code
         uses: ./.github/actions/just
         with:
-          cmd: py-test-cov
+          cmd: py-test-cov-full
       # - name: Commit changes
       #   uses: ./.github/actions/commit
       #   with:
