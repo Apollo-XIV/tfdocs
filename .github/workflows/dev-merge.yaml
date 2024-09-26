@@ -1,0 +1,33 @@
+name: Dev Branch Merge
+
+# Triggers
+on:
+  pull_request:
+    branches:
+      - dev
+  merge_group:
+
+jobs:
+  apply-plan:
+    name: Apply Terraform Plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          fetch-depth: 0
+
+      - uses: ./.github/actions/nix-setup
+
+      - uses: actions/download-artifact
+        with:
+          name: TfPlan-PR-${{github.event.pull_request.number}}
+          path: plan
+          overwrite: true
+
+      - run: terraform apply plan --auto-approve
+
+      - uses: ./.github/actions/commit
+        with:
+          message: "ci: Terraform Apply"
+          token: ${{secrets.GITHUB_TOKEN}}
