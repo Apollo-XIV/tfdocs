@@ -1,8 +1,10 @@
 import os
 import sqlite3
+import logging
 from tfdocs.db import DB_URL
 from typing import Tuple
 
+log = logging.getLogger(__name__)
 
 class Db:
     _connection: sqlite3.Connection | None = None
@@ -16,14 +18,16 @@ class Db:
     def get_connection(cls) -> sqlite3.Connection:
         if cls._connection is None:
             cls._connection = sqlite3.connect(cls._db_url)
-        #     print("initialising new cx to "+ cls._db_url)
-        # else:
-        #     print("reusing cx" + cls._db_url)
+            log.debug("initialising new cx to "+ cls._db_url)
+        else:
+            log.debug("reusing cx" + cls._db_url)
         return cls._connection
 
     def sql(self, query: str, params: Tuple | None = None):
         if params is None:
+            log.debug(f"executing query: {query}\nwith_params: {query}")
             return self.cursor.execute(query)
+        log.debug(f"executing query {query}")
         return self.cursor.execute(query, params)
 
     def clear(self) -> "Db":
@@ -39,17 +43,16 @@ class Db:
                 PRAGMA foreign_keys = ON;
             """
             )
-            print("Emptied the table")
+            log.debug(f"Emptied the database {self._db_url}")
         except Exception as e:
-            print("Couldn't confirm empty table")
+            log.error(f"Encountered an issue while clearing the table")
         return self
 
     @classmethod
     def delete(cls):
         file_path = cls._db_url
         if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-                print(f"{file_path} deleted successfully.")
-            except OSError as e:
-                print(f"Error deleting {file_path}: {e}")
+            os.remove(file_path)
+            log.info(f"{file_path} deleted successfully.")
+        else:
+            log.info(f"DB '{file_path}' doesn't exist")
