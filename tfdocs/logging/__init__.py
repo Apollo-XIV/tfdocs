@@ -6,4 +6,4 @@ from tfdocs.logging.setup import setup_logs
 
 traceback.install()
 
-__all__ = ['setup_logs']
+__all__ = ["setup_logs"]
