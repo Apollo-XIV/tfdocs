@@ -10,14 +10,8 @@ on:
 # All jobs must pass before merge
 jobs:
 
-  flake-cache:
-    name: Build Nix Store
-    uses: ./.github/workflows/build-cache.yaml
-    permissions: write-all
-
   sync-environment:
     name: Sync Terraform Environment
-    needs: flake-cache
     permissions: write-all
     uses: ./.github/workflows/sync-env.yaml
     secrets: inherit
