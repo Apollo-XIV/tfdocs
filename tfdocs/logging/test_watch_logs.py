@@ -1,16 +1,38 @@
 import pytest
+import argparse
 import socketserver
 from unittest import mock
 import logging
 import pickle
 import socket
-from tfdocs.logging.watch_logs import LogServerHandler, main
+from tfdocs.logging.watch_logs import LogServerHandler, main, parse_args
 
 @pytest.fixture
 def log_mock():
     """Fixture to mock the logger."""
     with mock.patch("tfdocs.logging.watch_logs.log") as log:
         yield log
+
+def test_parse_args():
+    """Test that the watch-logs subcommand is correctly parsed and sets func=main."""
+
+    # Create a mock 'main' function since it will be called when 'watch-logs' is invoked
+    with mock.patch('tfdocs.logging.watch_logs.main') as mock_main:
+        parser = argparse.ArgumentParser()
+        subparsers = parser.add_subparsers(dest="command")
+        
+        # Call the function that adds the 'watch-logs' subcommand
+        parse_args(subparsers)
+
+        # Simulate passing the 'watch-logs' subcommand on the command line
+        args = parser.parse_args(["watch-logs"])
+
+        # Check that the parsed args include the correct func attribute set to 'main'
+        assert args.func == mock_main
+
+        # Optionally call the function if you want to simulate full execution:
+        args.func(args)
+        mock_main.assert_called_once_with(args)
 
 def test_logserver_handler_handle(log_mock):
     """Test the LogServerHandler's handle function."""

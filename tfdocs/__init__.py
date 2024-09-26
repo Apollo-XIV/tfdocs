@@ -1,12 +1,16 @@
 from tfdocs.logging import setup_logs
+from tfdocs.cli import parse_args
 import logging
 
 def main():
+    parser, args = parse_args()
+
     setup_logs(
-        print_log_level=30,
-        enable_log_streaming=True
+        print_log_level=args["verbose"],
+        enable_log_streaming=args["serve_logs"]
     )
     log = logging.getLogger(__name__)
-    log.debug("test message")
-    log.warning("test warning message")
-    log.critical("Oh my, its a message!")
+
+    if 'func' in args:
+        log.info(f"Running command {args["command"]}")
+        args["func"]()
