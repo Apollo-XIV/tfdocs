@@ -10,9 +10,11 @@ from tfdocs.db import TEST_DB_URL
 from tfdocs.db.init import create_db, main
 from tfdocs.db.test_handler import MockDb
 
+
 class WrappedDb(MockDb):
     _connection = None
     _db_url = ".wrapped.db"
+
 
 def test_main():
     with mock.patch("tfdocs.db.init.Db") as mock_db:
@@ -21,6 +23,7 @@ def test_main():
             main()
             mock_create_db.assert_called_once()
         mock_db.delete()
+
 
 def test_db_creation():
     test_db = MockDb()

@@ -6,6 +6,7 @@ from typing import Tuple
 
 log = logging.getLogger(__name__)
 
+
 class Db:
     _connection: sqlite3.Connection | None = None
     _db_url: str = DB_URL
@@ -18,7 +19,7 @@ class Db:
     def get_connection(cls) -> sqlite3.Connection:
         if cls._connection is None:
             cls._connection = sqlite3.connect(cls._db_url)
-            log.debug("initialising new cx to "+ cls._db_url)
+            log.debug("initialising new cx to " + cls._db_url)
         else:
             log.debug("reusing cx" + cls._db_url)
         return cls._connection

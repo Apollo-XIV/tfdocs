@@ -8,11 +8,13 @@ from tfdocs.db.handler import Db
 from .tables import create_block_table, create_attribute_table
 import logging
 
+
 def main():
     with Db().cx as cx:
         cursor = cx.cursor()
         create_db(cursor)
         cursor.close()
+
 
 def create_db(cursor: Cursor):
     log = logging.getLogger(__name__)
