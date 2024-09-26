@@ -20,6 +20,22 @@ py-test-int:
     pytest --cov-report html --cov=tfdocs
     xdg-open htmlcov/index.html
 
+lint: py-lint tf-lint
+
+py-lint:
+    #!/usr/bin/env bash
+    black --check .
+
+tf-lint:
+    #!/usr/bin/env bash
+    tflint || true
+
+lint-fix: py-lint-fix
+
+py-lint-fix:
+    #!/usr/bin/env bash
+    black .
+    
 repeat cmd='echo':
     @while true; do \
         {{cmd}}; \
