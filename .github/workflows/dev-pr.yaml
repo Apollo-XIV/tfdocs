@@ -9,14 +9,24 @@ on:
 
 # All jobs must pass before merge
 jobs:
+
   flake-cache:
     name: Build Nix Store
     uses: ./.github/workflows/build-cache.yaml
     permissions: write-all
+
+  sync-environment:
+    name: Sync Terraform Environment
+    needs: flake-cache
+    permissions: write-all
+    uses: ./.github/workflows/sync-env.yaml
+    secrets: inherit
+
   code-ci:
     name: Code CI Workflows
     permissions: write-all
-    needs: [flake-cache]
+    needs:
+      - sync-environment
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,9 +39,11 @@ jobs:
         uses: ./.github/actions/just
         with:
           cmd: py-test-cov-full
-      # - name: Commit changes
-      #   uses: ./.github/actions/commit
-      #   with:
-      #     message: "chore: lint code"
-      #     token: ${{secrets.GITHUB_TOKEN}}
         
+  tf-plan:
+    name: Terraform Plan
+    needs:
+      - sync-environment
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
