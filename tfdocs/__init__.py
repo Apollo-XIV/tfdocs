@@ -14,6 +14,3 @@ def main():
     if 'func' in args:
         log.info(f"Running command {args["command"]}")
         args["func"]()
-    else: 
-        parser.print_help()
-        exit(0)

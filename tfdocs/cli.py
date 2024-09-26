@@ -31,12 +31,16 @@ def parse_args():
         "--serve-logs", action="store_true", default=False, help="Send logs to log viewing server"
     )
 
+    # try:
     args = vars(parser.parse_args())
+    # except SystemExit as e:
+        # print("test")
+        # raise argparse.ArgumentError(None, e)
 
     command_key = args["command"]
 
-    if command_key not in subcommands and command_key is not None:
-        raise argparse.ArgumentError(None, f"Invalid command '{command_key}'")
+    # if command_key not in subcommands and command_key is not None:
+    #     raise argparse.ArgumentError(None, f"Invalid command '{command_key}'")
 
     # make sure verbosity is in the correct range and prepare for logging module
     if args["verbose"] not in range(0,3):
