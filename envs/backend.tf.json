@@ -1,0 +1,1 @@
+{"terraform":{"backend":{"s3":{"assume_role":{"role_arn":"arn:aws:iam::013948180024:role/tfdocs-iac-role","session_name":"tfdocs-iac"},"bucket":"tfdocs-state-20240923145216711000000001","encrypt":true,"key":"tfdocs-backend.tfstate","region":"eu-west-1"}}}}

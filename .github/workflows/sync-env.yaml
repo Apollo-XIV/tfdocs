@@ -1,0 +1,45 @@
+name: Update backend.tf
+on:
+  workflow_call:
+
+permissions: write-all
+
+jobs:
+  update:
+    name: Update backend.tf
+    if: "!contains(github.event.head_commit.message, 'ci: synced backend & env')"
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      # Setup
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - uses: ./.github/actions/nix-setup
+
+      - name: Apply backend.tf
+        run: |
+          unset AWS_PROFILE
+          just update-env
+        env:
+          TF_VAR_ENV: dev
+          AWS_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - uses: ./.github/actions/commit
+        with:
+          message: "ci: synced backend & env"
+          token: ${{secrets.GITHUB_TOKEN}}
+
+      - run: git diff > changes
+
+      - name: Output code changes
+        if: env.made_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Changes
+          path: changes

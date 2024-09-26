@@ -25,3 +25,13 @@ repeat cmd='echo':
         {{cmd}}; \
         read -p "Press Enter to run '{{cmd}}' again..."; \
     done
+
+update-env env='dev':
+    #!/usr/bin/env bash
+    cd envs
+    echo "> initialising terraform"
+    terraform init >> /dev/null
+    echo "> syncing backend and environment-based inputs"
+    terraform apply --auto-approve -var ENV={{env}} >> /dev/null
+    echo "> backend updated successfully"
+
