@@ -3,7 +3,16 @@ import tempfile
 import pytest
 from unittest.mock import patch, mock_open
 
-from tfdocs.utils import hash_path, clamp_string, flatten, clamp_string, flatten_iters, chunk_iter, refmt
+from tfdocs.utils import (
+    hash_path,
+    clamp_string,
+    flatten,
+    clamp_string,
+    flatten_iters,
+    chunk_iter,
+    refmt,
+)
+
 
 @pytest.mark.parametrize(
     "input_string, max_length, expected_output",
@@ -38,12 +47,14 @@ def test_hasher():
         inp = hash_path(inp)
         assert inp == exp
 
+
 def test_flatten_iterator():
     gen1 = (x for x in range(1, 4))
     gen2 = (x for x in range(4, 7))
     gen3 = (x for x in range(7, 10))
     res = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     assert list(flatten_iters(gen1, gen2, gen3)) == res
+
 
 def test_chunk_iterator():
     res = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -52,6 +63,7 @@ def test_chunk_iterator():
     res = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
     inp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     assert list(chunk_iter(inp, batch_size=3)) == res
+
 
 def test_refmt():
     # Input JSON string to simulate stdin input
@@ -77,4 +89,3 @@ def test_refmt():
                 # Get the handle to the mocked file and check the written data
                 handle = mock_file()
                 handle.write.assert_called_once_with(expected_output)
-

@@ -4,6 +4,7 @@ import json
 from result import as_result, Ok, Err, Result
 from typing import Callable, Iterator
 
+
 def chunk_iter(iter: Iterator, batch_size=100) -> Iterator[list]:
     batch = []
     for item in iter:
@@ -48,6 +49,7 @@ def flatten(nested_list: list):
             flattened.append(element)
     return flattened
 
+
 def flatten_iters(*args) -> Iterator:
     for iter in args:
         yield from iter
@@ -61,6 +63,7 @@ def clamp_string(s: str, max_length: int) -> str:
     # Reserve 3 characters for the ellipsis
     return s[: max_length - 3].strip() + "..."
 
+
 def refmt():
     # Read all input from stdin
     input_data = str(sys.stdin.read())
@@ -69,4 +72,3 @@ def refmt():
     formatted = json.dumps(info, indent=4)
 
     open("fmt.json", "w+").write(formatted)
-
