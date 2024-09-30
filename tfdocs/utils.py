@@ -1,12 +1,18 @@
 import hashlib
+import sys
+import json
 from result import as_result, Ok, Err, Result
-from typing import Callable
+from typing import Callable, Iterator
 
-
-def hello_world(name: str = "world") -> str:
-    if name == "":
-        name = "world"
-    return f"hello, {name}!"
+def chunk_iter(iter: Iterator, batch_size=100) -> Iterator[list]:
+    batch = []
+    for item in iter:
+        batch.append(item)
+        if len(batch) >= batch_size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
 
 
 def hash_path(inp: str | None) -> str:
@@ -42,6 +48,10 @@ def flatten(nested_list: list):
             flattened.append(element)
     return flattened
 
+def flatten_iters(*args) -> Iterator:
+    for iter in args:
+        yield from iter
+
 
 def clamp_string(s: str, max_length: int) -> str:
     if max_length < 3:
@@ -50,3 +60,13 @@ def clamp_string(s: str, max_length: int) -> str:
         return s
     # Reserve 3 characters for the ellipsis
     return s[: max_length - 3].strip() + "..."
+
+def refmt():
+    # Read all input from stdin
+    input_data = str(sys.stdin.read())
+
+    info = json.loads(input_data)
+    formatted = json.dumps(info, indent=4)
+
+    open("fmt.json", "w+").write(formatted)
+

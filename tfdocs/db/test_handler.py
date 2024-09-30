@@ -23,7 +23,7 @@ def test_singleton():
 
 
 def test_sql_method():
-    exp_count = 0
+    exp_count = 8
     test_count = MockDb().sql("SELECT COUNT(*) FROM block;").fetchone()[0]
     assert exp_count == test_count
 
@@ -107,11 +107,11 @@ def test_context_manager():
     with test_db.cx as cx:
         cx_1 = cx
         test = cx.execute("SELECT COUNT(*) FROM block;").fetchone()[0]
-        exp = 0
+        exp = 8
         assert exp == test
     with test_db.cx as cx:
         cx_2 = cx
         test = cx.execute("SELECT COUNT(*) FROM attribute;").fetchone()[0]
-        exp = 0
+        exp = 54
         assert exp == test
     assert cx_1 is cx_2
