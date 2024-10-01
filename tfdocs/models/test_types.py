@@ -41,7 +41,6 @@ def test_from_some(case, exp):
     res = tf.from_some(case)
     assert res == exp
 
-
 def test_from_some_dict():
     exp = tf.Object({"test": tf.Any(), "value": tf.String()})
     assert exp == tf.from_some(["object", {"test": "any", "value": "string"}])
