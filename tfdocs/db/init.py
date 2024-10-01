@@ -28,9 +28,11 @@ def create_db(cursor: Cursor):
         log.warning("Existing Table Found")
         # ask if user would like to delete and remake the database, else exit 1
 
-        if Confirm.ask("The requested database already exists, would you like to delete and create a new one?"):
+        if Confirm.ask(
+            "The requested database already exists, would you like to delete and create a new one?"
+        ):
             print("deleting")
-            
+
         else:
             log.critical("Cannot procede with existing database")
         return
