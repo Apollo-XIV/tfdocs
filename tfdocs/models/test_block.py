@@ -1,7 +1,12 @@
+import logging
+from unittest import mock
+
 from tfdocs.utils import hash_path
 from tfdocs.models.block import Block
 from tfdocs.models.attribute import Attribute
 from tfdocs.db.test_handler import MockDb
+
+log = logging.getLogger(__name__)
 
 
 class MockBlock(Block):
@@ -66,9 +71,9 @@ def test_late_name():
     assert exp == test_r.name
 
 
+@mock.patch("tfdocs.models.attribute.Attribute._db", new=MockDb())
 def test_late_attributes():
     exp_attributes = ["id", "triggers"]
     test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
-    print(test_r.name)
     test_attributes = [a.name for a in test_r.attributes]
     assert exp_attributes == test_attributes

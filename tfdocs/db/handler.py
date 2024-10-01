@@ -25,6 +25,7 @@ class Db:
         return cls._connection
 
     def sql(self, query: str, params: Tuple | None = None):
+        log.debug(f"self._db_url is {self._db_url}")
         if params is None:
             log.debug(f"executing query: {query}\nwith_params: {query}")
             return self.cursor.execute(query)
