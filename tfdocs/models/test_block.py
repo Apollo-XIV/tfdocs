@@ -60,15 +60,15 @@ def test_block_flatten():
     assert flattened_attributes == [attr1, attr2]
 
 
-# def test_late_name():
-#     exp = "null_resource"
-#     test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
-#     assert exp == test_r.name
+def test_late_name():
+    exp = "null_resource"
+    test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
+    assert exp == test_r.name
 
 
-# def test_late_attributes():
-#     exp_attributes = ["id", "triggers"]
-#     test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
-#     print(test_r.name)
-#     test_attributes = [a.name for a in test_r.attributes]
-#     assert exp_attributes == test_attributes
+def test_late_attributes():
+    exp_attributes = ["id", "triggers"]
+    test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
+    print(test_r.name)
+    test_attributes = [a.name for a in test_r.attributes]
+    assert exp_attributes == test_attributes
