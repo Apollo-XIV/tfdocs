@@ -10,5 +10,9 @@ def main():
     log = logging.getLogger(__name__)
 
     if "func" in args:
-        log.info(f"Running command {args["command"]}")
+        log.info(f"Running command {args['command']}")
         args["func"]()
+
+
+if __name__ == "__main__":
+    main()
