@@ -261,6 +261,7 @@ def test_parse_attribute():
     assert None == parse_attribute("test", None, None)
     with pytest.raises(ValueError):
         parse_attribute("test", {"type": 123}, None)
-    
+
+
 def test_db_insert_batch_error():
     pass
