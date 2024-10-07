@@ -108,8 +108,14 @@ def parse_block(name, block_data: dict, type="misc", parent=None) -> Block | Non
 
 
 def block_iter(provider: dict, target: str, type: str, parent=None) -> Iterator[Block]:
+    """
+    Acts as an entrypoint for non-provider based recursive block structures.
+    Passes each applicable object through the block parser and yields it to
+    the iterator
+    """
     for name, obj in provider.get(target, {}).items():
         parser = parse_block(name, obj["block"], type, parent=parent)
+        # This one is only really triggered if parse_block returns None, which is rare
         if parser is None:
             continue
         else:
