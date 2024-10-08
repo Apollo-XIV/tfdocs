@@ -3,6 +3,7 @@ import ast
 import asyncio
 import ijson
 import sqlite3
+import logging
 from sqlite3 import Cursor
 from functools import reduce
 from typing import Iterator, Union, Any
@@ -12,6 +13,7 @@ from tfdocs.models.attribute import Attribute
 from tfdocs.models.types import from_some, DescType
 from tfdocs.utils import flatten_iters, chunk_iter
 
+log = logging.getLogger(__name__)
 
 def main():
     asyncio.run(load_local_schemas(DB_URL))
@@ -175,7 +177,9 @@ def db_insert_batch(chunk: list, cursor: Cursor) -> None:
             ) VALUES (?,?,?,?,?,?,?);""",
             attrs,
         )
+        log.debug(f"Inserted {len(blks) + len(attrs)} records into DB")
     except Exception as e:
+        log.critical(e)
         print("Encountered the following error:" + repr(e))
         exit(1)
 

@@ -1,7 +1,8 @@
 import asyncio
+import tempfile
 import sqlite3
 import pytest
-from unittest import mock
+from unittest.mock import patch, AsyncMock, MagicMock
 from tfdocs.db import TEST_DB_URL
 from tfdocs.db.test_handler import MockDb
 from tfdocs.db.sync import (
@@ -12,12 +13,12 @@ from tfdocs.db.sync import (
     parse_block,
     parse_attribute,
     block_iter,
+    db_insert_batch,
 )
 from tfdocs.models.test_block import MockBlock
 
 
 async def fetch_test_schemas() -> asyncio.StreamReader:
-    print()
     process = await asyncio.subprocess.create_subprocess_exec(
         *["cat", "tests/test_schemas.json"],
         stdout=asyncio.subprocess.PIPE,
@@ -27,6 +28,26 @@ async def fetch_test_schemas() -> asyncio.StreamReader:
         raise OSError("Couldn't fetch the test data to parse")
     return process.stdout
 
+@pytest.mark.asyncio
+async def test_fetch_test_schemas():
+    mock_stdout = AsyncMock()
+    mock_stdout.read = AsyncMock(return_value=b'{"test_schema": "value"}')
+
+    mock_process = AsyncMock()
+    mock_process.stdout = mock_stdout
+
+    # Patch create_subprocess_exec to return our mocked process
+    with patch('asyncio.subprocess.create_subprocess_exec', return_value=mock_process):
+        result = await fetch_test_schemas()
+        assert result == mock_stdout
+
+    mock_process = AsyncMock()
+    mock_process.stdout = None
+
+    # Patch create_subprocess_exec to return our mocked process
+    with patch('asyncio.subprocess.create_subprocess_exec', return_value=mock_process):
+        with pytest.raises(OSError, match="Couldn't fetch the test data to parse"):
+            await fetch_test_schemas()
 
 @pytest.mark.asyncio
 async def test_db_sync():
@@ -78,27 +99,27 @@ async def test_db_sync():
 
 
 def test_main():
-    with mock.patch("tfdocs.db.sync.load_local_schemas") as test_schema_loader:
+    with patch("tfdocs.db.sync.load_local_schemas") as test_schema_loader:
         main()
         test_schema_loader.assert_called_once()
 
 
 # Mock functions that will be used
-@mock.patch("tfdocs.db.sync.fetch_schemas", autospec=True)
-@mock.patch("tfdocs.db.sync.parse_schemas", autospec=True)
-@mock.patch("sqlite3.connect", autospec=True)
+@patch("tfdocs.db.sync.fetch_schemas", autospec=True)
+@patch("tfdocs.db.sync.parse_schemas", autospec=True)
+@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
 async def test_load_local_schemas_success(
     mock_connect, mock_parse_schemas, mock_fetch_schemas
 ):
     # Mock database connection and cursor
-    mock_conn = mock.MagicMock()
-    mock_cursor = mock.MagicMock()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
     mock_connect.return_value.__enter__.return_value = mock_conn
     mock_conn.cursor.return_value = mock_cursor
 
     # Mock fetch_schemas return value
-    mock_stream = mock.MagicMock()
+    mock_stream = MagicMock()
     mock_fetch_schemas.return_value = mock_stream
 
     # Call the function
@@ -112,12 +133,12 @@ async def test_load_local_schemas_success(
     mock_cursor.close.assert_called_once()
 
 
-@mock.patch("tfdocs.db.sync.fetch_schemas", autospec=True)
-@mock.patch("sqlite3.connect", autospec=True)
+@patch("tfdocs.db.sync.fetch_schemas", autospec=True)
+@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
 async def test_load_local_schemas(mock_connect, mock_fetch_schemas):
-    mock_conn = mock.MagicMock()
-    mock_cursor = mock.MagicMock()
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
     mock_connect.return_value.__enter__.return_value = mock_conn
     mock_conn.cursor.return_value = mock_cursor
 
@@ -137,17 +158,17 @@ async def test_load_local_schemas(mock_connect, mock_fetch_schemas):
     mock_cursor.close.assert_not_called()  # No closing cursor since OSError occurred
 
 
-@mock.patch("tfdocs.db.sync.parse_block")
-@mock.patch("tfdocs.db.sync.db_insert_batch")
+@patch("tfdocs.db.sync.parse_block")
+@patch("tfdocs.db.sync.db_insert_batch")
 @pytest.mark.asyncio
 async def test_parse_schemas_success(mock_db_insert_batch, mock_parse_block):
-    mock_cursor = mock.MagicMock()
-    mock_stream = mock.MagicMock()
+    mock_cursor = MagicMock()
+    mock_stream = MagicMock()
 
     async def kvitems_gen():
         yield ("provider_name", {"provider": {"block": "block_data"}})
 
-    with mock.patch(
+    with patch(
         "ijson.kvitems_async", return_value=kvitems_gen()
     ) as mock_kvitems_async:
         await parse_schemas(mock_cursor, mock_stream)
@@ -168,16 +189,9 @@ async def test_parse_schemas_error():
         return stream
 
     # Mock cursor and stream
-    mock_cursor = mock.MagicMock()
+    mock_cursor = MagicMock()
     mock_stream = await create_mock_streamreader(b'{"incomplete_json":"cut-off content')
 
-    # Create an async generator that raises IncompleteJSONError
-    async def kvitems_gen():
-        raise ijson.common.IncompleteJSONError("Test incomplete JSON")
-
-    # Mock ijson.kvitems_async to return the generator that raises the exception
-    # with mock.patch('ijson.kvitems_async', return_value=kvitems_gen()):
-    # Expecting the function to raise SystemExit due to IncompleteJSONError
     with pytest.raises(SystemExit):
         await parse_schemas(mock_cursor, mock_stream)
 
@@ -185,13 +199,13 @@ async def test_parse_schemas_error():
 @pytest.mark.asyncio
 async def test_fetch_schemas():
     # Create a mock process
-    mock_process = mock.MagicMock()
+    mock_process = MagicMock()
 
     # Create a mock stdout stream (this would be returned by the subprocess)
-    mock_stdout = mock.MagicMock()
+    mock_stdout = MagicMock()
 
     # Mock create_subprocess_exec to return a process with mock stdout
-    with mock.patch(
+    with patch(
         "asyncio.subprocess.create_subprocess_exec", return_value=mock_process
     ):
         # Set the stdout attribute to the mock stdout
@@ -214,10 +228,10 @@ async def test_fetch_schemas():
 @pytest.mark.asyncio
 async def test_fetch_schemas_no_stdout():
     # Create a mock process
-    mock_process = mock.MagicMock()
+    mock_process = MagicMock()
 
     # Mock create_subprocess_exec to return a process with None stdout
-    with mock.patch(
+    with patch(
         "asyncio.subprocess.create_subprocess_exec", return_value=mock_process
     ):
         # Set the stdout attribute to None
@@ -244,7 +258,7 @@ def test_parse_none_block():
 
 
 def test_block_iter():
-    with mock.patch(
+    with patch(
         "tfdocs.db.sync.parse_block", return_value=None
     ) as mock_parse_block:
         res = block_iter(
@@ -263,5 +277,21 @@ def test_parse_attribute():
         parse_attribute("test", {"type": 123}, None)
 
 
-def test_db_insert_batch_error():
-    pass
+# @mock.patch(
+#     "tfdocs.models.block.Block.flatten",
+#     return_value=([MockBlock(type="misc")],[]),
+#     autospec=True,
+# )
+@patch(
+    "tfdocs.models.block.Block.flatten",
+    return_value=([MockBlock(type="misc", name="test_block")],[]),
+    autospec=True,
+)
+def test_db_insert_batch_error(mock_flatten):
+    class TempDb(MockDb):
+        _connection = None
+        _db_url = tempfile.mktemp()
+    mock_block = MockBlock(type="misc")
+    with TempDb().cx as cursor:
+        with pytest.raises(SystemExit):
+            db_insert_batch([mock_block], cursor)
