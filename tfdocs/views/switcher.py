@@ -119,4 +119,3 @@ class List(OptionList, can_focus=False):
             super().__init__(*resources, id=id)
         else:
             super().__init__(*resources)
-
