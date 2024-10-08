@@ -2,9 +2,8 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    poetry2nix.url = "github:nix-community/poetry2nix";
     nixpkgs-terraform.url = "github:stackbuilders/nixpkgs-terraform";
-    # pre-commit-hooks.url = "github:cachix/git-hooks.nix";
+    poetry2nix.url = "github:nix-community/poetry2nix";
   };
 
   outputs = { self, nixpkgs, poetry2nix, nixpkgs-terraform, flake-utils }:
@@ -23,27 +22,45 @@
         };
 
         terraform = nixpkgs-terraform.packages.${system}."1.9.5";
+        python = pkgs.stdenv.mkDerivation rec {
+          pname = "python";
+          version = "3.13.0";
+          src = pkgs.fetchurl {
+            url = "https://www.python.org/downloads/release/python-3130/";
+            sha256 = "sha256-UX/MHzWnD5BOoIEmaZ9YvUEzCQg2oqKTkS426C2N2A8=";
+          };
+          dontUnpack = true;
+          nativeBuildInputs = pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [
+            pkgs.autoPatchelfHook
+          ];
+          sourceRoot = ".";
+          installPhase = ''
+            runHook preInstall
+            install -m755 -D ${src} $out/bin/python
+            runHook postInstall
+          '';
+        };
       in {
         packages.default = pkgs.poetry2nix.mkPoetryApplication {
           projectDir = ./.;
         };
 
         devShells.default = pkgs.mkShellNoCC {
-          packages = [
+          packages = with pkgs; [
             myEnv
-            pkgs.just
-            pkgs.poetry
-            pkgs.zsh
-            pkgs.tflint
-            pkgs.mypy
-            pkgs.direnv
-            pkgs.commitlint
-            pkgs.husky
-            pkgs.nodejs_22
+            just
+            poetry
+            zsh
+            tflint
+            mypy
+            direnv
+            commitlint
+            husky
+            nodejs_22
             terraform
+            python
           ];
         };
       }
     );
 }
-

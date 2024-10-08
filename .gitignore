@@ -2,6 +2,7 @@
 node_modules
 __pycache__
 hmtlcov
+result
 .coverage
 .terraform
 .obsidian
