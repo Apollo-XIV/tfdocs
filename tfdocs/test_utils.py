@@ -1,17 +1,17 @@
-from tfdocs.utils import hello_world, hash_path, clamp_string, flatten
+import json
+import tempfile
 import pytest
+from unittest.mock import patch, mock_open
 
-
-@pytest.mark.parametrize(
-    "case, exp",
-    [
-        ("world", "hello, world!"),
-        ("test", "hello, test!"),
-        ("", "hello, world!"),
-    ],
+from tfdocs.utils import (
+    hash_path,
+    clamp_string,
+    flatten,
+    clamp_string,
+    flatten_iters,
+    chunk_iter,
+    refmt,
 )
-def test_hello_world(case, exp):
-    assert hello_world(case) == exp
 
 
 @pytest.mark.parametrize(
@@ -46,3 +46,46 @@ def test_hasher():
     for inp, exp in zip(inps, exps):
         inp = hash_path(inp)
         assert inp == exp
+
+
+def test_flatten_iterator():
+    gen1 = (x for x in range(1, 4))
+    gen2 = (x for x in range(4, 7))
+    gen3 = (x for x in range(7, 10))
+    res = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert list(flatten_iters(gen1, gen2, gen3)) == res
+
+
+def test_chunk_iterator():
+    res = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    inp = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert list(chunk_iter(inp, batch_size=3)) == res
+    res = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
+    inp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    assert list(chunk_iter(inp, batch_size=3)) == res
+
+
+def test_refmt():
+    # Input JSON string to simulate stdin input
+    input_json = '{"key": "value", "list": [1, 2, 3]}'
+
+    # Expected formatted JSON string
+    expected_output = json.dumps(json.loads(input_json), indent=4)
+
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as temp_input:
+        # Write the input data to the temporary file and reset the file pointer
+        temp_input.write(input_json)
+        temp_input.seek(0)
+
+        # Patch sys.stdin to simulate input
+        with patch("sys.stdin", temp_input):
+            # Patch open to simulate file writing
+            with patch("builtins.open", mock_open()) as mock_file:
+                refmt()
+
+                # Check that open was called to write the formatted output
+                mock_file.assert_called_once_with("fmt.json", "w+")
+
+                # Get the handle to the mocked file and check the written data
+                handle = mock_file()
+                handle.write.assert_called_once_with(expected_output)
