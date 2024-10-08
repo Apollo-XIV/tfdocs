@@ -1,6 +1,7 @@
 .direnv
 node_modules
 __pycache__
+hmtlcov
 .coverage
 .terraform
 .obsidian
