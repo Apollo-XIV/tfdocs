@@ -28,6 +28,7 @@ async def fetch_test_schemas() -> asyncio.StreamReader:
         raise OSError("Couldn't fetch the test data to parse")
     return process.stdout
 
+
 @pytest.mark.asyncio
 async def test_fetch_test_schemas():
     mock_stdout = AsyncMock()
@@ -37,7 +38,7 @@ async def test_fetch_test_schemas():
     mock_process.stdout = mock_stdout
 
     # Patch create_subprocess_exec to return our mocked process
-    with patch('asyncio.subprocess.create_subprocess_exec', return_value=mock_process):
+    with patch("asyncio.subprocess.create_subprocess_exec", return_value=mock_process):
         result = await fetch_test_schemas()
         assert result == mock_stdout
 
@@ -45,9 +46,10 @@ async def test_fetch_test_schemas():
     mock_process.stdout = None
 
     # Patch create_subprocess_exec to return our mocked process
-    with patch('asyncio.subprocess.create_subprocess_exec', return_value=mock_process):
+    with patch("asyncio.subprocess.create_subprocess_exec", return_value=mock_process):
         with pytest.raises(OSError, match="Couldn't fetch the test data to parse"):
             await fetch_test_schemas()
+
 
 @pytest.mark.asyncio
 async def test_db_sync():
@@ -168,9 +170,7 @@ async def test_parse_schemas_success(mock_db_insert_batch, mock_parse_block):
     async def kvitems_gen():
         yield ("provider_name", {"provider": {"block": "block_data"}})
 
-    with patch(
-        "ijson.kvitems_async", return_value=kvitems_gen()
-    ) as mock_kvitems_async:
+    with patch("ijson.kvitems_async", return_value=kvitems_gen()) as mock_kvitems_async:
         await parse_schemas(mock_cursor, mock_stream)
 
     # Assertions on mocks should verify correct behavior
@@ -205,9 +205,7 @@ async def test_fetch_schemas():
     mock_stdout = MagicMock()
 
     # Mock create_subprocess_exec to return a process with mock stdout
-    with patch(
-        "asyncio.subprocess.create_subprocess_exec", return_value=mock_process
-    ):
+    with patch("asyncio.subprocess.create_subprocess_exec", return_value=mock_process):
         # Set the stdout attribute to the mock stdout
         mock_process.stdout = mock_stdout
 
@@ -231,9 +229,7 @@ async def test_fetch_schemas_no_stdout():
     mock_process = MagicMock()
 
     # Mock create_subprocess_exec to return a process with None stdout
-    with patch(
-        "asyncio.subprocess.create_subprocess_exec", return_value=mock_process
-    ):
+    with patch("asyncio.subprocess.create_subprocess_exec", return_value=mock_process):
         # Set the stdout attribute to None
         mock_process.stdout = None
 
@@ -258,9 +254,7 @@ def test_parse_none_block():
 
 
 def test_block_iter():
-    with patch(
-        "tfdocs.db.sync.parse_block", return_value=None
-    ) as mock_parse_block:
+    with patch("tfdocs.db.sync.parse_block", return_value=None) as mock_parse_block:
         res = block_iter(
             {"test_resources": {"resource_1": {"block": {}}}},
             "test_resources",
@@ -284,13 +278,14 @@ def test_parse_attribute():
 # )
 @patch(
     "tfdocs.models.block.Block.flatten",
-    return_value=([MockBlock(type="misc", name="test_block")],[]),
+    return_value=([MockBlock(type="misc", name="test_block")], []),
     autospec=True,
 )
 def test_db_insert_batch_error(mock_flatten):
     class TempDb(MockDb):
         _connection = None
         _db_url = tempfile.mktemp()
+
     mock_block = MockBlock(type="misc")
     with TempDb().cx as cursor:
         with pytest.raises(SystemExit):
