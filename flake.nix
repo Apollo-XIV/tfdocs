@@ -19,15 +19,16 @@
 
         myEnv = pkgs.poetry2nix.mkPoetryEnv {
           projectDir = ./.;
+          python = pkgs.python311Full;
         };
 
         terraform = nixpkgs-terraform.packages.${system}."1.9.5";
         python = pkgs.stdenv.mkDerivation rec {
           pname = "python";
-          version = "3.13.0";
+          version = "3.12.6";
           src = pkgs.fetchurl {
-            url = "https://www.python.org/downloads/release/python-3130/";
-            sha256 = "sha256-UX/MHzWnD5BOoIEmaZ9YvUEzCQg2oqKTkS426C2N2A8=";
+            url = "https://www.python.org/downloads/release/python-3126/";
+            sha256 = "sha256-USh/R68v7jWvyXsZ0FJ0V0ppn+9LjNuvzdm943tfVxU=";
           };
           dontUnpack = true;
           nativeBuildInputs = pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [
