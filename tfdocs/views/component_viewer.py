@@ -18,10 +18,10 @@ class ComponentViewer(App):
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="buttons"):
-            yield Button("Blank", id="blank")
             yield Button("Viewer", id="viewer")
             yield Button("Switcher", id="switcher")
-        with ContentSwitcher(initial="blank"):
+            yield Button("Special", id="blank")
+        with ContentSwitcher(initial="viewer"):
             yield Static(id="blank")
             yield Viewer(id="viewer", classes="")
             yield Switcher(id="switcher", classes="pane")
