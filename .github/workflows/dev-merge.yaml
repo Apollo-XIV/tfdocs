@@ -1,0 +1,45 @@
+name: Dev Branch Merge
+
+# Triggers
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+  merge_group:
+
+jobs:
+  apply-plan:
+    # if: github.event.pull_request.merge == true
+    name: Apply Terraform Plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          fetch-depth: 0
+
+      - uses: ./.github/actions/nix-setup
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: TfPlan-PR-${{github.event.pull_request.number}}
+          path: infra/plan
+          overwrite: true
+
+      - name: Terraform Apply
+        run: |
+          unset AWS_PROFILE
+          cd infra
+          terraform init
+          terraform apply plan
+        env:
+          TF_VAR_ENV: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - uses: ./.github/actions/commit
+        with:
+          message: "ci: Terraform Apply"
+          token: ${{secrets.GITHUB_TOKEN}}
