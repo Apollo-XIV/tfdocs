@@ -5,10 +5,13 @@ on:
   pull_request:
     branches:
       - dev
+    types:
+      - closed
   merge_group:
 
 jobs:
   apply-plan:
+    if: github.event.pull_request.merge == true
     name: Apply Terraform Plan
     runs-on: ubuntu-latest
     steps:
