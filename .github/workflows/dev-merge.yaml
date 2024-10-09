@@ -19,13 +19,22 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
-      - uses: actions/download-artifact
+      - uses: actions/download-artifact@v4
         with:
           name: TfPlan-PR-${{github.event.pull_request.number}}
-          path: plan
+          path: infra/plan
           overwrite: true
 
-      - run: terraform apply plan --auto-approve
+      - name: Terraform Apply
+        run: |
+          unset AWS_PROFILE
+          cd infra
+          terraform init
+          terraform apply plan
+        env:
+          TF_VAR_ENV: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - uses: ./.github/actions/commit
         with:
