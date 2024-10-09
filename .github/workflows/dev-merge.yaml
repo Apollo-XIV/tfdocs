@@ -11,7 +11,7 @@ on:
 
 jobs:
   apply-plan:
-    if: github.event.pull_request.merge == true
+    # if: github.event.pull_request.merge == true
     name: Apply Terraform Plan
     runs-on: ubuntu-latest
     steps:
