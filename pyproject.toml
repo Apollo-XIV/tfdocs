@@ -9,11 +9,14 @@ packages = [{include = "tfdocs"}]
 [tool.poetry.scripts]
 tfdocs = "tfdocs:main"
 watchlog = "tfdocs.logging.watch_logs:main"
+refmt = "tfdocs.utils:refmt"
 
 [tool.poetry.dependencies]
 python = "^3.12"
 rich = "^13.8.1"
 result = "^0.17.0"
+pytest-asyncio = "^0.24.0"
+ijson = "^3.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

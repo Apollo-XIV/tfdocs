@@ -10,7 +10,7 @@ module "backend" {
   force_destroy   = false
   enable_dynamodb = false
 
-  output_dir = "../."
+  output_dir = "../infra"
 
   environment_configs_dir = abspath("${path.root}")
   environments = [
