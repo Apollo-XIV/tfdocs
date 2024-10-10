@@ -1,4 +1,4 @@
-name: Update backend.tf
+name: Terraform Plan
 on:
   workflow_call:
 jobs:
