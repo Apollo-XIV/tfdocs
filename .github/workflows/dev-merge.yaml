@@ -12,7 +12,7 @@ on:
 jobs:
   apply-plan:
     # if: github.event.pull_request.merge == true
-    permissions: read-all
+    permissions: write-all
     name: Apply Terraform Plan
     runs-on: ubuntu-latest
     defaults:
