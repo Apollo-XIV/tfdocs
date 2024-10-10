@@ -30,9 +30,10 @@ jobs:
 
       - run: ls infra 
 
-      - name: Save plan
-        uses: actions/upload-artifact@v4
+      - name: Cache Terraform plan
+        uses: actions/cache@v3
         with:
-          name: TfPlan-PR-${{github.event.pull_request.number}}
           path: infra/plan
-          overwrite: true
+          key: ${{ runner.os }}-terraform-plan-${{ github.sha }}
+
+      - name: Terraform Apply

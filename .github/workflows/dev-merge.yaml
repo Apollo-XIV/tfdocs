@@ -23,10 +23,11 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
-      - uses: actions/download-artifact@v4
+      - name: Restore cached Terraform plan
+        uses: actions/cache@v3
         with:
-          name: TfPlan-PR-${{github.event.pull_request.number}}
           path: infra/plan
+          key: ${{ runner.os }}-terraform-plan-${{ github.sha }}
 
       - name: Terraform Apply
         run: |
