@@ -28,11 +28,9 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - run: ls infra 
-
       - name: Save plan
         uses: actions/upload-artifact@v4
         with:
           name: TfPlan-PR-${{github.event.pull_request.number}}
-          path: infra/plan
+          path: plan
           overwrite: true
