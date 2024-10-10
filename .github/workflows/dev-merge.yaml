@@ -23,6 +23,8 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
+      - run: ls ${{github.workspace}}
+
       - name: Restore cached Terraform plan
         uses: actions/cache@v3
         with:
