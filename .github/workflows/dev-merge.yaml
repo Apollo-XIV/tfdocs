@@ -23,13 +23,13 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
-      - run: ls ${{github.workspace}}
-
       - name: Restore cached Terraform plan
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v4
         with:
           path: infra/plan
-          key: ${{ runner.os }}-terraform-plan-${{ github.sha }}
+          key: ${{ runner.os }}-terraform-plan-${{ github.event.pull_request.number }}
+
+      - run: ls infra
 
       - name: Terraform Apply
         run: |
