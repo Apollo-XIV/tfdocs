@@ -26,7 +26,6 @@ jobs:
         with:
           name: TfPlan-PR-${{github.event.pull_request.number}}
           path: infra/plan
-          overwrite: true
 
       - name: Terraform Apply
         run: |
