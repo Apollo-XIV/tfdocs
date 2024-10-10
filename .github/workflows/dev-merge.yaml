@@ -15,6 +15,9 @@ jobs:
     permissions: read-all
     name: Apply Terraform Plan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,18 +26,9 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
-      - name: Restore cached Terraform plan
-        uses: actions/cache/restore@v4
-        with:
-          path: infra/plan
-          key: ${{ runner.os }}-terraform-plan-${{ github.event.pull_request.number }}
-
-      - run: ls infra
-
       - name: Terraform Apply
         run: |
           unset AWS_PROFILE
-          cd infra
           terraform init
           terraform apply plan
         env:
