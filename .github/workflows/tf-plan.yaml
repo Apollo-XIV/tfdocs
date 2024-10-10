@@ -20,6 +20,7 @@ jobs:
       - name: Terraform plan
         run: |
           unset AWS_PROFILE
+          cd infra
           terraform init
           terraform plan -out=plan
         env:

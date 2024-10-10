@@ -39,19 +39,19 @@ def setup_logs(
             },
             "handlers": {
                 "console": {
-                    "class": rich.logging.RichHandler,
+                    "class": "rich.logging.RichHandler",
                     "filters": ["verbosity"],
                 },
                 "watch_console": {
-                    "class": rich.logging.RichHandler,
+                    "class": "rich.logging.RichHandler",
                 },
                 "file": {
-                    "class": logging.FileHandler,
+                    "class": "logging.FileHandler",
                     "filename": log_file,
                     "formatter": "precise",
                 },
                 "serve": {
-                    "class": logging.handlers.DatagramHandler,
+                    "class": "logging.handlers.DatagramHandler",
                     "host": "localhost",
                     "port": 1234,
                 },
