@@ -2,6 +2,7 @@ name: Dev PR Checks
 
 concurrency:
   group: dev-pr-${{github.events.pull_request.number}}
+  cancel-in-progress: true
 
 # Triggers
 on:
