@@ -23,6 +23,7 @@ jobs:
         with:
           ref: dev
           fetch-depth: 0
+          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
 
       - uses: ./.github/actions/nix-setup
 
@@ -51,5 +52,3 @@ jobs:
       - name: Push Changes to Dev
         run: |
           git push origin dev
-        env:
-          GITHUB_TOKEN: ${{secrets.BRANCH_BYPASS}}
