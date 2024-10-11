@@ -51,3 +51,5 @@ jobs:
       - name: Push Changes to Dev
         run: |
           git push origin dev
+        env:
+          GITHUB_TOKEN: ${{secrets.BRANCH_BYPASS}}
