@@ -13,4 +13,4 @@ Whenever a push is made to these branches, a terraform apply workflow is run tha
 The terraform plan is applied by the workflow `dev-merge.yaml` which applies and then commits the changes back onto the dev/main branch. By default, due to the protections on the branch, this is not possible. This has actually been a requested feature on github since [2022](https://github.com/orgs/community/discussions/13836) but currently still has not been implemented. Instead, I'm using one of the suggested workarounds in the thread.
 
 #### Solution
-In order to get around the protections, I am going to create a custom github application and add it to my repository. From that app I'm going to get it's access token and save it as a secret in my repository. Finally, I'm going to add the app to the list of authorised bypasses in the ruleset and then add the new token to the workflow.
+To bypass branch protections I've added a deploy key to the repo and enabled it as a bypass in the ruleset. I've then changed the checkout action in the merge workflow to use the ssh private key secret I saved.
