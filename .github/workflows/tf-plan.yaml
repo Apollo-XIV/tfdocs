@@ -1,4 +1,4 @@
-name: Update backend.tf
+name: Terraform Plan
 on:
   workflow_call:
 jobs:
@@ -6,6 +6,9 @@ jobs:
     name: Terraform Plan
     permissions: write-all
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
     steps:
       # Setup
       - name: Checkout
@@ -20,7 +23,6 @@ jobs:
       - name: Terraform plan
         run: |
           unset AWS_PROFILE
-          cd infra
           terraform init
           terraform plan -out=plan
         env:
@@ -28,9 +30,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Save plan
-        uses: actions/upload-artifact@v4
+      - name: Commit plan
+        uses: ./.github/actions/commit
         with:
-          name: TfPlan-PR-${{github.event.pull_request.number}}
-          path: plan
-          overwrite: true
+          message: "ci: generate terraform plan"
+          token: ${{ secrets.GITHUB_TOKEN }}
