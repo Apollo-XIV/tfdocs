@@ -1,5 +1,8 @@
 name: Dev PR Checks
 
+concurrency:
+  group: dev-pr-${{github.events.pull_request.number}}
+
 # Triggers
 on:
   pull_request:
