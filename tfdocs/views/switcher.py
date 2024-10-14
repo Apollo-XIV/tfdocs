@@ -33,6 +33,12 @@ class Switcher(Vertical, can_focus=True):
 		TabPane {
 		    padding: 0 0 !important;
 		}
+
+		TabbedContent > ContentSwitcher {
+		    width: 100%;
+		    height: 1fr;
+            scrollbar-size: 1 1;
+		}
     """
     BINDINGS = [
         ("j", "cursor_down"),
@@ -107,6 +113,7 @@ class List(OptionList, can_focus=False):
             background: transparent;
             padding: 0;
             margin: 0;
+            scrollbar-size: 1 1;
         }
 
 		.option-list--option-highlighted {

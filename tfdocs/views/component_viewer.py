@@ -3,6 +3,7 @@ from textual.containers import Horizontal, VerticalScroll
 from textual.widgets import Static, Footer, Button, ContentSwitcher
 from tfdocs.views.viewer import Viewer
 from tfdocs.views.switcher import Switcher
+from tfdocs.views.special import Special
 
 
 def main():
@@ -12,6 +13,18 @@ def main():
 
 class ComponentViewer(App):
     CSS_PATH = "styles/component_viewer.tcss"
+    # DEFAULT_CSS = """
+    #     Screen {
+    #         align: center middle;
+    #         /* padding: 1; */
+    #     }
+
+    #     #buttons {
+    #         height: 3;
+    #         width: auto;
+    #     }
+
+    # """
     BINDINGS = [
         ("q", "quit", "Quit"),
     ]
@@ -20,9 +33,9 @@ class ComponentViewer(App):
         with Horizontal(id="buttons"):
             yield Button("Viewer", id="viewer")
             yield Button("Switcher", id="switcher")
-            yield Button("Special", id="blank")
-        with ContentSwitcher(initial="viewer"):
-            yield Static(id="blank")
+            yield Button("Special", id="special")
+        with ContentSwitcher(id="component_viewer", initial="viewer"):
+            yield Special(id="special")
             yield Viewer(id="viewer", classes="")
             yield Switcher(id="switcher", classes="pane")
         yield Footer()

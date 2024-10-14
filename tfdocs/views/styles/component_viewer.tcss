@@ -8,7 +8,7 @@ Screen {
     width: auto;
 }
 
-ContentSwitcher {
+#component_viewer {
     background: $panel;
     width: 90%;
     height: 1fr;
