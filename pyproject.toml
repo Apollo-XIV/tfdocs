@@ -9,7 +9,7 @@ packages = [{include = "tfdocs"}]
 [tool.poetry.scripts]
 tfdocs = "tfdocs:main"
 tfd-ui = "tfdocs.views.app:main"
-components = "tfdocs.views.component_viewer:main"
+components = "tfdocs.views.component_viewer:app"
 watchlog = "tfdocs.logging.watch_logs:main"
 refmt = "tfdocs.utils:refmt"
 
@@ -20,6 +20,8 @@ result = "^0.17.0"
 pytest-asyncio = "^0.24.0"
 textual = "^0.82.0"
 ijson = "^3.3.0"
+textual-dev = "^1.6.1"
+setuptools = "^75.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

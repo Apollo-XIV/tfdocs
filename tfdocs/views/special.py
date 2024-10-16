@@ -4,10 +4,13 @@
     history, and more.
 """
 
+import logging
+
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Static, TabbedContent, TabPane
 from textual.binding import Binding
+from textual import log
 
 
 class Special(Vertical):
@@ -15,7 +18,7 @@ class Special(Vertical):
         Special {
             height: 100%;
             background: $panel;
-            border: hkey $primary;
+            border: round $primary;
         }
 
         Special > Static {
@@ -29,16 +32,32 @@ class Special(Vertical):
             border: hkey $accent;
         }
     """
+    BINDINGS = [
+        ("1", "open_tab_index(1)"),
+        ("2", "open_tab_index(2)"),
+        ("3", "open_tab_index(3)"),
+        ("4", "open_tab_index(4)"),
+        ("5", "open_tab_index(5)"),
+    ]
+
+    def __init__(self, id="", classes=""):
+        self.tabs: list(tuple[str, callable]) = [
+            ("providers", lambda: Static("providers will go here")),
+            ("history", lambda: Static("history will go here")),
+            ("search", lambda: Static("search will go here")),
+            ("sync", lambda: Static("sync will go here")),
+            ("help", lambda: Static("help will go here")),
+        ]
+        super().__init__(id=id, classes=classes)
 
     def compose(self) -> ComposeResult:
         with TabbedContent():
-            with TabPane("\[1]providers", id="providers"):
-                yield Static("Test")
-            with TabPane("\[2]history", id="history"):
-                yield Static("Test")
-            with TabPane("\[3]search", id="search"):
-                yield Static("Test")
-            with TabPane("\[4]sync", id="sync"):
-                yield Static("Test")
-            with TabPane("\[5]help", id="help"):
-                yield Static("Test")
+            for i, tab in enumerate(self.tabs):
+                with TabPane(f"\[{i+1}]{tab[0]}", id=tab[0]):
+                    yield tab[1]()
+
+    def action_open_tab_index(self, i):
+        new_tab = self.tabs[i - 1][0]
+        log("Opening " + new_tab)
+        tabbed_content = self.query_one(TabbedContent)
+        tabbed_content.active = new_tab
