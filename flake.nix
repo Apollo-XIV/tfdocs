@@ -34,24 +34,24 @@
         };
 
         terraform = nixpkgs-terraform.packages.${system}."1.9.5";
-        python = pkgs.stdenv.mkDerivation rec {
-          pname = "python";
-          version = "3.12.6";
-          src = pkgs.fetchurl {
-            url = "https://www.python.org/downloads/release/python-3126/";
-            sha256 = "sha256-USh/R68v7jWvyXsZ0FJ0V0ppn+9LjNuvzdm943tfVxU=";
-          };
-          dontUnpack = true;
-          nativeBuildInputs = pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [
-            pkgs.autoPatchelfHook
-          ];
-          sourceRoot = ".";
-          installPhase = ''
-            runHook preInstall
-            install -m755 -D ${src} $out/bin/python
-            runHook postInstall
-          '';
-        };
+        # python = pkgs.stdenv.mkDerivation rec {
+        #   pname = "python";
+        #   version = "3.12.6";
+        #   src = pkgs.fetchurl {
+        #     url = "https://www.python.org/downloads/release/python-3126/";
+        #     sha256 = "sha256-USh/R68v7jWvyXsZ0FJ0V0ppn+9LjNuvzdm943tfVxU=";
+        #   };
+        #   dontUnpack = true;
+        #   nativeBuildInputs = pkgs.lib.optionals (!pkgs.stdenv.isDarwin) [
+        #     pkgs.autoPatchelfHook
+        #   ];
+        #   sourceRoot = ".";
+        #   installPhase = ''
+        #     runHook preInstall
+        #     install -m755 -D ${src} $out/bin/python
+        #     runHook postInstall
+        #   '';
+        # };
       in {
         packages.default = pkgs.poetry2nix.mkPoetryApplication {
           projectDir = ./.;
@@ -71,8 +71,7 @@
             husky
             nodejs_22
             terraform
-            python
-            python312Packages.setuptools
+            python311Full
           ];
         };
       }
