@@ -14,7 +14,6 @@ from textual.binding import Binding
 from textual.widgets.option_list import Option
 
 
-
 class Switcher(Vertical, can_focus=True):
     DEFAULT_CSS = """
         Switcher {

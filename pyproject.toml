@@ -8,7 +8,7 @@ packages = [{include = "tfdocs"}]
 
 [tool.poetry.scripts]
 tfdocs = "tfdocs:main"
-tfd-ui = "tfdocs.views.app:main"
+tfd-ui = "tfdocs.views.app:app"
 components = "tfdocs.views.component_viewer:app"
 watchlog = "tfdocs.logging.watch_logs:main"
 refmt = "tfdocs.utils:refmt"
