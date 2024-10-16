@@ -1,6 +1,7 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Footer
 
+from tfdocs.views.layout import PaneLayout
 
 class TFDocs(App):
     BINDINGS = [
@@ -8,6 +9,7 @@ class TFDocs(App):
     ]
 
     def compose(self) -> ComposeResult:
+        yield PaneLayout()
         yield Footer()
 
 

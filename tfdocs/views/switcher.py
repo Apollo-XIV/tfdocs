@@ -1,6 +1,7 @@
 from textual.app import ComposeResult
 from textual import log
 from textual.containers import Vertical
+from textual.reactive import reactive
 from textual.widgets import (
     Static,
     OptionList,
@@ -11,6 +12,7 @@ from textual.widgets import (
 )
 from textual.binding import Binding
 from textual.widgets.option_list import Option
+
 
 
 class Switcher(Vertical, can_focus=True):
@@ -49,7 +51,9 @@ class Switcher(Vertical, can_focus=True):
         ("d", "page_down"),
     ]
 
-    def __init__(self, id, classes):
+    provider: None = reactive(None)
+
+    def __init__(self, id: str = None, classes: str = ""):
         self.tabs = ["resources", "data", "functions"]
         super().__init__(id=id, classes=classes)
 
