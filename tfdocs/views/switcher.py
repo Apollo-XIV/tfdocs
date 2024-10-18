@@ -52,7 +52,7 @@ class Switcher(Vertical, can_focus=True):
 
     provider: None = reactive(None)
 
-    def __init__(self, id: str = None, classes: str = ""):
+    def __init__(self, id: str = "switcher", classes: str = ""):
         self.tabs = ["resources", "data", "functions"]
         super().__init__(id=id, classes=classes)
 

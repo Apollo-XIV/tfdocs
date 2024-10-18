@@ -25,7 +25,7 @@ class Viewer(MarkdownViewer):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    def __init__(self, id: str | None = None, classes: str = ""):
+    def __init__(self, id: str = "viewer", classes: str = ""):
         super().__init__(id=id, classes=classes, show_table_of_contents=False)
 
     async def on_mount(self):

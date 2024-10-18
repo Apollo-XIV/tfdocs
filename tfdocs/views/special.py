@@ -13,7 +13,7 @@ from textual.binding import Binding
 from textual import log
 
 
-class Special(Vertical):
+class Special(Vertical, can_focus=True):
     DEFAULT_CSS = """
         Special {
             height: 100%;
@@ -29,7 +29,7 @@ class Special(Vertical):
         }
 
         Special:focus {
-            border: hkey $accent;
+            border: round $accent;
         }
     """
     BINDINGS = [
@@ -40,7 +40,7 @@ class Special(Vertical):
         ("5", "open_tab_index(5)"),
     ]
 
-    def __init__(self, id="", classes=""):
+    def __init__(self, id="special", classes=""):
         self.tabs: list(tuple[str, callable]) = [
             ("providers", lambda: Static("providers will go here")),
             ("history", lambda: Static("history will go here")),
