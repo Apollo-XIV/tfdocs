@@ -53,7 +53,7 @@ class Special(Vertical, can_focus=True):
     def compose(self) -> ComposeResult:
         with TabbedContent():
             for i, tab in enumerate(self.tabs):
-                with TabPane(f"\[{i+1}]{tab[0]}", id=tab[0]):
+                with TabPane(f"[{i+1}]{tab[0]}", id=tab[0]):
                     yield tab[1]()
 
     def action_open_tab_index(self, i):
