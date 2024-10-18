@@ -18,7 +18,7 @@ from tfdocs.views.special import Special
 
 
 class PaneLayout(Static):
-    DEFAULT_CSS = '''
+    DEFAULT_CSS = """
         .pane {
             width: 1fr;
         }
@@ -38,7 +38,7 @@ class PaneLayout(Static):
         .thin-layout {
             display: none;
         }
-    '''
+    """
     BINDINGS = [
         Binding("tab", "cycle_focus_forward", priority=True),
         Binding("shift+tab", "cycle_focus_back", priority=True),
@@ -64,31 +64,33 @@ class PaneLayout(Static):
         self.cycle_focus(forward=False)
 
     def cycle_focus(self, forward=True):
-        '''
-            Cycles the focus of the application, or resets it onto the first pane
-        '''
+        """
+        Cycles the focus of the application, or resets it onto the first pane
+        """
         res = self.query(".pane")
         # get all panes in the layout
         try:
             focussed_index, child = next(
-                ((i, child ) for i, child in enumerate(res) if child.has_focus == True)
+                ((i, child) for i, child in enumerate(res) if child.has_focus == True)
             )
             child.remove_class("focussed")
             # move to next pane
             new_focussed_index = focussed_index + (1 if forward else -1)
             # loop round the panes
             new_focussed_index %= len(res)
-            if new_focussed_index not in [1,2]:
+            if new_focussed_index not in [1, 2]:
                 self.query_one(RightPanel).remove_class("focussed")
             else:
                 self.query_one(RightPanel).add_class("focussed")
 
-            log(f"""
+            log(
+                f"""
             prev focus:
              - type       = {child}
              - classes    = {child.classes if child != None else None}
              - visibility = {child.visible}
-            """)
+            """
+            )
         except StopIteration:
             # none of the panes are focussed, focus the first one
             new_focussed_index = 0
@@ -96,14 +98,15 @@ class PaneLayout(Static):
         new_focus_pane = res[new_focussed_index]
         new_focus_pane.focus()
         new_focus_pane.add_class("focussed")
-        log(f"""
+        log(
+            f"""
             new focus classes: 
              - type       = {new_focus_pane}
              - classes    = {new_focus_pane.classes}
              - visibility = {new_focus_pane.visible}
              - can_focus  = {new_focus_pane.can_focus}
-        """)
-
+        """
+        )
 
         log(f"focussed: {res[focussed_index]}")
 
@@ -115,6 +118,7 @@ class PaneLayout(Static):
         else:
             self.query_one(Viewer).remove_class("thin-layout")
             self.query_one(RightPanel).remove_class("thin-layout")
+
 
 class RightPanel(Static):
     DEFAULT_CSS = """
@@ -143,7 +147,7 @@ class RightPanel(Static):
         }
 
     """
-    
+
     def compose(self):
         with Vertical():
             yield Special(classes="pane")
@@ -168,11 +172,13 @@ class RightPanel(Static):
             # whenever the element loses focus, add display persistence for most
             # recently focussed pane
             try:
-                focussed_pane = next((child for child in self.query(".pane") if "focussed" in child.classes))
+                focussed_pane = next(
+                    (
+                        child
+                        for child in self.query(".pane")
+                        if "focussed" in child.classes
+                    )
+                )
                 focussed_pane.add_class("leave-visible")
             except StopIteration:
                 focussed_pane = self.query_one(Switcher).add_class("leave-visible")
-
-                
-
-            
