@@ -52,7 +52,7 @@ jobs:
   tf-plan:
     name: Terraform Plan
     needs:
-      - sync-environment
+      - code-ci
     permissions: write-all
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
