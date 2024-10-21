@@ -11,8 +11,11 @@ def main():
 
     if "func" in args:
         log.info(f"Running command {args['command']}")
-        args["func"]()
-
+        try:
+            args["func"]()
+        except Exception as e:
+            log.fatal(f"Caught an unhandled error, exiting...: {e}")
+            exit(1)
 
 if __name__ == "__main__":
     main()

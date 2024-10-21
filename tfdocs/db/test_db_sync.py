@@ -16,6 +16,7 @@ from tfdocs.db.sync import (
     db_insert_batch,
 )
 from tfdocs.models.test_block import MockBlock
+import logging
 
 
 async def fetch_test_schemas() -> asyncio.StreamReader:
@@ -109,54 +110,41 @@ def test_main():
 # Mock functions that will be used
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)
 @patch("tfdocs.db.sync.parse_schemas", autospec=True)
-@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
 async def test_load_local_schemas_success(
-    mock_connect, mock_parse_schemas, mock_fetch_schemas
+    mock_parse_schemas, mock_fetch_schemas
 ):
     # Mock database connection and cursor
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_connect.return_value.__enter__.return_value = mock_conn
-    mock_conn.cursor.return_value = mock_cursor
-
     # Mock fetch_schemas return value
     mock_stream = MagicMock()
     mock_fetch_schemas.return_value = mock_stream
 
     # Call the function
-    db_url = "test_db.sqlite"
-    await load_local_schemas(db_url)
+    await load_local_schemas(mock_cursor)
 
     # Assert the cursor and connection interactions
-    mock_connect.assert_called_once_with(db_url)
-    mock_conn.cursor.assert_called_once()
-    mock_parse_schemas.assert_called_once_with(mock_cursor, mock_stream)
-    mock_cursor.close.assert_called_once()
+    mock_parse_schemas.assert_called_once_with(mock_cursor, mock_stream, logging.getLogger("tfdocs.db.sync"))
 
 
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)
-@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
-async def test_load_local_schemas(mock_connect, mock_fetch_schemas):
+async def test_load_local_schemas(mock_fetch_schemas):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_connect.return_value.__enter__.return_value = mock_conn
     mock_conn.cursor.return_value = mock_cursor
 
     # Mock fetch_schemas to raise an OSError
     mock_fetch_schemas.side_effect = OSError("Network error")
 
     # Call the function and capture the output
-    db_url = "test_db.sqlite"
     with pytest.raises(SystemExit) as pytest_wrapped_e:
-        await load_local_schemas(db_url)
+        await load_local_schemas(mock_cursor)
 
     # Assert the OSError was caught and SystemExit was raised
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
-    mock_connect.assert_called_once_with(db_url)
-    mock_conn.cursor.assert_called_once()
     mock_cursor.close.assert_not_called()  # No closing cursor since OSError occurred
 
 

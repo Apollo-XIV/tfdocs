@@ -7,39 +7,37 @@ import logging
 from sqlite3 import Cursor
 from functools import reduce
 from typing import Iterator, Union, Any
-from tfdocs.db import DB_URL
+from tfdocs.db.handler import Db
 from tfdocs.models.block import Block
 from tfdocs.models.attribute import Attribute
 from tfdocs.models.types import from_some, DescType
 from tfdocs.utils import flatten_iters, chunk_iter
 
-log = logging.getLogger(__name__)
-
 
 def main():
-    asyncio.run(load_local_schemas(DB_URL))
+    asyncio.run(load_local_schemas())
 
+log = logging.getLogger()
 
-async def load_local_schemas(db_url: str):
+async def load_local_schemas(cursor):
     """
     This function loads the local terraform environment schema into the db
     provided.
     """
-    with sqlite3.connect(db_url) as cx:
-        cursor = cx.cursor()
-        try:
-            stream: asyncio.StreamReader = await fetch_schemas()
-        except OSError as e:
-            print(e)
-            exit(1)
+    try:
+        stream: asyncio.StreamReader = await fetch_schemas()
+        log.info("Fetched schema stream from terraform binary")
         await parse_schemas(cursor, stream)
-        cursor.close()
+    except Exception as e:
+        log.fatal(f"Couldn't sync database: {e}")
+        exit(1)
 
 
 async def parse_schemas(cursor: Cursor, stream: asyncio.StreamReader):
     try:
         async for name, provider in ijson.kvitems_async(stream, "provider_schemas"):
-            print("parsing", name)
+            # breakpoint()
+            log.info(f"parsing {name}")
             # create block obj for the provider
             p = [parse_block(name, provider["provider"]["block"], "Provider")]
 
