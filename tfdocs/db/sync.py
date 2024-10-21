@@ -17,7 +17,9 @@ from tfdocs.utils import flatten_iters, chunk_iter
 def main():
     asyncio.run(load_local_schemas())
 
+
 log = logging.getLogger()
+
 
 async def load_local_schemas(cursor) -> None:
     """

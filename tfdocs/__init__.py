@@ -17,5 +17,6 @@ def main():
             log.fatal(f"Caught an unhandled error, exiting...: {e}")
             exit(1)
 
+
 if __name__ == "__main__":
     main()

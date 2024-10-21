@@ -14,6 +14,7 @@ from .tables import create_block_table, create_attribute_table
 
 log = logging.getLogger()
 
+
 def main():
     with Db().cx as cx:
         cursor = cx.cursor()
@@ -26,6 +27,7 @@ def main():
         exec_time = end - start
         log.debug(f"Cache generated in {exec_time:.4f} seconds")
         print(f"[green]Cache Generation took {exec_time:.4f} seconds to execute.")
+
 
 def create_db(cursor: Cursor):
     # check if it already exists

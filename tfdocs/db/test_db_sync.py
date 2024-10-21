@@ -111,9 +111,7 @@ def test_main():
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)
 @patch("tfdocs.db.sync.parse_schemas", autospec=True)
 @pytest.mark.asyncio
-async def test_load_local_schemas_success(
-    mock_parse_schemas, mock_fetch_schemas
-):
+async def test_load_local_schemas_success(mock_parse_schemas, mock_fetch_schemas):
     # Mock database connection and cursor
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
