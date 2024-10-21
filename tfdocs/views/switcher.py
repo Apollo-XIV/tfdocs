@@ -50,7 +50,7 @@ class Switcher(Vertical, can_focus=True):
         ("d", "page_down"),
     ]
 
-    provider: None = reactive(None)
+    provider: reactive[None] = reactive(None)
 
     def __init__(self, id: str = "switcher", classes: str = ""):
         self.tabs = ["resources", "data", "functions"]

@@ -125,7 +125,7 @@ async def test_load_local_schemas_success(
     await load_local_schemas(mock_cursor)
 
     # Assert the cursor and connection interactions
-    mock_parse_schemas.assert_called_once_with(mock_cursor, mock_stream, logging.getLogger("tfdocs.db.sync"))
+    mock_parse_schemas.assert_called_once_with(mock_cursor, mock_stream)
 
 
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)

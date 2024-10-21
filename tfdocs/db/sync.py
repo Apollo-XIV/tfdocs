@@ -19,7 +19,7 @@ def main():
 
 log = logging.getLogger()
 
-async def load_local_schemas(cursor):
+async def load_local_schemas(cursor) -> None:
     """
     This function loads the local terraform environment schema into the db
     provided.
@@ -31,6 +31,7 @@ async def load_local_schemas(cursor):
     except Exception as e:
         log.fatal(f"Couldn't sync database: {e}")
         exit(1)
+    return None
 
 
 async def parse_schemas(cursor: Cursor, stream: asyncio.StreamReader):
