@@ -73,7 +73,7 @@ class Block(LazyObject):
             res = self._db.sql(
                 "SELECT block_id FROM block WHERE parent_id == ?",(self.hash,)
             ).fetchall()
-            blocks = [Block(block_id=b[0]) for b in res]
+            blocks = [Block(hash=b[0], type="misc") for b in res]
             return blocks
             
         return self._late_bind("_blocks", block_handler)
