@@ -78,9 +78,10 @@ def test_late_attributes():
     test_attributes = [a.name for a in test_r.attributes]
     assert exp_attributes == test_attributes
 
+
 @mock.patch("tfdocs.models.block.Block._db", new=MockDb())
 def test_late_blocks():
-    exp_blocks = ['source']
+    exp_blocks = ["source"]
     test_r = MockBlock(hash="743e19765c5244e08afe83dca406e244", type="DataSource")
     test_blocks = [b.name for b in test_r.blocks]
     assert exp_blocks == test_blocks
