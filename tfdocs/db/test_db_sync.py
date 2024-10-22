@@ -16,6 +16,7 @@ from tfdocs.db.sync import (
     db_insert_batch,
 )
 from tfdocs.models.test_block import MockBlock
+import logging
 
 
 async def fetch_test_schemas() -> asyncio.StreamReader:
@@ -51,11 +52,12 @@ async def test_fetch_test_schemas():
             await fetch_test_schemas()
 
 
+@patch("rich.status.Status")
 @pytest.mark.asyncio
-async def test_db_sync():
+async def test_db_sync(mock_status):
     with MockDb().cx as cx:
         cursor = cx.cursor()
-        await parse_schemas(cursor, await fetch_test_schemas())
+        await parse_schemas(cursor, await fetch_test_schemas(), mock_status)
 
         # Verify the block table exists
         cursor.execute(
@@ -107,63 +109,57 @@ def test_main():
 
 
 # Mock functions that will be used
+@patch("tfdocs.db.sync.Status")
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)
 @patch("tfdocs.db.sync.parse_schemas", autospec=True)
-@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
 async def test_load_local_schemas_success(
-    mock_connect, mock_parse_schemas, mock_fetch_schemas
+    mock_parse_schemas, mock_fetch_schemas, mock_status
 ):
     # Mock database connection and cursor
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_connect.return_value.__enter__.return_value = mock_conn
-    mock_conn.cursor.return_value = mock_cursor
-
     # Mock fetch_schemas return value
     mock_stream = MagicMock()
     mock_fetch_schemas.return_value = mock_stream
+    mock_status.return_value.__enter__.return_value = MagicMock()
 
     # Call the function
-    db_url = "test_db.sqlite"
-    await load_local_schemas(db_url)
+    await load_local_schemas(mock_cursor)
 
     # Assert the cursor and connection interactions
-    mock_connect.assert_called_once_with(db_url)
-    mock_conn.cursor.assert_called_once()
-    mock_parse_schemas.assert_called_once_with(mock_cursor, mock_stream)
-    mock_cursor.close.assert_called_once()
+    mock_parse_schemas.assert_called_once_with(
+        mock_cursor, mock_stream, mock_status.return_value.__enter__()
+    )
 
 
 @patch("tfdocs.db.sync.fetch_schemas", autospec=True)
-@patch("sqlite3.connect", autospec=True)
 @pytest.mark.asyncio
-async def test_load_local_schemas(mock_connect, mock_fetch_schemas):
+async def test_load_local_schemas(mock_fetch_schemas):
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
-    mock_connect.return_value.__enter__.return_value = mock_conn
     mock_conn.cursor.return_value = mock_cursor
 
     # Mock fetch_schemas to raise an OSError
     mock_fetch_schemas.side_effect = OSError("Network error")
 
     # Call the function and capture the output
-    db_url = "test_db.sqlite"
     with pytest.raises(SystemExit) as pytest_wrapped_e:
-        await load_local_schemas(db_url)
+        await load_local_schemas(mock_cursor)
 
     # Assert the OSError was caught and SystemExit was raised
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
-    mock_connect.assert_called_once_with(db_url)
-    mock_conn.cursor.assert_called_once()
     mock_cursor.close.assert_not_called()  # No closing cursor since OSError occurred
 
 
+@patch("rich.status.Status")
 @patch("tfdocs.db.sync.parse_block")
 @patch("tfdocs.db.sync.db_insert_batch")
 @pytest.mark.asyncio
-async def test_parse_schemas_success(mock_db_insert_batch, mock_parse_block):
+async def test_parse_schemas_success(
+    mock_db_insert_batch, mock_parse_block, mock_status
+):
     mock_cursor = MagicMock()
     mock_stream = MagicMock()
 
@@ -171,14 +167,15 @@ async def test_parse_schemas_success(mock_db_insert_batch, mock_parse_block):
         yield ("provider_name", {"provider": {"block": "block_data"}})
 
     with patch("ijson.kvitems_async", return_value=kvitems_gen()) as mock_kvitems_async:
-        await parse_schemas(mock_cursor, mock_stream)
+        await parse_schemas(mock_cursor, mock_stream, mock_status)
 
     # Assertions on mocks should verify correct behavior
     mock_kvitems_async.assert_called_once_with(mock_stream, "provider_schemas")
 
 
+@patch("rich.status.Status")
 @pytest.mark.asyncio
-async def test_parse_schemas_error():
+async def test_parse_schemas_error(mock_status):
 
     async def create_mock_streamreader(fake_data: bytes) -> asyncio.StreamReader:
         stream = asyncio.StreamReader()
@@ -193,7 +190,7 @@ async def test_parse_schemas_error():
     mock_stream = await create_mock_streamreader(b'{"incomplete_json":"cut-off content')
 
     with pytest.raises(SystemExit):
-        await parse_schemas(mock_cursor, mock_stream)
+        await parse_schemas(mock_cursor, mock_stream, mock_status)
 
 
 @pytest.mark.asyncio
@@ -276,12 +273,13 @@ def test_parse_attribute():
 #     return_value=([MockBlock(type="misc")],[]),
 #     autospec=True,
 # )
+@patch("rich.status.Status")
 @patch(
     "tfdocs.models.block.Block.flatten",
     return_value=([MockBlock(type="misc", name="test_block")], []),
     autospec=True,
 )
-def test_db_insert_batch_error(mock_flatten):
+def test_db_insert_batch_error(mock_flatten, mock_status):
     class TempDb(MockDb):
         _connection = None
         _db_url = tempfile.mktemp()
@@ -289,4 +287,4 @@ def test_db_insert_batch_error(mock_flatten):
     mock_block = MockBlock(type="misc")
     with TempDb().cx as cursor:
         with pytest.raises(SystemExit):
-            db_insert_batch([mock_block], cursor)
+            db_insert_batch([mock_block], cursor, mock_status)

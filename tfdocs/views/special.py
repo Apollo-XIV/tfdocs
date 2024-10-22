@@ -11,6 +11,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import Static, TabbedContent, TabPane
 from textual.binding import Binding
 from textual import log
+from typing import Callable
 
 
 class Special(Vertical, can_focus=True):
@@ -40,8 +41,8 @@ class Special(Vertical, can_focus=True):
         ("5", "open_tab_index(5)"),
     ]
 
-    def __init__(self, id="special", classes=""):
-        self.tabs: list(tuple[str, callable]) = [
+    def __init__(self, id="special", classes="") -> None:
+        self.tabs: list[tuple[str, Callable]] = [
             ("providers", lambda: Static("providers will go here")),
             ("history", lambda: Static("history will go here")),
             ("search", lambda: Static("search will go here")),
