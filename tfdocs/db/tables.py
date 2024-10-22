@@ -8,16 +8,9 @@ def create_block_table(cursor: Cursor):
             block_id TEXT PRIMARY KEY,
             block_type TEXT NOT NULL,
             block_name TEXT NOT NULL,
-            parent_path TEXT DEFAULT NULL,
-            FOREIGN KEY (parent_path) REFERENCES block(block_hash)            
+            parent_id TEXT DEFAULT NULL,
+            FOREIGN KEY (parent_id) REFERENCES block(block_id)            
         );
-    """
-    )
-    cursor.execute(
-        """
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_block_name_provider
-            ON block(block_name)
-            WHERE block_type IN ('Provider', 'Resource', 'DataSource');
     """
     )
 

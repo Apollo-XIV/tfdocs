@@ -98,7 +98,7 @@ def parse_block(name, block_data: dict, type="misc", parent=None) -> Block | Non
     if block_data is None:
         return None
 
-    parent_path = f"{parent}.{name}"
+    parent_path = f"{parent}.{type}.{name}"
     # print(parent_path)
     attrs = []
     blks = []
@@ -172,7 +172,7 @@ def db_insert_batch(chunk: list, cursor: Cursor, status: Status) -> int:
     try:
         # insert blocks into db
         cursor.executemany(
-            "INSERT OR REPLACE INTO block (block_name, block_id, block_type, parent_path) VALUES (?,?,?,?);",
+            "INSERT OR REPLACE INTO block (block_name, block_id, block_type, parent_id) VALUES (?,?,?,?);",
             blks,
         )
         # insert attributes into db

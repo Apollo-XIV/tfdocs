@@ -1,19 +1,13 @@
 terraform {
   required_providers {
-    # local = {
-    # source = "hashicorp/local"
-    # }
-    # time = {
-    # source = "hashicorp/time"
-    # }
-    aws = {
-      source = "hashicorp/aws"
+    null = {
+      source = "hashicorp/null"
     }
-    gcp = {
-      source = "hashicorp/google"
+    time = {
+      source = "hashicorp/time"
     }
-    azure = {
-      source = "hashicorp/azurerm"
+    archive = {
+      source = "hashicorp/archive"
     }
   }
 }
