@@ -7,6 +7,7 @@ import logging
 from sqlite3 import Cursor
 from functools import reduce
 from typing import Iterator, Union, Any
+from rich.status import Status
 from tfdocs.db.handler import Db
 from tfdocs.models.block import Block
 from tfdocs.models.attribute import Attribute
@@ -26,21 +27,25 @@ async def load_local_schemas(cursor) -> None:
     This function loads the local terraform environment schema into the db
     provided.
     """
-    try:
-        stream: asyncio.StreamReader = await fetch_schemas()
-        log.info("Fetched schema stream from terraform binary")
-        await parse_schemas(cursor, stream)
-    except Exception as e:
-        log.fatal(f"Couldn't sync database: {e}")
-        exit(1)
+    with Status(
+        "Fetching Provider Schemas from Terraform", spinner="bouncingBar"
+    ) as status:
+        try:
+            stream: asyncio.StreamReader = await fetch_schemas()
+            log.info("Fetched schema stream from terraform binary")
+            await parse_schemas(cursor, stream, status)
+        except Exception as e:
+            log.fatal(f"Couldn't sync database: {e}")
+            exit(1)
     return None
 
 
-async def parse_schemas(cursor: Cursor, stream: asyncio.StreamReader):
+async def parse_schemas(cursor: Cursor, stream: asyncio.StreamReader, status: Status):
     try:
         async for name, provider in ijson.kvitems_async(stream, "provider_schemas"):
             # breakpoint()
             log.info(f"parsing {name}")
+            status.update(status=f"[cyan]Processing '{name}'")
             # create block obj for the provider
             p = [parse_block(name, provider["provider"]["block"], "Provider")]
 
@@ -59,8 +64,12 @@ async def parse_schemas(cursor: Cursor, stream: asyncio.StreamReader):
             chunks = chunk_iter(queue, batch_size=500)
 
             # insert from generator into db in batches
+            total = 0
             for chunk in chunks:
-                db_insert_batch(chunk, cursor)
+                total += db_insert_batch(chunk, cursor, status)
+            status.console.print(
+                f"[bright_black]> Completed processing [medium_purple]'{name}'[/] ({total} records created)"
+            )
 
     except ijson.common.IncompleteJSONError as e:
         print(
@@ -151,12 +160,13 @@ def parse_attribute(name, attr_data: dict, parent_path=None) -> Attribute | None
 #     ------     ------     batch insertion code    ------     ------     ------
 
 
-def db_insert_batch(chunk: list, cursor: Cursor) -> None:
+def db_insert_batch(chunk: list, cursor: Cursor, status: Status) -> int:
     # takes recursive hierarchy and converts into a pair of lists of objects
     flat_chunks = [blk.flatten() for blk in chunk]
 
     blks = [blk.as_record() for chunk in flat_chunks for blk in chunk[0]]
     attrs = [attr.as_record() for chunk in flat_chunks for attr in chunk[1]]
+    total = len(blks) + len(attrs)
 
     # print(blks)
     try:
@@ -179,10 +189,12 @@ def db_insert_batch(chunk: list, cursor: Cursor) -> None:
             ) VALUES (?,?,?,?,?,?,?);""",
             attrs,
         )
-        log.debug(f"Inserted {len(blks) + len(attrs)} records into DB")
+        # status.console.print(f"[bright_black italic]> Inserted [medium_purple]{len(blks) + len(attrs)}[/] records")
+        log.debug(f"Inserted {total} records into DB")
+
     except Exception as e:
         log.critical(e)
         print("Encountered the following error:" + repr(e))
         exit(1)
 
-    return
+    return total

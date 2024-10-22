@@ -16,13 +16,17 @@ log = logging.getLogger()
 
 
 def main():
+    # open a connection to the DB
     with Db().cx as cx:
         cursor = cx.cursor()
+        # instantiate with correct tables
         create_db(cursor)
         start = time.time()
+        # run the cache generation functions
         asyncio.run(load_local_schemas(cursor))
         log.info("Finished building DB")
         cursor.close()
+        # calculate how long it took and tell the user
         end = time.time()
         exec_time = end - start
         log.debug(f"Cache generated in {exec_time:.4f} seconds")
@@ -41,7 +45,7 @@ def create_db(cursor: Cursor):
         if Confirm.ask(
             "The requested database already exists, would you like to delete and create a new one?"
         ):
-            print("[red]> Deleting...")
+            print("[red]Deleting...")
 
         else:
             log.fatal("Cannot procede with existing database")

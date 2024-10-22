@@ -9,11 +9,11 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
-    # gcp = {
-    # source = "hashicorp/google"
-    # }
-    # azure = {
-    # source = "hashicorp/azurerm"
-    # }
+    gcp = {
+      source = "hashicorp/google"
+    }
+    azure = {
+      source = "hashicorp/azurerm"
+    }
   }
 }

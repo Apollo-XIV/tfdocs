@@ -16,13 +16,15 @@ class WrappedDb(MockDb):
     _db_url = ".wrapped.db"
 
 
-def test_main():
-    with mock.patch("tfdocs.db.init.Db") as mock_db:
-        mock_db = WrappedDb()
-        with mock.patch("tfdocs.db.init.create_db") as mock_create_db:
-            main()
-            mock_create_db.assert_called_once()
-        mock_db.delete()
+@mock.patch("tfdocs.db.init.load_local_schemas")
+@mock.patch("tfdocs.db.init.Db")
+@mock.patch("tfdocs.db.init.create_db")
+def test_main(mock_create_db, mock_db, mock_load_schemas):
+    mock_db = WrappedDb()
+    main()
+    mock_create_db.assert_called_once()
+    mock_load_schemas.assert_called_once()
+    mock_db.delete()
 
 
 def test_db_creation():
