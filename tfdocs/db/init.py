@@ -19,7 +19,7 @@ def main():
     # try open a connection to the DB
 
     with Db().cx as cx:
-    # check if db already exists with tables. In the future this'll be a more complex locking mechanism
+        # check if db already exists with tables. In the future this'll be a more complex locking mechanism
         check_db(cx.cursor())
 
     # once the setup is clean, continue with instantiation
