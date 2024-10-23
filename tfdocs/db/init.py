@@ -17,7 +17,7 @@ log = logging.getLogger()
 
 def main():
     # try open a connection to the DB
-    
+
     # check if db already exists with tables
     check_db(Db().cx)
 
@@ -37,6 +37,7 @@ def main():
         log.debug(f"Cache generated in {exec_time:.4f} seconds")
         print(f"[green]Cache Generation took {exec_time:.4f} seconds to execute.")
 
+
 def check_db(cursor: sqlite3.Cursor):
     log.info("Checking for existing tables in Cache")
     res = cursor.execute(
@@ -52,7 +53,7 @@ def check_db(cursor: sqlite3.Cursor):
         ):
             print("[red]Deleting...")
             log.info("Deleting the existing database")
-            Db.delete()            
+            Db.delete()
             Db.reset_connection()
 
         else:
