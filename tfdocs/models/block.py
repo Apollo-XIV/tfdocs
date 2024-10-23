@@ -92,13 +92,7 @@ class Block(LazyObject):
                 if self._parent_path == None
                 else f"{self._parent_path}.{self.type}.{self.name}"
             )
-
-            def debug(x):
-                print(x)
-                return x
-
-            print(path)
-            return debug(hash_path(path))
+            return hash_path(path)
 
         return self._late_bind("_block_hash", hash_handler)
 

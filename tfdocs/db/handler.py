@@ -24,6 +24,10 @@ class Db:
             log.debug("reusing cx" + cls._db_url)
         return cls._connection
 
+    @classmethod
+    def reset_connection(cls) -> None:
+        cls._connection = None
+
     def sql(self, query: str, params: Tuple | None = None):
         log.debug(f"self._db_url is {self._db_url}")
         if params is None:
@@ -56,5 +60,6 @@ class Db:
         if os.path.exists(file_path):
             os.remove(file_path)
             log.info(f"{file_path} deleted successfully.")
+            # da
         else:
             log.info(f"DB '{file_path}' doesn't exist")
