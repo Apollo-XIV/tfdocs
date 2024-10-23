@@ -18,8 +18,9 @@ log = logging.getLogger()
 def main():
     # try open a connection to the DB
 
-    # check if db already exists with tables
-    check_db(Db().cx)
+    with Db().cx as cx:
+    # check if db already exists with tables. In the future this'll be a more complex locking mechanism
+        check_db(cx.cursor())
 
     # once the setup is clean, continue with instantiation
     with Db().cx as cx:
@@ -40,10 +41,17 @@ def main():
 
 def check_db(cursor: sqlite3.Cursor):
     log.info("Checking for existing tables in Cache")
-    res = cursor.execute(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('block', 'attribute');"
-    ).fetchone()
-    cursor.close()
+    res = None
+    try:
+        res = cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('block', 'attribute');"
+        ).fetchone()
+        cursor.close()
+    except Exception as e:
+        log.warning(f"Something went wrong while checking the databse: {e}")
+        if Confirm.ask("Would you like to delete this database and create a new one?"):
+            Db.delete()
+            Db.reset_connection()
 
     if res != None:
         log.warning("Existing Table Found")

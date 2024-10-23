@@ -4,7 +4,7 @@ import logging
 from tfdocs.db import DB_URL
 from typing import Tuple
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 class Db:
@@ -19,13 +19,14 @@ class Db:
     def get_connection(cls) -> sqlite3.Connection:
         if cls._connection is None:
             cls._connection = sqlite3.connect(cls._db_url)
-            log.debug("initialising new cx to " + cls._db_url)
+            log.debug("initialising new connection to " + cls._db_url)
         else:
-            log.debug("reusing cx" + cls._db_url)
+            log.debug("Reusing connection to " + cls._db_url)
         return cls._connection
 
     @classmethod
     def reset_connection(cls) -> None:
+        log.debug(f"Resetting DB connection to {cls._db_url}")
         cls._connection = None
 
     def sql(self, query: str, params: Tuple | None = None):

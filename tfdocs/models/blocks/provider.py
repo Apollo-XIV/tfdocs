@@ -2,6 +2,7 @@ from tfdocs.models.block import Block
 
 
 class Provider(Block):
+    
     @classmethod
     def from_name(cls, name: str) -> "Provider":
         """
@@ -15,5 +16,5 @@ class Provider(Block):
          """,
             (name,),
         ).fetchone()
-        new_obj = Provider(hash=res[0], name=res[1])
+        new_obj = Provider(type="Provider", hash=res[0], name=res[1])
         return new_obj

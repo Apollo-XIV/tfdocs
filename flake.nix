@@ -73,6 +73,7 @@
             terraform
             python311Full
           ];
+          AWS_PROFILE="personal-aws";
         };
       }
     );
