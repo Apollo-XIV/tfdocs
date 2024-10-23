@@ -76,14 +76,14 @@ def test_list_all(case, exp):
     }.items(),
 )
 def test_list_resources(case, exp):
-    # TODO: implement resource block
-    pass
+    subjects = MockProvider(type="Provider", hash=case).list_resources()
+    assert {s.id for s in subjects} == exp
 
 
 @pytest.mark.parametrize(
     "case, exp",
     {
-        "85c7eb5ef45cc843ad01660e75695dce": {},  # hashicorp/time's ID
+        "85c7eb5ef45cc843ad01660e75695dce": set(),  # hashicorp/time's ID
         "3c09cf2d1f63e6886c1ff5bd2a9fa49d": {  # hashicorp/archive's ID
             "743e19765c5244e08afe83dca406e244",  # archive_file DataSource
         },
@@ -93,5 +93,5 @@ def test_list_resources(case, exp):
     }.items(),
 )
 def test_list_data_sources(case, exp):
-    # TODO: implement data source block
-    pass
+    subjects = MockProvider(type="Provider", hash=case).list_datasources()
+    assert {s.id for s in subjects} == exp
