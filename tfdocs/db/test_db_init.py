@@ -19,9 +19,11 @@ class WrappedDb(MockDb):
 @mock.patch("tfdocs.db.init.load_local_schemas")
 @mock.patch("tfdocs.db.init.Db")
 @mock.patch("tfdocs.db.init.create_db")
-def test_main(mock_create_db, mock_db, mock_load_schemas):
+@mock.patch("tfdocs.db.init.check_db")
+def test_main(mock_check_db, mock_create_db, mock_db, mock_load_schemas):
     mock_db = WrappedDb()
     main()
+    mock_check_db.assert_called_once()
     mock_create_db.assert_called_once()
     mock_load_schemas.assert_called_once()
     mock_db.delete()

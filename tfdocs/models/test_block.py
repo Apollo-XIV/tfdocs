@@ -67,13 +67,21 @@ def test_block_flatten():
 
 def test_late_name():
     exp = "null_resource"
-    test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
+    test_r = MockBlock(hash="e832cce309a19eb2d126e41ac2f54997", type="Resource")
     assert exp == test_r.name
 
 
 @mock.patch("tfdocs.models.attribute.Attribute._db", new=MockDb())
 def test_late_attributes():
     exp_attributes = ["id", "triggers"]
-    test_r = MockBlock(hash="83043286b6fc716303ed1484f849579d", type="Resource")
+    test_r = MockBlock(hash="e832cce309a19eb2d126e41ac2f54997", type="Resource")
     test_attributes = [a.name for a in test_r.attributes]
     assert exp_attributes == test_attributes
+
+
+@mock.patch("tfdocs.models.block.Block._db", new=MockDb())
+def test_late_blocks():
+    exp_blocks = ["source"]
+    test_r = MockBlock(hash="743e19765c5244e08afe83dca406e244", type="DataSource")
+    test_blocks = [b.name for b in test_r.blocks]
+    assert exp_blocks == test_blocks

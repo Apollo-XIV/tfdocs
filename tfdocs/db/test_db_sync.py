@@ -78,7 +78,7 @@ async def test_db_sync(mock_status):
             "block_id",
             "block_type",
             "block_name",
-            "parent_path",
+            "parent_id",
         ]
         for col in expected_block_columns:
             assert col in block_columns, f"Column '{col}' is missing from block table"

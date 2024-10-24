@@ -56,7 +56,7 @@ def test_attribute_as_record():
 
 
 def test_late_properties():
-    attribute = MockAttribute(attribute_id="1")
+    attribute = MockAttribute(attribute_id="39")
     exp = MockAttribute(
         attribute_name="id",
         attribute_type=tf.String(),
@@ -64,7 +64,7 @@ def test_late_properties():
         description_type=tf.DescType.PLAIN,
         optional=False,
         computed=True,
-        block_id="83043286b6fc716303ed1484f849579d",
+        block_id="e832cce309a19eb2d126e41ac2f54997",
     )
     assert exp.name == attribute.name
     assert exp.type == attribute.type
@@ -79,7 +79,7 @@ def test_late_properties():
 
 def test_repr():
     attribute = MockAttribute(
-        attribute_id="1",
+        attribute_id="39",
         attribute_name="id",
         attribute_type=tf.String(),
         description="This is set to a random value at create time.",
@@ -89,5 +89,5 @@ def test_repr():
     )
     assert (
         repr(attribute)
-        == "[1/83-9d] id : string = 'This is set to a...' : plain (optional, computed)"
+        == "[39/e8-97] id : string = 'This is set to a...' : plain (optional, computed)"
     )

@@ -69,10 +69,15 @@ class Block(LazyObject):
         """
         Returns a list of all blocks that point to this block
         """
-        if self._blocks is None:
-            # pull from db
-            self._blocks = []
-        return self._blocks
+
+        def block_handler():
+            res = self._db.sql(
+                "SELECT block_id FROM block WHERE parent_id == ?", (self.hash,)
+            ).fetchall()
+            blocks = [Block(hash=b[0], type="misc") for b in res]
+            return blocks
+
+        return self._late_bind("_blocks", block_handler)
 
     # CALCULATED --------------------- *these are mostly used during sync*
     @property
@@ -85,7 +90,7 @@ class Block(LazyObject):
             path = (
                 self.name
                 if self._parent_path == None
-                else f"{self._parent_path}.{self.name}"
+                else f"{self._parent_path}.{self.type}.{self.name}"
             )
             return hash_path(path)
 
