@@ -13,6 +13,7 @@ from textual.binding import Binding
 from textual import log
 from typing import Callable
 
+from tfdocs.views.special_panes.provider import ProviderSelectPane
 
 class Special(Vertical, can_focus=True):
     DEFAULT_CSS = """
@@ -29,6 +30,11 @@ class Special(Vertical, can_focus=True):
             background: $boost;
         }
 
+		TabPane {
+		    margin: 0;
+		    padding: 0 0 !important;
+		}
+
         Special:focus {
             border: round $accent;
         }
@@ -43,7 +49,7 @@ class Special(Vertical, can_focus=True):
 
     def __init__(self, id="special", classes="") -> None:
         self.tabs: list[tuple[str, Callable]] = [
-            ("providers", lambda: Static("providers will go here")),
+            ("providers", lambda: ProviderSelectPane()),
             ("history", lambda: Static("history will go here")),
             ("search", lambda: Static("search will go here")),
             ("sync", lambda: Static("sync will go here")),

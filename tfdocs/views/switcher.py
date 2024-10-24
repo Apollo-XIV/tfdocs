@@ -13,6 +13,7 @@ from textual.widgets import (
 from textual.binding import Binding
 from textual.widgets.option_list import Option
 
+from tfdocs.views.list import List
 
 class Switcher(Vertical, can_focus=True):
     DEFAULT_CSS = """
@@ -26,12 +27,8 @@ class Switcher(Vertical, can_focus=True):
             border: round $accent;
         }
 
-		TabPane{
-		    padding: 0;    
-		    margin: 0;
-		}
-
 		TabPane {
+		    margin: 0;
 		    padding: 0 0 !important;
 		}
 
@@ -108,24 +105,3 @@ class Switcher(Vertical, can_focus=True):
     #   if event.worker.name == "load_resources" and event.worker.is_finished and event.state == WorkerState.SUCCESS:
     #       opts = [ResourceOpt(r_id, index=i) for i, r_id in enumerate(event.worker.result)]
     #       self.add_options(opts)
-
-
-class List(OptionList, can_focus=False):
-    DEFAULT_CSS = """
-        List {
-            background: transparent;
-            padding: 0;
-            margin: 0;
-            scrollbar-size: 1 1;
-        }
-
-		.option-list--option-highlighted {
-			background: $boost !important;
-		}
-    """
-
-    def __init__(self, resources, id=None):
-        if id != None:
-            super().__init__(*resources, id=id)
-        else:
-            super().__init__(*resources)
