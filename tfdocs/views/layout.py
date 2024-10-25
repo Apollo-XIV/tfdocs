@@ -12,6 +12,7 @@ from textual.reactive import reactive
 from textual.containers import Container, Horizontal, Vertical
 from textual.binding import Binding
 
+from tfdocs.utils import try_wrap
 from tfdocs.views.viewer import Viewer
 from tfdocs.views.switcher import Switcher
 from tfdocs.views.special import Special
@@ -71,7 +72,10 @@ class PaneLayout(Static):
         # get all panes in the layout
         try:
             focussed_index, child = next(
-                ((i, child) for i, child in enumerate(res) if child.has_focus == True)
+                (
+                    (i, child) for i, child in enumerate(res) 
+                    if child.has_focus or child.has_focus_within
+                )
             )
             child.remove_class("focussed")
             # move to next pane
@@ -108,7 +112,7 @@ class PaneLayout(Static):
         """
         )
 
-        log(f"focussed: {res[focussed_index]}")
+        log(f"focussed: {res[new_focussed_index]}")
 
     def on_resize(self):
         if self.size.width < 90:

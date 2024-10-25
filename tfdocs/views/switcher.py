@@ -14,6 +14,7 @@ from textual.binding import Binding
 from textual.widgets.option_list import Option
 
 from tfdocs.views.list import List
+from tfdocs.views.vertical import Vertical
 
 class Switcher(Vertical, can_focus=True):
     DEFAULT_CSS = """
@@ -23,7 +24,7 @@ class Switcher(Vertical, can_focus=True):
             width: 100%;
         }
 
-        Switcher:focus {
+        Switcher:focus-within {
             border: round $accent;
         }
 
@@ -39,12 +40,8 @@ class Switcher(Vertical, can_focus=True):
 		}
     """
     BINDINGS = [
-        ("j", "cursor_down"),
-        ("k", "cursor_up"),
         ("h", "cursor_left"),
         ("l", "cursor_right"),
-        ("u", "page_up"),
-        ("d", "page_down"),
     ]
 
     provider: reactive[None] = reactive(None)
@@ -65,43 +62,23 @@ class Switcher(Vertical, can_focus=True):
             with TabPane("functions", id="functions"):
                 yield List(test_functions, id="list")
 
-    def action_cursor_down(self):
-        active_pane = self.query_one(TabbedContent).active_pane
-        active_pane.get_child_by_id("list").action_cursor_down()
-
-    def action_cursor_up(self):
-        active_pane = self.query_one(TabbedContent).active_pane
-        active_pane.get_child_by_id("list").action_cursor_up()
-
     def action_cursor_left(self):
         tabbed_content = self.query_one(TabbedContent)
         n = self.tabs.index(tabbed_content.active)
         tabbed_content.active = self.tabs[n - 1 % tabbed_content.tab_count]
+        tabbed_content.active_pane.get_child_by_id("list").focus()
 
     def action_cursor_right(self):
         tabbed_content = self.query_one(TabbedContent)
         n = self.tabs.index(tabbed_content.active)
         tabbed_content.active = self.tabs[(n + 1) % tabbed_content.tab_count]
-
-        # log(self.query_one("#"+active).get_child_by_id(f"{active}-list").action_cursor_down())
-
-    # async def on_mount(self) -> None:
-    #     self.focus()
-    #     test_resources = [Option(f" test{i}", id=i) for i in range(15)]
-    #     self.add_options(test_resources)
-    # self.run_worker(load_resources(), exclusive=True)
-    # self.mount(Search())
+        tabbed_content.active_pane.get_child_by_id("list").focus()
 
     def scroll_to_option(self, name):
         opt = self.get_option(name)
         self.highlighted = opt.index
         self.scroll_to_highlight(top=True)
 
-    # '''
-    #     Handles the result of the load_resources function and adds them as options
-    # '''
-    # @on(Worker.StateChanged)
-    # async def handle_resources(self, event: Worker.StateChanged) -> None:
-    #   if event.worker.name == "load_resources" and event.worker.is_finished and event.state == WorkerState.SUCCESS:
-    #       opts = [ResourceOpt(r_id, index=i) for i, r_id in enumerate(event.worker.result)]
-    #       self.add_options(opts)
+    def on_focus(self):
+        active_pane = self.query_one(TabbedContent).active_pane
+        active_pane.get_child_by_id("list").focus()

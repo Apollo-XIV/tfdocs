@@ -7,13 +7,14 @@
 import logging
 
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal
 from textual.widgets import Static, TabbedContent, TabPane
 from textual.binding import Binding
 from textual import log
 from typing import Callable
 
 from tfdocs.views.special_panes.provider import ProviderSelectPane
+from tfdocs.views.vertical import Vertical
 
 class Special(Vertical, can_focus=True):
     DEFAULT_CSS = """
@@ -51,9 +52,9 @@ class Special(Vertical, can_focus=True):
         self.tabs: list[tuple[str, Callable]] = [
             ("providers", lambda: ProviderSelectPane()),
             ("history", lambda: Static("history will go here", id="special-pane")),
-            ("search", lambda: Static("search will go here")),
-            ("sync", lambda: Static("sync will go here")),
-            ("help", lambda: Static("help will go here")),
+            ("search", lambda: Static("search will go here", id="special-pane")),
+            ("sync", lambda: Static("sync will go here", id="special-pane")),
+            ("help", lambda: Static("help will go here", id="special-pane")),
         ]
         super().__init__(id=id, classes=classes)
 
@@ -78,3 +79,5 @@ class Special(Vertical, can_focus=True):
             to_focus.focus()
         else:
             self.focus()
+
+
