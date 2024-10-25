@@ -15,18 +15,6 @@ def app():
 
 class ComponentViewer(App):
     CSS_PATH = "styles/component_viewer.tcss"
-    # DEFAULT_CSS = """
-    #     Screen {
-    #         align: center middle;
-    #         /* padding: 1; */
-    #     }
-
-    #     #buttons {
-    #         height: 3;
-    #         width: auto;
-    #     }
-
-    # """
     BINDINGS = [
         ("q", "quit", "Quit"),
     ]

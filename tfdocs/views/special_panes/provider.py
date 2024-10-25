@@ -9,4 +9,4 @@ class ProviderSelectPane(List, can_focus=True):
     def __init__(self):
         providers = Provider.list_providers()
         provider_opts = [Option(p.name, id=p.id) for p in providers]
-        super().__init__(provider_opts, id="list")
+        super().__init__(provider_opts, id="special-pane")

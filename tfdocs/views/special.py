@@ -35,7 +35,7 @@ class Special(Vertical, can_focus=True):
 		    padding: 0 0 !important;
 		}
 
-        Special:focus {
+        Special:focus-within {
             border: round $accent;
         }
     """
@@ -50,7 +50,7 @@ class Special(Vertical, can_focus=True):
     def __init__(self, id="special", classes="") -> None:
         self.tabs: list[tuple[str, Callable]] = [
             ("providers", lambda: ProviderSelectPane()),
-            ("history", lambda: Static("history will go here")),
+            ("history", lambda: Static("history will go here", id="special-pane")),
             ("search", lambda: Static("search will go here")),
             ("sync", lambda: Static("sync will go here")),
             ("help", lambda: Static("help will go here")),
@@ -63,8 +63,18 @@ class Special(Vertical, can_focus=True):
                 with TabPane(f"[{i+1}]{tab[0]}", id=tab[0]):
                     yield tab[1]()
 
+    def on_focus(self):
+        active_pane = self.query_one(TabbedContent).active_pane
+        active_pane.get_child_by_id("special-pane").focus()
+        # log(f"I WAS FOCUSSED {to_focus}")
+
     def action_open_tab_index(self, i):
         new_tab = self.tabs[i - 1][0]
         log("Opening " + new_tab)
         tabbed_content = self.query_one(TabbedContent)
         tabbed_content.active = new_tab
+        to_focus = tabbed_content.active_pane.get_child_by_id("special-pane")
+        if to_focus.can_focus:
+            to_focus.focus()
+        else:
+            self.focus()
