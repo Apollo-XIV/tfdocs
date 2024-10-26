@@ -1,3 +1,4 @@
+import logging
 from textwrap import dedent
 from typing import Tuple
 from abc import abstractmethod
@@ -12,9 +13,18 @@ from tfdocs.models.lazy_entity import LazyObject
     set at initialisation OR pulled late from a local sqlite database.
 """
 
+log = logging.getLogger()
 
 class Block(LazyObject):
     _table_name = "block"
+
+    @classmethod
+    def from_id(cls, id: str) -> 'Block':
+        res = cls._db.sql("""
+            SELECT block_type, block_name FROM block
+            WHERE block_id == ?;
+        """, (id,)).fetchone()
+        return Block(type=res[0], hash=id, name=res[1])
 
     def __init__(
         self,
@@ -104,6 +114,16 @@ class Block(LazyObject):
         if self._parent_hash is None:
             self._parent_hash = hash_path(self._parent_path)
         return self._parent_hash
+
+    @property
+    def document(self) -> str:
+        attributes = "\n".join(["- " + a.document for a in self.attributes])
+        doc = dedent(f'''
+            # {self.name}
+            ## Attributes
+        ''') + attributes
+        log.info(doc)
+        return doc
 
     # ---------            STATIC METHODS             ----------
 

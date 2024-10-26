@@ -8,11 +8,13 @@ import logging
 
 from textual.app import ComposeResult
 from textual.containers import Horizontal
+from textual.reactive import reactive
 from textual.widgets import Static, TabbedContent, TabPane
 from textual.binding import Binding
 from textual import log
 from typing import Callable
 
+from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.special_panes.provider import ProviderSelectPane
 from tfdocs.views.vertical import Vertical
 
@@ -65,8 +67,11 @@ class Special(Vertical, can_focus=True):
                     yield tab[1]()
 
     def on_focus(self):
-        active_pane = self.query_one(TabbedContent).active_pane
-        active_pane.get_child_by_id("special-pane").focus()
+        try:
+            active_pane = self.query_one(TabbedContent).active_pane
+            active_pane.get_child_by_id("special-pane").focus()
+        except:
+            pass
         # log(f"I WAS FOCUSSED {to_focus}")
 
     def action_open_tab_index(self, i):

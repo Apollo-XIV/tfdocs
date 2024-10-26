@@ -4,15 +4,17 @@
     and the UX is pleasant.
 """
 
-from textual import log
+from textual import log, on
 from textual.screen import Screen
 from textual.app import ComposeResult
-from textual.widgets import Static
+from textual.widgets import Static, OptionList
 from textual.reactive import reactive
 from textual.containers import Container, Horizontal, Vertical
 from textual.binding import Binding
 
 from tfdocs.utils import try_wrap
+from tfdocs.models.block import Block
+from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.viewer import Viewer
 from tfdocs.views.switcher import Switcher
 from tfdocs.views.special import Special
@@ -45,13 +47,26 @@ class PaneLayout(Static):
         Binding("shift+tab", "cycle_focus_back", priority=True),
     ]
 
-    provider = reactive("test ", recompose=True)
+    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"))
+    block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
 
     def compose(self) -> ComposeResult:
         yield Static("TFDocs Layout Test")
         with Horizontal(id="app-grid"):
-            yield Viewer(classes="pane focussed")
-            yield RightPanel(classes="")
+            yield Viewer(classes="pane focussed").data_bind(PaneLayout.block)
+            yield RightPanel(classes="").data_bind(PaneLayout.provider)
+
+    @on(OptionList.OptionSelected)
+    def handle_select(self, message: OptionList.OptionSelected):
+        provider = Provider.from_name(message.option.prompt)
+        if provider is not None:
+            self.provider = provider
+            self.mutate_reactive(PaneLayout.provider)
+        else:
+            doc = Block.from_id(message.option.id)
+            self.block = doc
+            self.mutate_reactive(PaneLayout.block)
+        log(f"Mutating: {self.provider} {self.block}")
 
     def on_mount(self):
         viewer = self.query_one(Viewer)
@@ -151,11 +166,12 @@ class RightPanel(Static):
         }
 
     """
+    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"))
 
     def compose(self):
         with Vertical():
             yield Special(classes="pane")
-            yield Switcher(classes="pane")
+            yield Switcher(classes="pane").data_bind(RightPanel.provider)
 
     def on_resize(self):
         if self.size.height < 40:

@@ -3,7 +3,10 @@ from textual.app import ComposeResult
 from textual.containers import VerticalScroll
 from textual.widgets import Static, MarkdownViewer, Markdown
 from textual.binding import Binding
+from textual.reactive import reactive
 from textual.widget import Widget
+
+from tfdocs.models.block import Block
 
 
 class Viewer(Widget, can_focus=True, can_focus_children=True):
@@ -26,6 +29,8 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
+    block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True)
+
     @property
     def has_focus_within(self):
         """Are any descendants focused?"""
@@ -45,7 +50,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         super().__init__(id=id, classes=classes)
 
     def compose(self):
-        yield MarkdownViewer(markdown=dedent(LOREM_IPSUM), show_table_of_contents=False)
+        yield MarkdownViewer(markdown=self.block.document, show_table_of_contents=False)
 
     def on_focus(self):
         self.query_one(MarkdownViewer).focus()

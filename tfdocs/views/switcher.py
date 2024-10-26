@@ -13,6 +13,7 @@ from textual.widgets import (
 from textual.binding import Binding
 from textual.widgets.option_list import Option
 
+from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.list import List
 from tfdocs.views.vertical import Vertical
 
@@ -44,23 +45,23 @@ class Switcher(Vertical, can_focus=True):
         ("l", "cursor_right"),
     ]
 
-    provider: reactive[None] = reactive(None)
+    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"), recompose=True) 
 
     def __init__(self, id: str = "switcher", classes: str = ""):
         self.tabs = ["resources", "data", "functions"]
         super().__init__(id=id, classes=classes)
 
     def compose(self) -> ComposeResult:
-        test_resources = [Option(f"test-resource-{i}", id=str(i)) for i in range(15)]
-        test_functions = [Option(f"test-functions-{i}", id=str(i)) for i in range(45)]
-        test_data = [Option(f"test-data-{i}", id=str(i)) for i in range(90)]
+        resources = [Option(r.name, id=r.id) for r in self.provider.list_resources()]
+        functions = [Option(f"Function Documentation isn't available yet", id="not-implemented")]
+        datasources = [Option(r.name, id=r.id) for r in self.provider.list_datasources()]
         with TabbedContent():
             with TabPane("resources", id="resources"):
-                yield List(test_resources, id="list")
+                yield List(resources, id="list")
             with TabPane("data", id="data"):
-                yield List(test_data, id="list")
+                yield List(datasources, id="list")
             with TabPane("functions", id="functions"):
-                yield List(test_functions, id="list")
+                yield List(functions, id="list")
 
     def action_cursor_left(self):
         tabbed_content = self.query_one(TabbedContent)

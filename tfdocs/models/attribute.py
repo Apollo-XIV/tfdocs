@@ -96,6 +96,19 @@ class Attribute(LazyObject):
             ),
         )
 
+    @property
+    def document(self) -> str:
+        types = repr(self.type)
+        if self.optional:
+            types += ", optional"
+        if self.computed:
+            types += ", computed"
+        desc = ""
+        if self.description != None:
+            desc += f": {self.description}"
+        string = f"**{self.name}** (*{types}*){desc}"
+        return string
+
     # ---------          REFORMATTER METHODS          ----------
 
     def as_record(self) -> Tuple[str, str, str, object, int, int, str]:
