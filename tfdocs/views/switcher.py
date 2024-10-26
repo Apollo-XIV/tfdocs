@@ -17,6 +17,7 @@ from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.list import List
 from tfdocs.views.vertical import Vertical
 
+
 class Switcher(Vertical, can_focus=True):
     DEFAULT_CSS = """
         Switcher {
@@ -45,7 +46,9 @@ class Switcher(Vertical, can_focus=True):
         ("l", "cursor_right"),
     ]
 
-    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"), recompose=True) 
+    provider: reactive[Provider] = reactive(
+        Provider.from_name("registry.terraform.io/hashicorp/archive"), recompose=True
+    )
 
     def __init__(self, id: str = "switcher", classes: str = ""):
         self.tabs = ["resources", "data", "functions"]
@@ -53,8 +56,12 @@ class Switcher(Vertical, can_focus=True):
 
     def compose(self) -> ComposeResult:
         resources = [Option(r.name, id=r.id) for r in self.provider.list_resources()]
-        functions = [Option(f"Function Documentation isn't available yet", id="not-implemented")]
-        datasources = [Option(r.name, id=r.id) for r in self.provider.list_datasources()]
+        functions = [
+            Option(f"Function Documentation isn't available yet", id="not-implemented")
+        ]
+        datasources = [
+            Option(r.name, id=r.id) for r in self.provider.list_datasources()
+        ]
         with TabbedContent():
             with TabPane("resources", id="resources"):
                 yield List(resources, id="list")

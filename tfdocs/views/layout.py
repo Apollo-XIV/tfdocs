@@ -47,7 +47,9 @@ class PaneLayout(Static):
         Binding("shift+tab", "cycle_focus_back", priority=True),
     ]
 
-    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"))
+    provider: reactive[Provider] = reactive(
+        Provider.from_name("registry.terraform.io/hashicorp/archive")
+    )
     block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
 
     def compose(self) -> ComposeResult:
@@ -88,7 +90,8 @@ class PaneLayout(Static):
         try:
             focussed_index, child = next(
                 (
-                    (i, child) for i, child in enumerate(res) 
+                    (i, child)
+                    for i, child in enumerate(res)
                     if child.has_focus or child.has_focus_within
                 )
             )
@@ -166,7 +169,9 @@ class RightPanel(Static):
         }
 
     """
-    provider: reactive[Provider] = reactive(Provider.from_name("registry.terraform.io/hashicorp/archive"))
+    provider: reactive[Provider] = reactive(
+        Provider.from_name("registry.terraform.io/hashicorp/archive")
+    )
 
     def compose(self):
         with Vertical():

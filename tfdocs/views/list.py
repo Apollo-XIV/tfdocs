@@ -1,5 +1,6 @@
 from textual.widgets import OptionList
 
+
 class List(OptionList, can_focus=True):
     DEFAULT_CSS = """
         List {

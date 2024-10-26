@@ -18,6 +18,7 @@ from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.special_panes.provider import ProviderSelectPane
 from tfdocs.views.vertical import Vertical
 
+
 class Special(Vertical, can_focus=True):
     DEFAULT_CSS = """
         Special {
@@ -84,5 +85,3 @@ class Special(Vertical, can_focus=True):
             to_focus.focus()
         else:
             self.focus()
-
-

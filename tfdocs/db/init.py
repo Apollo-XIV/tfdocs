@@ -76,5 +76,6 @@ def create_db(cursor: sqlite3.Cursor):
     add_meta_provider(cursor)
     print(f"[green]Created new local cache")
 
+
 def add_meta_provider(cursor: sqlite3.Cursor):
     pass

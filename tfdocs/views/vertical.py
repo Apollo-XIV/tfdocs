@@ -1,5 +1,6 @@
 from textual.containers import Vertical as TextualVertical
 
+
 class Vertical(TextualVertical):
     @property
     def has_focus_within(self):

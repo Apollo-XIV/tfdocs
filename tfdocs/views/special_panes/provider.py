@@ -5,6 +5,7 @@ from textual.widgets.option_list import Option
 from tfdocs.views.list import List
 from tfdocs.models.blocks.provider import Provider
 
+
 class ProviderSelectPane(List, can_focus=True):
     def __init__(self):
         providers = Provider.list_providers()

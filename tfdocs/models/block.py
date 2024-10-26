@@ -15,15 +15,19 @@ from tfdocs.models.lazy_entity import LazyObject
 
 log = logging.getLogger()
 
+
 class Block(LazyObject):
     _table_name = "block"
 
     @classmethod
-    def from_id(cls, id: str) -> 'Block':
-        res = cls._db.sql("""
+    def from_id(cls, id: str) -> "Block":
+        res = cls._db.sql(
+            """
             SELECT block_type, block_name FROM block
             WHERE block_id == ?;
-        """, (id,)).fetchone()
+        """,
+            (id,),
+        ).fetchone()
         return Block(type=res[0], hash=id, name=res[1])
 
     def __init__(
@@ -118,10 +122,15 @@ class Block(LazyObject):
     @property
     def document(self) -> str:
         attributes = "\n".join(["- " + a.document for a in self.attributes])
-        doc = dedent(f'''
+        doc = (
+            dedent(
+                f"""
             # {self.name}
             ## Attributes
-        ''') + attributes
+        """
+            )
+            + attributes
+        )
         log.info(doc)
         return doc
 

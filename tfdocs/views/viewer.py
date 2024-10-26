@@ -29,7 +29,9 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True)
+    block: reactive[Block] = reactive(
+        Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True
+    )
 
     @property
     def has_focus_within(self):
@@ -45,7 +47,6 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
             node = node._parent
         return False
 
-
     def __init__(self, id: str = "viewer", classes: str = ""):
         super().__init__(id=id, classes=classes)
 
@@ -60,6 +61,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
 
     def action_scroll_down(self):
         self.query_one(MarkdownViewer).action_scroll_down()
+
     # async def on_mount(self):
     #     await self.update(dedent(LOREM_IPSUM))
 
