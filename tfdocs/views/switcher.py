@@ -56,24 +56,14 @@ class Switcher(Vertical, can_focus=True):
         self.tabs = ["resources", "data", "functions"]
         super().__init__(id=id, classes=classes)
 
-    def on_mount(self):
-        pass
-        # self.run_worker(self.load_resources(self.provider), thread=True)
-        # self.run_worker(self.load_datasources(self.provider), thread=True)
-
     def watch_provider(self, old, new):
         self.load_resources(new)
-        # self.run_worker(self.load_datasources(new), thread=True)
+        self.load_datasources(new)
 
     def compose(self) -> ComposeResult:
-        # dispatch worker to load different values
-        # resources = [Option(r[1], id=r[0]) for r in self.provider.list_resources()]
         functions = [
             Option(f"Function Documentation isn't available yet", id="not-implemented")
         ]
-        # datasources = [
-        #     Option(d[1], id=d[0]) for d in self.provider.list_datasources()
-        # ]
         with TabbedContent():
             with TabPane("resources", id="resources"):
                 yield List([], id="resource-list")
@@ -103,25 +93,15 @@ class Switcher(Vertical, can_focus=True):
         active_pane = self.query_one(TabbedContent).active_pane
         active_pane.query_children(".list")[0].focus()
 
-    @work(exclusive=True, thread=True)
+    @work(thread=True)
     async def load_resources(self, provider: Provider):
-        # clear current resources
-        # rlist = self.query_one("#resource-list", expect_type=List)
-        # self.call_from_thread(rlist.clear_options)
-        # load new resources
         resources = [Option(r[1], id=r[0]) for r in self.provider.list_resources()]
-        log(f"got the following resources from db: {resources}")
-        # add in bulk
         self.post_message(self.LoadedEntities("Resource", resources))
-        # App.call_from_thread(rlist.add_options, resources)
 
+    @work(thread=True)
     async def load_datasources(self, provider: Provider):
-        dlist = self.query_one("#datasource-list", expect_type=List)
-        self.call_from_thread(dlist.clear_options)
-        # load new datasources
-        datasources = [Option(r[1], id=r[0]) for r in self.provider.list_datasources()]
-        # add in bulk
-        # App.call_from_thread(dlist.add_options, datasources)
+        datasources = [Option(d[1], id=d[0]) for d in self.provider.list_datasources()]
+        self.post_message(self.LoadedEntities("DataSource", datasources))
 
     def on_switcher_loaded_entities(self, msg):
         olist = None
@@ -129,11 +109,12 @@ class Switcher(Vertical, can_focus=True):
         log(f"Loaded Option Type: {block_type}")
         if block_type == "Resource":
             olist = self.query_one("#resource-list", expect_type=List)
+            olist.clear_options()
         elif block_type == "DataSource":
             olist = self.query_one("#datasource-list", expect_type=List)
+            olist.clear_options()
         else:
             raise ValueError("Tried to load an unexpected type of option")
-        olist.clear_options()
         olist.add_options(msg.blocks)
         log("I RAN")
 
