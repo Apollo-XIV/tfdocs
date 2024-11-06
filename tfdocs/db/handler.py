@@ -9,6 +9,7 @@ log = logging.getLogger()
 
 lock = threading.Lock()
 
+
 class Db:
     _connection: sqlite3.Connection | None = None
     _db_url: str = DB_URL
