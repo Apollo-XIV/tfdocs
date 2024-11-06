@@ -29,7 +29,8 @@ class List(OptionList, can_focus=True):
     ]
 
     def __init__(self, resources, id=None):
+        classes = "list"
         if id != None:
-            super().__init__(*resources, id=id)
+            super().__init__(*resources, id=id, classes=classes)
         else:
-            super().__init__(*resources)
+            super().__init__(*resources, classes=classes)

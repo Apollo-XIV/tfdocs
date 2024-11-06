@@ -77,7 +77,7 @@ def test_list_all(case, exp):
 )
 def test_list_resources(case, exp):
     subjects = MockProvider(type="Provider", hash=case).list_resources()
-    assert {s.id for s in subjects} == exp
+    assert {s[0] for s in subjects} == exp
 
 
 @pytest.mark.parametrize(
@@ -94,4 +94,4 @@ def test_list_resources(case, exp):
 )
 def test_list_data_sources(case, exp):
     subjects = MockProvider(type="Provider", hash=case).list_datasources()
-    assert {s.id for s in subjects} == exp
+    assert {s[0] for s in subjects} == exp

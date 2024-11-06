@@ -1,11 +1,13 @@
 import os
 import sqlite3
 import logging
+import threading
 from tfdocs.db import DB_URL
 from typing import Tuple
 
 log = logging.getLogger()
 
+lock = threading.Lock()
 
 class Db:
     _connection: sqlite3.Connection | None = None
@@ -13,12 +15,11 @@ class Db:
 
     def __init__(self):
         self.cx = self.get_connection()
-        self.cursor = self.cx.cursor()
 
     @classmethod
     def get_connection(cls) -> sqlite3.Connection:
         if cls._connection is None:
-            cls._connection = sqlite3.connect(cls._db_url)
+            cls._connection = sqlite3.connect(cls._db_url, check_same_thread=False)
             log.debug("initialising new connection to " + cls._db_url)
         else:
             log.debug("Reusing connection to " + cls._db_url)
@@ -31,15 +32,23 @@ class Db:
 
     def sql(self, query: str, params: Tuple | None = None):
         log.debug(f"self._db_url is {self._db_url}")
-        if params is None:
-            log.debug(f"executing query: {query}\nwith_params: {query}")
-            return self.cursor.execute(query)
-        log.debug(f"executing query {query}")
-        return self.cursor.execute(query, params)
+        cursor = self.cx.cursor()
+        try:
+            lock.acquire(True)
+            if params is None:
+                log.debug(f"executing query: {query}\nwith_params: {query}")
+                res = cursor.execute(query)
+            else:
+                log.debug(f"executing query {query}")
+                res = cursor.execute(query, params)
+        finally:
+            lock.release()
+        return res
 
     def clear(self) -> "Db":
         cursor = self.cursor
         try:
+            lock.acquire(True)
             cursor.executescript(
                 """
                 PRAGMA foreign_keys = OFF;
@@ -53,6 +62,8 @@ class Db:
             log.debug(f"Emptied the database {self._db_url}")
         except Exception as e:
             log.error(f"Encountered an issue while clearing the table")
+        finally:
+            lock.release()
         return self
 
     @classmethod

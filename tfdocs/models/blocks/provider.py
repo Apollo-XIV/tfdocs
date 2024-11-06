@@ -79,7 +79,8 @@ class Provider(Block):
             (self.id,),
         ).fetchall()
 
-        return [Resource(type="Resource", hash=r[0], name=r[1]) for r in res]
+        return [(r[0], r[1]) for r in res]
+        # return [Resource(type="Resource", hash=r[0], name=r[1]) for r in res]
 
     def list_datasources(self):
         """
@@ -94,4 +95,4 @@ class Provider(Block):
             (self.id,),
         ).fetchall()
 
-        return [DataSource(type="DataSource", hash=d[0], name=d[1]) for d in res]
+        return [(d[0], d[1]) for d in res]
