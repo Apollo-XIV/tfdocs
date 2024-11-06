@@ -9,7 +9,6 @@ log = logging.getLogger()
 
 lock = threading.Lock()
 
-
 class Db:
     _connection: sqlite3.Connection | None = None
     _db_url: str = DB_URL
@@ -47,7 +46,7 @@ class Db:
         return res
 
     def clear(self) -> "Db":
-        cursor = self.cursor
+        cursor = self.cx.cursor()
         try:
             lock.acquire(True)
             cursor.executescript(

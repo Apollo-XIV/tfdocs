@@ -45,7 +45,7 @@ async def test_clear_database():
         _db_url = ".clear.db"
 
     mock_db = ClearDb()
-    cursor = mock_db.cursor
+    cursor = mock_db.cx.cursor()
 
     create_db(cursor)
     cursor.execute(

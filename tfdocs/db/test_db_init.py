@@ -31,9 +31,10 @@ def test_main(mock_check_db, mock_create_db, mock_db, mock_load_schemas):
 
 def test_db_creation():
     test_db = MockDb()
-    create_db(test_db.cursor)
-    res = test_db.cursor.execute(
+    cursor = test_db.cx.cursor()
+    create_db(cursor)
+    res = cursor.execute(
         "SELECT * FROM sqlite_master WHERE type='table' AND name IN ('block', 'attribute');"
     ).fetchall()
-    test_db.cursor.close()
+    cursor.close()
     assert len(res) == 2
