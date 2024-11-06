@@ -19,6 +19,7 @@ from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.list import List
 from tfdocs.views.vertical import Vertical
 
+
 class Switcher(Vertical, can_focus=True):
     DEFAULT_CSS = """
         Switcher {
@@ -63,7 +64,6 @@ class Switcher(Vertical, can_focus=True):
     def watch_provider(self, old, new):
         self.load_resources(new)
         # self.run_worker(self.load_datasources(new), thread=True)
-
 
     def compose(self) -> ComposeResult:
         # dispatch worker to load different values

@@ -86,7 +86,8 @@ class Block(LazyObject):
 
         def block_handler():
             res = self._db.sql(
-                "SELECT block_id FROM block WHERE parent_id == ? AND block_type == 'misc'", (self.hash,)
+                "SELECT block_id FROM block WHERE parent_id == ? AND block_type == 'misc'",
+                (self.hash,),
             ).fetchall()
             blocks = [Block(hash=b[0], type="misc") for b in res]
             return blocks
