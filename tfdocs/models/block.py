@@ -125,14 +125,18 @@ class Block(LazyObject):
         attributes = "\n".join(["- " + a.document for a in self.attributes])
         blocks = "\n".join([b.document for b in self.blocks])
         doc = (
-            dedent(f"""
+            dedent(
+                f"""
                 # {self.name}
                 ## Attributes
-            """)
+            """
+            )
             + attributes
-            + dedent(f"""
+            + dedent(
+                f"""
                  ## Nested Blocks
-            """)
+            """
+            )
             + blocks
         )
         log.info(doc)
