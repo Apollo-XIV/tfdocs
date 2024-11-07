@@ -53,7 +53,6 @@ class PaneLayout(Static):
     block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
 
     def compose(self) -> ComposeResult:
-        yield Static("TFDocs Layout Test")
         with Horizontal(id="app-grid"):
             yield Viewer(classes="pane focussed").data_bind(PaneLayout.block)
             yield RightPanel(classes="").data_bind(PaneLayout.provider)
@@ -64,10 +63,9 @@ class PaneLayout(Static):
         if provider is not None:
             self.provider = provider
             self.mutate_reactive(PaneLayout.provider)
-        else:
-            doc = Block.from_id(message.option.id)
-            self.block = doc
-            self.mutate_reactive(PaneLayout.block)
+        doc = Block.from_id(message.option.id)
+        self.block = doc
+        self.mutate_reactive(PaneLayout.block)
         log(f"Mutating: {self.provider} {self.block}")
 
     def on_mount(self):
