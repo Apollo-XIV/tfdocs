@@ -50,7 +50,7 @@ class PaneLayout(Static):
     provider: reactive[Provider | None] = reactive(
         Provider.from_name("registry.terraform.io/hashicorp/archive")
     )
-    block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
+    block: reactive[Block | None] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="app-grid"):
