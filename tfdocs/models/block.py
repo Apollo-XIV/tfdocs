@@ -1,6 +1,6 @@
 import logging
 from textwrap import dedent
-from typing import Tuple
+from typing import Tuple, Union
 from abc import abstractmethod
 
 # ----
@@ -20,15 +20,18 @@ class Block(LazyObject):
     _table_name = "block"
 
     @classmethod
-    def from_id(cls, id: str) -> "Block":
-        res = cls._db.sql(
-            """
-            SELECT block_type, block_name FROM block
-            WHERE block_id == ?;
-        """,
-            (id,),
-        ).fetchone()
-        return Block(type=res[0], hash=id, name=res[1])
+    def from_id(cls, id: str) -> Union["Block",None]:
+        try:
+            res = cls._db.sql(
+                """
+                SELECT block_type, block_name FROM block
+                WHERE block_id == ?;
+            """,
+                (id,),
+            ).fetchone()
+            return Block(type=res[0], hash=id, name=res[1])
+        except:
+            return None
 
     def __init__(
         self,

@@ -29,7 +29,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    block: reactive[Block] = reactive(
+    block: reactive[Block | None] = reactive(
         Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True
     )
 
