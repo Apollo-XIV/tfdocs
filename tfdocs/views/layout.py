@@ -47,7 +47,7 @@ class PaneLayout(Static):
         Binding("shift+tab", "cycle_focus_back", priority=True),
     ]
 
-    provider: reactive[Provider] = reactive(
+    provider: reactive[Provider | None] = reactive(
         Provider.from_name("registry.terraform.io/hashicorp/archive")
     )
     block: reactive[Block] = reactive(Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"))
@@ -59,11 +59,11 @@ class PaneLayout(Static):
 
     @on(OptionList.OptionSelected)
     def handle_select(self, message: OptionList.OptionSelected):
-        provider = Provider.from_name(message.option.prompt)
+        provider = Provider.from_name(str(message.option.prompt))
         if provider is not None:
             self.provider = provider
             self.mutate_reactive(PaneLayout.provider)
-        doc = Block.from_id(message.option.id)
+        doc = Block.from_id(str(message.option.id))
         self.block = doc
         self.mutate_reactive(PaneLayout.block)
         log(f"Mutating: {self.provider} {self.block}")
@@ -167,7 +167,7 @@ class RightPanel(Static):
         }
 
     """
-    provider: reactive[Provider] = reactive(
+    provider: reactive[Provider | None] = reactive(
         Provider.from_name("registry.terraform.io/hashicorp/archive")
     )
 

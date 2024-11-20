@@ -48,7 +48,7 @@ class Switcher(Vertical, can_focus=True):
         ("l", "cursor_right"),
     ]
 
-    provider: reactive[Provider] = reactive(
+    provider: reactive[Provider | None] = reactive(
         Provider.from_name("registry.terraform.io/hashicorp/archive")
     )
 
@@ -94,14 +94,16 @@ class Switcher(Vertical, can_focus=True):
         active_pane.query_children(".list")[0].focus()
 
     @work(thread=True)
-    async def load_resources(self, provider: Provider):
-        resources = [Option(r[1], id=r[0]) for r in self.provider.list_resources()]
-        self.post_message(self.LoadedEntities("Resource", resources))
+    async def load_resources(self, provider: Provider | None):
+        if provider is not None:
+            resources = [Option(r[1], id=r[0]) for r in provider.list_resources()]
+            self.post_message(self.LoadedEntities("Resource", resources))
 
     @work(thread=True)
-    async def load_datasources(self, provider: Provider):
-        datasources = [Option(d[1], id=d[0]) for d in self.provider.list_datasources()]
-        self.post_message(self.LoadedEntities("DataSource", datasources))
+    async def load_datasources(self, provider: Provider | None):
+        if provider is not None:
+            datasources = [Option(d[1], id=d[0]) for d in provider.list_datasources()]
+            self.post_message(self.LoadedEntities("DataSource", datasources))
 
     def on_switcher_loaded_entities(self, msg):
         olist = None
