@@ -20,7 +20,7 @@ class Block(LazyObject):
     _table_name = "block"
 
     @classmethod
-    def from_id(cls, id: str) -> Union["Block",None]:
+    def from_id(cls, id: str) -> Union["Block", None]:
         try:
             res = cls._db.sql(
                 """
