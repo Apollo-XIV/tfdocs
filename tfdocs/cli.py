@@ -1,10 +1,7 @@
 import argparse
 import tfdocs.logging.watch_logs as watch_logs
 import tfdocs.db.args as init
-
-
-def default_hello():
-    print("Default Command")
+from tfdocs.views.app import app
 
 
 def parse_args():
@@ -13,7 +10,7 @@ def parse_args():
     )
 
     # default command
-    parser.set_defaults(func=default_hello)
+    parser.set_defaults(func=app)
 
     # subcommands
     subparsers = parser.add_subparsers(title="subcommands", dest="command")

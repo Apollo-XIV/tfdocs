@@ -73,4 +73,9 @@ def create_db(cursor: sqlite3.Cursor):
     log.info("Creating tables in new DB")
     create_block_table(cursor)
     create_attribute_table(cursor)
+    add_meta_provider(cursor)
     print(f"[green]Created new local cache")
+
+
+def add_meta_provider(cursor: sqlite3.Cursor):
+    pass
