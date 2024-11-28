@@ -59,6 +59,8 @@
             nodejs_22
             terraform
             python311Full
+            # Command Scripts Alias
+            (import ./cmds.nix {inherit pkgs;})
           ];
           AWS_PROFILE="personal-aws";
         };
