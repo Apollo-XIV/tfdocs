@@ -1,7 +1,7 @@
 import pytest
 import argparse
 from unittest import mock
-from tfdocs.cli import parse_args, default_hello
+from tfdocs.cli import parse_args
 from tfdocs.logging.watch_logs import main as watch_logs
 
 # Mock the watch_logs module, which should define the parse_args function.
@@ -12,15 +12,6 @@ from tfdocs.logging.watch_logs import main as watch_logs
 def mock_watch_logs():
     with mock.patch("tfdocs.logging.watch_logs.parse_args") as mock_parser:
         yield mock_parser
-
-
-def test_default_command(mock_watch_logs):
-    """Test that the default command runs when no subcommand is provided."""
-    with mock.patch("sys.argv", ["program_name"]):
-        with mock.patch("builtins.print") as mock_print:
-            parser, args = parse_args()
-            args["func"]()  # Call the default function (default_hello)
-            mock_print.assert_called_once_with("Default Command")
 
 
 def test_watch_logs_subcommand():

@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 from tfdocs.models.block import Block
 from tfdocs.models.blocks.resource import Resource
 from tfdocs.models.blocks.datasource import DataSource
@@ -23,20 +24,23 @@ class Provider(Block):
         return [Provider(type="Provider", hash=p[0], name=p[1]) for p in res]
 
     @classmethod
-    def from_name(cls, name: str) -> "Provider":
+    def from_name(cls, name: str) -> Union["Provider", None]:
         """
         Returns the named provider as an object
         """
-        res = cls._db.sql(
-            """
-            SELECT block_id, block_name FROM block 
-            WHERE block_type == 'Provider' 
-            AND block_name == ?;                    
-        """,
-            (name,),
-        ).fetchone()
-        new_obj = Provider(type="Provider", hash=res[0], name=res[1])
-        return new_obj
+        try:
+            res = cls._db.sql(
+                """
+                SELECT block_id, block_name FROM block 
+                WHERE block_type == 'Provider' 
+                AND block_name == ?;                    
+            """,
+                (name,),
+            ).fetchone()
+            new_obj = Provider(type="Provider", hash=res[0], name=res[1])
+            return new_obj
+        except:
+            return None
 
     def list_all(self):
         """
@@ -75,7 +79,8 @@ class Provider(Block):
             (self.id,),
         ).fetchall()
 
-        return [Resource(type="Resource", hash=r[0], name=r[1]) for r in res]
+        return [(r[0], r[1]) for r in res]
+        # return [Resource(type="Resource", hash=r[0], name=r[1]) for r in res]
 
     def list_datasources(self):
         """
@@ -90,4 +95,4 @@ class Provider(Block):
             (self.id,),
         ).fetchall()
 
-        return [DataSource(type="DataSource", hash=d[0], name=d[1]) for d in res]
+        return [(d[0], d[1]) for d in res]

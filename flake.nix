@@ -51,6 +51,7 @@
             just
             poetry
             zsh
+            sqlite
             tflint
             mypy
             direnv

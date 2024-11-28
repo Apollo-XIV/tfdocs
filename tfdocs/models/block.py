@@ -1,5 +1,6 @@
+import logging
 from textwrap import dedent
-from typing import Tuple
+from typing import Tuple, Union
 from abc import abstractmethod
 
 # ----
@@ -12,9 +13,25 @@ from tfdocs.models.lazy_entity import LazyObject
     set at initialisation OR pulled late from a local sqlite database.
 """
 
+log = logging.getLogger()
+
 
 class Block(LazyObject):
     _table_name = "block"
+
+    @classmethod
+    def from_id(cls, id: str) -> Union["Block", None]:
+        try:
+            res = cls._db.sql(
+                """
+                SELECT block_type, block_name FROM block
+                WHERE block_id == ?;
+            """,
+                (id,),
+            ).fetchone()
+            return Block(type=res[0], hash=id, name=res[1])
+        except:
+            return None
 
     def __init__(
         self,
@@ -72,7 +89,8 @@ class Block(LazyObject):
 
         def block_handler():
             res = self._db.sql(
-                "SELECT block_id FROM block WHERE parent_id == ?", (self.hash,)
+                "SELECT block_id FROM block WHERE parent_id == ? AND block_type == 'misc'",
+                (self.hash,),
             ).fetchall()
             blocks = [Block(hash=b[0], type="misc") for b in res]
             return blocks
@@ -104,6 +122,28 @@ class Block(LazyObject):
         if self._parent_hash is None:
             self._parent_hash = hash_path(self._parent_path)
         return self._parent_hash
+
+    @property
+    def document(self) -> str:
+        attributes = "\n".join(["- " + a.document for a in self.attributes])
+        blocks = "\n".join([b.document for b in self.blocks])
+        doc = (
+            dedent(
+                f"""
+                # {self.name}
+                ## Attributes
+            """
+            )
+            + attributes
+            + dedent(
+                f"""
+                 ## Nested Blocks
+            """
+            )
+            + blocks
+        )
+        log.info(doc)
+        return doc
 
     # ---------            STATIC METHODS             ----------
 

@@ -3,9 +3,13 @@ from textual.app import ComposeResult
 from textual.containers import VerticalScroll
 from textual.widgets import Static, MarkdownViewer, Markdown
 from textual.binding import Binding
+from textual.reactive import reactive
+from textual.widget import Widget
+
+from tfdocs.models.block import Block
 
 
-class Viewer(MarkdownViewer):
+class Viewer(Widget, can_focus=True, can_focus_children=True):
     CSS_PATH = "styles/viewer.tcss"
     DEFAULT_CSS = """
         Viewer {
@@ -16,7 +20,7 @@ class Viewer(MarkdownViewer):
             scrollbar-size-vertical: 1;
         }
 
-        Viewer:focus {
+        Viewer:focus-within {
             border: round $accent;
         }
     """
@@ -25,15 +29,45 @@ class Viewer(MarkdownViewer):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
+    block: reactive[Block | None] = reactive(
+        Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True
+    )
+
+    @property
+    def has_focus_within(self):
+        """Are any descendants focused?"""
+        try:
+            focused = self.screen.focused
+        except NoScreen:
+            return False
+        node = focused
+        while node is not None:
+            if node is self:
+                return True
+            node = node._parent
+        return False
+
     def __init__(self, id: str = "viewer", classes: str = ""):
-        super().__init__(id=id, classes=classes, show_table_of_contents=False)
+        super().__init__(id=id, classes=classes)
 
-    async def on_mount(self):
-        await self.update(dedent(LOREM_IPSUM))
+    def compose(self):
+        yield MarkdownViewer(markdown=self.block.document, show_table_of_contents=False)
 
-    async def update(self, text: str):
-        md = self.query_one(Markdown)
-        md.update(text)
+    def on_focus(self):
+        self.query_one(MarkdownViewer).focus()
+
+    def action_scroll_up(self):
+        self.query_one(MarkdownViewer).action_scroll_up()
+
+    def action_scroll_down(self):
+        self.query_one(MarkdownViewer).action_scroll_down()
+
+    # async def on_mount(self):
+    #     await self.update(dedent(LOREM_IPSUM))
+
+    # async def update(self, text: str):
+    #     md = self.query_one(Markdown)
+    #     md.update(text)
 
 
 LOREM_IPSUM = """
