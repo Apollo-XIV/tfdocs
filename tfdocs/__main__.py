@@ -2,6 +2,7 @@ from tfdocs.logging import setup_logs
 from tfdocs.cli import parse_args
 import logging
 
+
 def main():
     parser, args = parse_args()
 
