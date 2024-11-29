@@ -7,14 +7,14 @@ readme = "readme.md"
 packages = [{include = "tfdocs"}]
 
 [tool.poetry.scripts]
-tfdocs = "tfdocs:main"
+tfdocs = "tfdocs.__main__:main"
 tfd-ui = "tfdocs.views.app:app"
 components = "tfdocs.views.component_viewer:app"
 watchlog = "tfdocs.logging.watch_logs:main"
 refmt = "tfdocs.utils:refmt"
 
 [tool.poetry.dependencies]
-python = "^3.11.4"
+python = ">=3.11.4,<3.14"
 rich = "^13.8.1"
 result = "^0.17.0"
 pytest-asyncio = "^0.24.0"
@@ -28,6 +28,7 @@ pytest = "^8.3.2"
 pytest-cov = "^5.0.0"
 pytest-asyncio = "^0.24.0"
 black = "^24.8.0"
+pyinstaller = "^6.11.1"
 
 [build-system]
 requires = ["poetry-core"]

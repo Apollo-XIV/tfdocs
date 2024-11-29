@@ -1,6 +1,7 @@
 {pkgs}:
 let 
   cmds = ''
+    #!/usr/bin/env bash
     build() {
       curr_dir=$(pwd)
       cd $root
@@ -9,6 +10,12 @@ let
       sudo cp -rL $root/result/* $root/build
       sudo chown -R $(whoami) $root/build
       cd $curr_dir
+    }
+
+    pyinstaller-build() {
+      pyinstaller \
+      --noconfirm \
+      $root/tfdocs.spec
     }
 
     test-build() {
@@ -39,23 +46,4 @@ let
     }
   '';
 in
-pkgs.writeShellScriptBin "run" ''
-  #!/usr/bin/env bash
-  set -e
-
-  ${cmds}
-
-  root=$(git rev-parse --show-toplevel)
-  # Parse the first argument as the function name
-  command="$1"
-  shift # Remove the first argument to pass the rest to the function
-
-  # Check if the function exists and call it
-  if declare -f "$command" > /dev/null; then
-    "$command" "$@"
-  else
-    echo "Error: '$command' is not a valid command."
-    echo "Available commands: build, test, clean"
-    exit 1
-  fi
-''
+pkgs.tfdocsUtils.mkCmdRunner cmds

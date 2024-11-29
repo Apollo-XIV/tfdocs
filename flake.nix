@@ -9,9 +9,14 @@
   outputs = { self, nixpkgs, poetry2nix, nixpkgs-terraform, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        tfdocs-utils = import ./lib.nix;
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ nixpkgs-terraform.overlays.default poetry2nix.overlays.default ];
+          overlays = [ 
+            tfdocs-utils
+            nixpkgs-terraform.overlays.default 
+            poetry2nix.overlays.default 
+          ];
           config.allowUnfree = true;
           config.extra-substituters = "https://nixpkgs-terraform.cachix.org";
           config.extra-trusted-public-keys = "nixpkgs-terraform.cachix.org-1:8Sit092rIdAVENA3ZVeH9hzSiqI/jng6JiCrQ1Dmusw=";
@@ -38,15 +43,8 @@
         };
 
         terraform = nixpkgs-terraform.packages.${system}."1.9.5";
-      in {
-        packages.default = pkgs.poetry2nix.mkPoetryApplication {
-          projectDir = ./.;
-          overrides = poetry_overrides;
-          # preferWheels = true;
-        };
 
-        devShells.default = pkgs.mkShellNoCC {
-          packages = with pkgs; [
+        deps =  with pkgs; [
             myEnv
             just
             poetry
@@ -63,6 +61,16 @@
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
           ];
+      in {
+        # packages.default = pkgs.poetry2nix.mkPoetryApplication {
+        #   projectDir = ./.;
+        #   overrides = poetry_overrides;
+        #   # preferWheels = true;
+        # };
+        packages.default = import ./build.nix {inherit pkgs deps;};
+
+        devShells.default = pkgs.mkShellNoCC {
+          packages = deps;
           AWS_PROFILE="personal-aws";
         };
       }

@@ -9,3 +9,4 @@ result
 .tfdocs.db
 .test.tfdocs.db
 build
+dist
