@@ -68,10 +68,20 @@
         #   # preferWheels = true;
         # };
         packages.default = import ./build.nix {inherit pkgs deps;};
+        packages.buildDeps = pkgs.stdenv.mkDerivation {
+          name = "build-deps";
+          buildInputs = with pkgs; [
+            python311Full
+            gcc
+            poetry
+          ];
+        };
 
         devShells.default = pkgs.mkShellNoCC {
           packages = deps;
           AWS_PROFILE="personal-aws";
+          GLIBC_PATH=pkgs.glibc;
+          ZLIB_PATH=pkgs.zlib;
         };
       }
     );

@@ -5,17 +5,21 @@ let
     build() {
       curr_dir=$(pwd)
       cd $root
-      nix build
-      mkdir -p $root/build
-      sudo cp -rL $root/result/* $root/build
-      sudo chown -R $(whoami) $root/build
-      cd $curr_dir
-    }
 
-    pyinstaller-build() {
-      pyinstaller \
-      --noconfirm \
-      $root/tfdocs.spec
+
+      mkdir -p $root/build
+      docker build . \
+        -f build-containers/static-build.dockerfile \
+        -t tmp/static-build
+
+      docker run \
+        --rm \
+        -v $root/build:/result \
+        $@ \
+        tmp/static-build
+
+      
+      cd $curr_dir
     }
 
     test-build() {
@@ -42,7 +46,10 @@ let
     # Example function for cleaning
     clean() {
       echo "Running clean task..."
-      # Add your clean-up commands here
+      rm .tfdocs.db || true
+      rm .test.tfdocs.db || true
+      rm -rf dist
+      rm -rf build
     }
   '';
 in

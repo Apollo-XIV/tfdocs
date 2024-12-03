@@ -1,0 +1,5 @@
+dist
+result
+build
+.direnv
+node_modules

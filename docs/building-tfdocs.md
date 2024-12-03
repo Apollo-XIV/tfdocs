@@ -67,6 +67,28 @@ PyInstaller is distributed as a Python library, and is listed as a dev dependenc
 ```
   poetry run pyinstaller --name tfdocs tfdocs/__main__.py
 ```
+### Packaging Specifics
+Making a static binary with PyInstaller isn't as easy as it seems though. Even with the `--onefile` option the final executable still expects certain shared-object and dynamic library files. The brute-force solution to this is to run the build process on each and every platform I want to support. While this is viable, and even encouraged with features like GitHub Action's 'matrix' feature, I would still rather put the work in now to reduce this added computation. To do this, we need to tell PyInstaller about the required shared object files. We can find these out using the `ldd` command on linux. I'm building primarily on NixOs, so don't be alarmed by the weird filepaths.
+```sh
+ldd build/bin/tfdocs
+  linux-vdso.so.1 (0x00007ffc3d888000)
+  libdl.so.2 => /nix/store/3dyw8dzj9ab4m8hv5dpyx7zii8d0w6fi-glibc-2.39-52/lib/libdl.so.2 (0x00007f0882472000)
+  libz.so.1 => /nix/store/rqs1zrcncqz3966khjndg1183cpdnqxs-zlib-1.3.1/lib/libz.so.1 (0x00007f0882454000)
+  libpthread.so.0 => /nix/store/3dyw8dzj9ab4m8hv5dpyx7zii8d0w6fi-glibc-2.39-52/lib/libpthread.so.0 (0x00007f088244f000)
+  libc.so.6 => /nix/store/3dyw8dzj9ab4m8hv5dpyx7zii8d0w6fi-glibc-2.39-52/lib/libc.so.6 (0x00007f0882258000)
+  /nix/store/3dyw8dzj9ab4m8hv5dpyx7zii8d0w6fi-glibc-2.39-52/lib/ld-linux-x86-64.so.2 => /nix/store/3dyw8dzj9ab4m8hv5dpyx7zii8d0w6fi-glibc-2.39
+````
+now that we know what we need, we can pass these values to the build command using the `--add-binary` flag. This is part of the magic of Nix, as no matter the platform we can reliably find these shared object files. We tell pyinstaller how to find these libraries using environment variables - called GLIBC_PATH and ZLIB_PATH - so that it can be run on different platforms. This is the nix snippet that does the work:
+```nix
+buildPhase = ''
+  export GLIBC_PATH=${pkgs.glibc}
+  export ZLIB_PATH=${pkgs.zlib}
+  run pyinstaller-build
+'';
+  
+```
+
+## Building the Program
 The final build command for the binary can be run as follows:
 ```
   poetry run pyinstaller tfdocs.spec

@@ -7,6 +7,8 @@ pkgs.stdenv.mkDerivation {
   src = ./.;
   buildInputs = deps;
   buildPhase = ''
+    export GLIBC_PATH=${pkgs.glibc}
+    export ZLIB_PATH=${pkgs.zlib}
     run pyinstaller-build
   '';
   installPhase = ''
