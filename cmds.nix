@@ -8,11 +8,11 @@ let
 
 
       mkdir -p $root/build
-      docker build . \
+      ${pkgs.docker-buildx}/bin/docker-buildx build . \
         -f build-containers/static-build.dockerfile \
         -t tmp/static-build
 
-      docker run \
+      ${pkgs.docker}/bin/docker run \
         --rm \
         -v $root/build:/result \
         $@ \

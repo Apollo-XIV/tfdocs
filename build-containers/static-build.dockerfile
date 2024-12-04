@@ -1,4 +1,4 @@
-FROM alpine:3.20 AS deps
+FROM alpine:3.20
 
 # Use a volume for external file access
 VOLUME /result

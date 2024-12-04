@@ -58,6 +58,8 @@
             nodejs_22
             terraform
             python311Full
+            docker
+            docker-buildx
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
           ];
