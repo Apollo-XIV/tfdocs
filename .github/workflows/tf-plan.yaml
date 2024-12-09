@@ -33,6 +33,7 @@ jobs:
       - name: Upload plan to S3 state
         run: |
           unset AWS_PROFILE
+          cd ../envs
           # get statebucket name
           bucket=$(terraform output backend)
           echo $bucket
