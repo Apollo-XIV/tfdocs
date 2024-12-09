@@ -10,4 +10,4 @@ runs:
     - shell: bash
       run: |
         run build
-        stat build/bin/tfdocs
+        stat build/tfdocs
