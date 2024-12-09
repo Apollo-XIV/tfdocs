@@ -7,7 +7,7 @@ ENV PYTHON_VER=3.8.2
 
 # Install Dependencies
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories
-RUN apk update && apk add --update gcc patchelf git vim wget bash scons musl-dev
+RUN apk update && apk add --update gcc patchelf git vim wget bash scons musl musl-dev
 
 RUN apk add --update poetry
 
@@ -24,8 +24,9 @@ RUN poetry run pyinstaller \
 
 # # Bundle Binary into Static Binary using StaticX
 # RUN poetry run staticx dist/tfdocs tfdocs
+# due to certain python libraries requiring C-libs, this can't be used currently :/
 
 # Copy out the build artefact
-# CMD cp tfdocs /result && ls -sh1 /result
-CMD ["bash"]
+CMD ["sh", "-c", "cp dist/tfdocs /result && ls -sh1 /result"]
+# CMD ["bash"]
 

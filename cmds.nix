@@ -14,7 +14,7 @@ let
 
       ${pkgs.docker}/bin/docker run \
         --rm \
-        -v $root/build:/result \
+        -v /result:$root/build/bin \
         $@ \
         tmp/static-build
 
@@ -29,11 +29,17 @@ let
 
       build # run the build command first
 
+      # add bin to container
+      mkdir -p build-containers/executable
+      cp build/bin/tfdocs build-containers/executable
+
       docker build \
       -f $DOCKERFILE \
       -t $TAGNAME \
       --build-arg BASE_IMAGE="$PLATFORM:latest" \
       $root
+
+      
       docker run -it $TAGNAME
     }
 

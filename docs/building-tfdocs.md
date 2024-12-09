@@ -88,6 +88,8 @@ buildPhase = ''
   
 ```
 
+Even now though, this binary isn't truly static as it still assumes the user has *some* copy of the C default library installed. This is, admittedly, a reasonable assumption, but the problem is that every distro places it in different places. Initially, I planned to use a tool called 'StaticX' to bundle this dependency in anyways, but, this has been stopped by my dependency on Cython modules. This is a key part of what makes schema-parsing fast, so cannot be avoided. Therefore, I'm going to have to run builds in docker containers for each platform I want to support. This isn't great though, as I want people to be able to use it even if I don't explicitly support it. For this case, I'm going to try and make it available via `pipx`, a helpful packagemanager for installing python tools distributed on PyPi.
+
 ## Building the Program
 The final build command for the binary can be run as follows:
 ```
@@ -95,18 +97,17 @@ The final build command for the binary can be run as follows:
 ```
 however, I prefer using the alias provided in the nix environment. If running with nix enabled you can simply execute:
 ```
-  run pyinstaller-build
+  run build
 ```
-or, full the fully deterministic build experience[2]:
-```
-  nix build
-```
-
 On that note, I highly recommend installing nix if trying to build this project from scratch, as it'll allow you to avoid a lot of dependency fetching. Or, you can just download the prebuilt binary from GitHub.
 
 ## Nix
 The environment management tool I'm using (nix with `poetry2nix`) makes building the project for other nix systems trivial. Very simply, a user can add the flake as an import to theirs and then reference the default package.
 
-[1]: While this may sound ironic upon first read, in its defence I do use a rather niche linux distribution so I'm not shocked to see it missing. All this means is that I'd have to package it myself, but it's a skill I've been learning anyways.
+# Distributing the App
+The quickest and easiest way to distribute the app is via GitHub 'Releases', a feature where build-files can be made available directly on the repo page and published through actions.
 
-[2]: Only a very small group of nerds - myself included - will think this is cool, and even less will think it's important.
+
+
+[1]: While this may sound ironic upon first read, in its defence I do use .a rather niche linux distribution so I'm not shocked to see it missing. All this means is that I'd have to package it myself, but it's a skill I've been learning anyways.
+
