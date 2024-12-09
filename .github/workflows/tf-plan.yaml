@@ -38,7 +38,7 @@ jobs:
           # get statebucket name
           bucket=$(terraform output backend)
           filename="plan-$GITHUB_SHA"
-          echo $bucket
+          echo $filename
           # use the awscli to copy the plan
           aws s3 cp plan "s3://$bucket/plans/$filename"
         env:
