@@ -39,7 +39,7 @@ jobs:
           bucket=$(terraform output backend)
           echo $bucket
           # use the awscli to copy the plan
-          aws s3 cp plan "$bucket/plan"
+          aws s3 cp plan "s3://$bucket/plan"
         env:
           TF_VAR_ENV: dev
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
