@@ -1,0 +1,13 @@
+name: Build App
+description: none
+# inputs:
+runs:
+  using: composite
+  steps:
+    - name: Setup Nix
+      uses: ./.github/actions/nix-setup
+
+    - shell: bash
+      run: |
+        run build
+        stat build/bin/tfdocs
