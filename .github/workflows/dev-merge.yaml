@@ -10,17 +10,15 @@ on:
   merge_group:
 
 jobs:
-  tf-plan:
+  create-plan:
     name: Terraform Plan
-    needs:
-      - code-ci
     permissions: write-all
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
 
   build-betas:
     permissions: write-all
-    needs: apply-plan
+    needs: create-plan
     name: Create Beta Builds
     runs-on: ubuntu-latest
     steps:
@@ -32,6 +30,7 @@ jobs:
     # if: github.event.pull_request.merge == true
     permissions: write-all
     name: Apply Terraform Plan
+    needs: build-betas
     runs-on: ubuntu-latest
     environment: aws
     defaults:
