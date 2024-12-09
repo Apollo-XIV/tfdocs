@@ -31,7 +31,7 @@ jobs:
     # if: github.event.pull_request.merge == true
     permissions: write-all
     name: Apply Terraform Plan
-    needs: build-betas
+    needs: create-plan
     runs-on: ubuntu-latest
     environment: aws
     defaults:
