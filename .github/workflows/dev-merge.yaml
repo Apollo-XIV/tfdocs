@@ -10,21 +10,22 @@ on:
   merge_group:
 
 jobs:
-  create-plan:
-    name: Terraform Plan
-    permissions: write-all
-    secrets: inherit
-    uses: ./.github/workflows/tf-plan.yaml
-
   build-betas:
-    permissions: write-all
-    needs: create-plan
     name: Create Beta Builds
     runs-on: ubuntu-latest
+    # secrets: inherit
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
       - name: Run Build
         uses: ./.github/actions/build
+
+  create-plan:
+    name: Terraform Plan
+    needs: build-betas
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
 
   apply-plan:
     # if: github.event.pull_request.merge == true
@@ -48,7 +49,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: plan
-          path: plan
+          path: infra/plan
 
       - name: Terraform Apply
         run: |
