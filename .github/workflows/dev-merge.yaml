@@ -5,16 +5,35 @@ on:
   pull_request:
     branches:
       - dev
-    types:
-      - closed
+    # types:
+    #   - closed
   merge_group:
 
 jobs:
+  tf-plan:
+    name: Terraform Plan
+    needs:
+      - code-ci
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
+
+  build-betas:
+    permissions: write-all
+    needs: apply-plan
+    name: Create Beta Builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Build
+        uses: ./.github/actions/build
+
   apply-plan:
     # if: github.event.pull_request.merge == true
     permissions: write-all
     name: Apply Terraform Plan
     runs-on: ubuntu-latest
+    environment: aws
     defaults:
       run:
         working-directory: infra
@@ -55,13 +74,3 @@ jobs:
       - name: Push Changes to Dev
         run: |
           git push origin dev
-
-  build-betas:
-    permissions: write-all
-    needs: apply-plan
-    name: Create Beta Builds
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Build
-        uses: ./.github/actions/build

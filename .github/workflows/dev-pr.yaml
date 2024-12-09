@@ -49,10 +49,3 @@ jobs:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
         
-  tf-plan:
-    name: Terraform Plan
-    needs:
-      - code-ci
-    permissions: write-all
-    secrets: inherit
-    uses: ./.github/workflows/tf-plan.yaml
