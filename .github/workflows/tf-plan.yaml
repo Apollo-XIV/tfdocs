@@ -34,6 +34,7 @@ jobs:
         run: |
           unset AWS_PROFILE
           cd ../envs
+          terraform init
           # get statebucket name
           bucket=$(terraform output backend)
           echo $bucket
