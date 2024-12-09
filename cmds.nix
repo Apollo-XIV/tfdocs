@@ -14,9 +14,10 @@ let
 
       ${pkgs.docker}/bin/docker run \
         --rm \
-        -v /result:$root/build/bin \
+        -v $root/build:/result \
         $@ \
-        tmp/static-build
+        tmp/static-build \
+        sh -c "set -e; cp dist/tfdocs /result"
 
       
       cd $curr_dir

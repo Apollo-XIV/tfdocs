@@ -1,7 +1,8 @@
 FROM alpine:3.20
 
 # Use a volume for external file access
-VOLUME /result
+RUN mkdir -p /result
+# VOLUME /result
 
 ENV PYTHON_VER=3.8.2
 
@@ -27,6 +28,6 @@ RUN poetry run pyinstaller \
 # due to certain python libraries requiring C-libs, this can't be used currently :/
 
 # Copy out the build artefact
-CMD ["sh", "-c", "cp dist/tfdocs /result && ls -sh1 /result"]
-# CMD ["bash"]
+# CMD ["sh", "-c", "set -e; cp dist/tfdocs /result && ls -sh1 /result"]
+CMD ["bash"]
 
