@@ -30,8 +30,15 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Commit plan
-        uses: ./.github/actions/commit
-        with:
-          message: "ci: generate terraform plan"
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload plan to S3 state
+        run: |
+          # get statebucket name
+          bucket=$(terraform output backend)
+          echo $bucket
+          # use the awscli to copy the plan
+
+      # - name: Commit plan
+      #   uses: ./.github/actions/commit
+      #   with:
+      #     message: "ci: generate terraform plan"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
