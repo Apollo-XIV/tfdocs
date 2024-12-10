@@ -3,24 +3,22 @@ let
   cmds = ''
     #!/usr/bin/env bash
     build() {
-      curr_dir=$(pwd)
-      cd $root
+      pushd $root
 
+      platform="''${1:-"ubuntu"}"
 
       mkdir -p $root/build
       ${pkgs.docker-buildx}/bin/docker-buildx build . \
-        -f build-containers/static-build.dockerfile \
-        -t tmp/static-build
+        -f build-containers/$platform-build.dockerfile \
+        -t tmp/$platform-build
 
       ${pkgs.docker}/bin/docker run \
         --rm \
         -v $root/build:/result \
-        $@ \
-        tmp/static-build \
+        tmp/$platform-build \
         sh -c "set -e; cp dist/tfdocs /result"
 
-      
-      cd $curr_dir
+      popd
     }
 
     test-build() {

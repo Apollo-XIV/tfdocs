@@ -12,8 +12,10 @@ runs:
 
     - shell: bash
       run: |
-        run build
+        run build $platform
         stat build/tfdocs
+      env:
+        platform: ${{ inputs.platform }}
 
     - uses: actions/upload-artifact@v4
       with:
