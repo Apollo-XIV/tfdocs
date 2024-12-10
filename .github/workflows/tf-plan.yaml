@@ -5,7 +5,7 @@ jobs:
   tf-plan:
     name: Terraform Plan
     permissions: write-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: infra
@@ -30,8 +30,30 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Commit plan
-        uses: ./.github/actions/commit
+      - name: Upload plan as artefact
+        uses: actions/upload-artifact@v4
         with:
-          message: "ci: generate terraform plan"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: plan
+          path: infra/plan
+
+      # - name: Upload plan to S3 state
+      #   run: |
+      #     unset AWS_PROFILE
+      #     cd ../envs
+      #     terraform init
+      #     # get statebucket name
+      #     bucket=$(terraform output backend)
+      #     filename="plan-$GITHUB_SHA"
+      #     echo $filename
+      #     # use the awscli to copy the plan
+      #     aws s3 cp plan "s3://$bucket/plans/$filename"
+      #   env:
+      #     TF_VAR_ENV: dev
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # - name: Commit plan
+      #   uses: ./.github/actions/commit
+      #   with:
+      #     message: "ci: generate terraform plan"
+      #     token: ${{ secrets.GITHUB_TOKEN }}

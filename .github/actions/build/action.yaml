@@ -10,4 +10,9 @@ runs:
     - shell: bash
       run: |
         run build
-        stat build/bin/tfdocs
+        stat build/tfdocs
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: build/tfdocs
+        name: alpine-build

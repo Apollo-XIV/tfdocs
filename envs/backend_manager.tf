@@ -5,14 +5,14 @@ variable "ENV" {
 
 module "backend" {
   source          = "Apollo-XIV/backend-manager/aws"
-  version         = "0.0.28"
+  version         = "0.0.30"
   prefix          = "tfdocs"
   force_destroy   = false
   enable_dynamodb = false
 
   output_dir = "../infra"
 
-  environment_configs_dir = abspath("${path.root}")
+  environment_configs_dir = abspath(path.root)
   environments = [
     "dev",
     "staging"
@@ -28,4 +28,8 @@ module "backend" {
     "arn:aws:iam::013948180024:user/desktop",
     "arn:aws:iam::013948180024:user/github"
   ]
+}
+
+output "backend" {
+  value = module.backend.bucket
 }

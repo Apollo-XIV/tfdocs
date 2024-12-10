@@ -9,7 +9,7 @@ jobs:
     name: Update backend.tf
     if: "!contains(github.event.head_commit.message, 'ci: synced backend & env')"
     permissions: write-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # Setup
       - name: Checkout

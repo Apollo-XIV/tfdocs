@@ -2,19 +2,34 @@ name: Dev Branch Merge
 
 # Triggers
 on:
-  pull_request:
+  push:
     branches:
       - dev
-    types:
-      - closed
-  merge_group:
 
 jobs:
+  build-betas:
+    name: Create Beta Builds
+    runs-on: ubuntu-24.04
+    # secrets: inherit
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Build
+        uses: ./.github/actions/build
+
+  create-plan:
+    name: Terraform Plan
+    needs: build-betas
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
+
   apply-plan:
-    # if: github.event.pull_request.merge == true
     permissions: write-all
     name: Apply Terraform Plan
-    runs-on: ubuntu-latest
+    needs: create-plan
+    runs-on: ubuntu-24.04
+    environment: aws
     defaults:
       run:
         working-directory: infra
@@ -27,6 +42,11 @@ jobs:
 
       - uses: ./.github/actions/nix-setup
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: plan
+          path: infra
+
       - name: Terraform Apply
         run: |
           unset AWS_PROFILE
@@ -37,31 +57,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Remove plan file
-        run: rm plan
-
-      - name: Set up Git user
-        shell: bash
-        run: |
-          git config pull.rebase true
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit Changes
-        run: |
-          git add .
-          git commit -m "ci: Terraform Apply"
-
-      - name: Push Changes to Dev
-        run: |
-          git push origin dev
-
-  build-betas:
-    permissions: write-all
-    needs: apply-plan
-    name: Create Beta Builds
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Build
-        uses: ./.github/actions/build
+      - name: Commit changes
+        uses: ./.github/actions/commit
+        with:
+          message: "ci: terraform apply"
+          token: ${{ secrets.GITHUB_TOKEN }}
