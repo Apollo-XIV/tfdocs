@@ -12,7 +12,7 @@ runs:
 
     - shell: bash
       run: |
-        mkdir -p $root/build
+        mkdir -p build
         docker buildx build . \
           -f build-containers/$platform-build.dockerfile \
           -t tmp/$platform-build
