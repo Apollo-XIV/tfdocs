@@ -10,12 +10,21 @@ jobs:
   build-betas:
     name: Create Beta Builds
     runs-on: ubuntu-24.04
-    # secrets: inherit
     permissions: write-all
+    # use a matrix to run builds for each platform
+    strategy:
+      matrix:
+        platform:
+          - alpine
+          - debian
+          - arch
+          - fedora
     steps:
       - uses: actions/checkout@v4
       - name: Run Build
         uses: ./.github/actions/build
+        with:
+          platform: ${{ matrix.platform }}
 
   create-plan:
     name: Terraform Plan

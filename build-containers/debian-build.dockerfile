@@ -6,7 +6,12 @@ RUN mkdir -p /result
 # Install Dependencies
 RUN apt-get update
 RUN apt-get install -y gcc patchelf git vim wget bash scons musl musl-dev \
-    python3 python3-pip python3-venv python3-poetry
+    python3 python3-pip python3-venv
+
+RUN python3 -m pip install --user pipx && \
+  python3 -m pipx ensurepath
+
+RUN python3 -m pipx install poetry
 
 ADD . /tfdocs
 WORKDIR /tfdocs

@@ -5,7 +5,7 @@ let
     build() {
       pushd $root
 
-      platform="''${1:-"ubuntu"}"
+      platform="''${1:-"debian"}"
 
       mkdir -p $root/build
       ${pkgs.docker-buildx}/bin/docker-buildx build . \
@@ -16,7 +16,7 @@ let
         --rm \
         -v $root/build:/result \
         tmp/$platform-build \
-        sh -c "set -e; cp dist/tfdocs /result"
+        sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
 
       popd
     }
