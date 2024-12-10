@@ -22,19 +22,19 @@
           config.extra-trusted-public-keys = "nixpkgs-terraform.cachix.org-1:8Sit092rIdAVENA3ZVeH9hzSiqI/jng6JiCrQ1Dmusw=";
         };
 
-        pypkgs-build-requirements = {
-          textual_dev = [ "setuptools" "hatchling" ];
-          textual-serve = [ "hatchling" ];
-          propcache = [ "cython" "setuptools" "expandvars" ];
-        };
+        # pypkgs-build-requirements = {
+        #   textual_dev = [ "setuptools" "hatchling" ];
+        #   textual-serve = [ "hatchling" ];
+        #   propcache = [ "cython" "setuptools" "expandvars" ];
+        # };
 
-        poetry_overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend
-          (final: prev: 
-            builtins.mapAttrs (package: build-requirements: 
-              (builtins.getAttr package prev).overridePythonAttrs (old: {
-                buildInputs = (old.buildInputs or []) ++ (builtins.map(pkg: if builtins.isString pkg then builtins.getAttr pkg prev else pkg) build-requirements);
-              })
-          ) pypkgs-build-requirements );
+        # poetry_overrides = pkgs.poetry2nix.defaultPoetryOverrides.extend
+        #   (final: prev: 
+        #     builtins.mapAttrs (package: build-requirements: 
+        #       (builtins.getAttr package prev).overridePythonAttrs (old: {
+        #         buildInputs = (old.buildInputs or []) ++ (builtins.map(pkg: if builtins.isString pkg then builtins.getAttr pkg prev else pkg) build-requirements);
+        #       })
+        #   ) pypkgs-build-requirements );
 
         myEnv = pkgs.poetry2nix.mkPoetryEnv {
           projectDir = ./.;
@@ -62,6 +62,7 @@
             docker-buildx
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
+            nodePackages.semver
           ];
       in {
         # packages.default = pkgs.poetry2nix.mkPoetryApplication {
