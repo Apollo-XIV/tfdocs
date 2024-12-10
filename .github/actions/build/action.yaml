@@ -20,4 +20,4 @@ runs:
     - uses: actions/upload-artifact@v4
       with:
         path: build/tfdocs
-        name: alpine-build
+        name: ${{ inputs.platform }}-build

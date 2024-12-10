@@ -4,7 +4,6 @@ FROM alpine:3.20
 RUN mkdir -p /result
 # VOLUME /result
 
-ENV PYTHON_VER=3.8.2
 
 # Install Dependencies
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories
