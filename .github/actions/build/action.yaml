@@ -1,6 +1,9 @@
 name: Build App
 description: none
-# inputs:
+inputs:
+  platform:
+    description: The platform to build for
+    required: true
 runs:
   using: composite
   steps:

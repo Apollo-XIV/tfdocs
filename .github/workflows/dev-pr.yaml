@@ -13,6 +13,16 @@ on:
 
 # All jobs must pass before merge
 jobs:
+  build-betas:
+    name: Create Beta Builds
+    runs-on: ubuntu-24.04
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Build
+        uses: ./.github/actions/build
+        with:
+          platform: ubuntu
 
   sync-environment:
     name: Sync Terraform Environment
