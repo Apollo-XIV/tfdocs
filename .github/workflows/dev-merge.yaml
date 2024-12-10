@@ -2,19 +2,15 @@ name: Dev Branch Merge
 
 # Triggers
 on:
-  # pull_request:
   push:
     branches:
       - dev
       - feat/remote-plan-storage
-    # types:
-    #   - closed
-  # merge_group:
 
 jobs:
   build-betas:
     name: Create Beta Builds
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # secrets: inherit
     permissions: write-all
     steps:
@@ -30,11 +26,10 @@ jobs:
     uses: ./.github/workflows/tf-plan.yaml
 
   apply-plan:
-    # if: github.event.pull_request.merge == true
     permissions: write-all
     name: Apply Terraform Plan
     needs: create-plan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: aws
     defaults:
       run:
