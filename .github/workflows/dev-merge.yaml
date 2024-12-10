@@ -16,9 +16,9 @@ jobs:
       matrix:
         platform:
           - alpine
+          - fedora
           # - debian
           # - arch
-          - fedora
     steps:
       - uses: actions/checkout@v4
       - name: Run Build
