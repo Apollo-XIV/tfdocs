@@ -7,8 +7,8 @@ RUN mkdir -p /result
 
 # Install Dependencies
 RUN dnf -y update
-RUN dnf -y install gcc patchelf git vim wget bash scons musl musl-devel \
-  python3 python3-pip python3-virtualenv poetry dnf clean all
+RUN dnf -y install gcc patchelf git vim wget bash scons \
+  musl-devel python3 python3-pip python3-virtualenv poetry zlib
 
 ADD . /tfdocs
 WORKDIR /tfdocs

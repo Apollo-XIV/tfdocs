@@ -3,7 +3,7 @@ let
   cmds = ''
     #!/usr/bin/env bash
     build() {
-      pushd $root
+      pushd $root >> /dev/null
 
       platform="''${1:-"debian"}"
 
@@ -18,7 +18,7 @@ let
         tmp/$platform-build \
         sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
 
-      popd
+      popd >> /dev/null
     }
 
     test-build() {
