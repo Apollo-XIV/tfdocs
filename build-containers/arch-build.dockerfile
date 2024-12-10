@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM archlinux:latest
 
 # Use a volume for external file access
 RUN mkdir -p /result
@@ -6,10 +6,9 @@ RUN mkdir -p /result
 
 
 # Install Dependencies
-RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories
-RUN apk update && apk add --update gcc patchelf git vim wget bash scons musl musl-dev
-
-RUN apk add --update poetry
+RUN pacman -Syu --noconfirm && pacman -S --noconfirm \
+  base-devel patchelf git vim wget bash scons musl python python-pip \
+  python-virtualenv poetry && pacman -Scc --noconfirm
 
 ADD . /tfdocs
 WORKDIR /tfdocs
