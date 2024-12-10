@@ -2,12 +2,14 @@ name: Dev Branch Merge
 
 # Triggers
 on:
-  pull_request:
+  # pull_request:
+  push:
     branches:
       - dev
+      - feat/remote-plan-storage
     # types:
     #   - closed
-  merge_group:
+  # merge_group:
 
 jobs:
   build-betas:
@@ -64,5 +66,5 @@ jobs:
       - name: Commit changes
         uses: ./.github/actions/commit
         with:
-          message: "Terraform Apply"
+          message: "ci: terraform apply"
           token: ${{ secrets.GITHUB_TOKEN }}
