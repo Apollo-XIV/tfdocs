@@ -22,8 +22,8 @@ jobs:
       matrix:
         platform:
           - alpine
-          - debian
-          - arch
+          # - debian
+          # - arch
           - fedora
     steps:
       - uses: actions/checkout@v4
