@@ -11,3 +11,8 @@ runs:
       run: |
         run build
         stat build/tfdocs
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: build/tfdocs
+        name: alpine-build
