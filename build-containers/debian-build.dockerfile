@@ -5,27 +5,42 @@ RUN mkdir -p /result
 
 # Install Dependencies
 RUN apt-get update
-RUN apt-get install -y gcc patchelf git vim wget bash scons musl musl-dev \
-    python3 python3-pip python3-venv
+RUN apt-get install -y gcc patchelf git vim wget bash scons musl musl-dev make \
+  zlib1g-dev build-essential libffi-dev libssl-dev libsqlite3-dev \
+  libc6-dev libbz2-dev
 
-RUN python3 -m pip install --user pipx && \
-  python3 -m pipx ensurepath
+WORKDIR /python
+RUN wget https://www.python.org/ftp/python/3.11.10/Python-3.11.10.tgz && \
+  tar xzf Python-3.11.10.tgz && \
+  cd Python-3.11.10 && \
+  ./configure --enable-shared --enable-optimizations && \
+  make -j 1 && \
+  make altinstall && \
+  mv python /usr/local/bin
 
-RUN python3 -m pipx install poetry
+WORKDIR /poetry
+RUN python -m ensurepip --upgrade
+# ADD build-containers/install_poetry.py install_poetry.py
+# RUN chmod +x install_poetry.py && ./install_poetry.py
+
+# RUN python3 -m pip install --user pipx && \
+#   python3 -m pipx ensurepath
+
+RUN python -m pip install poetry
 
 ADD . /tfdocs
 WORKDIR /tfdocs
 ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 
-# Install Python dependencies via Poetry
-RUN poetry install
+# # Install Python dependencies via Poetry
+RUN python -m poetry install
 
-# Set required environment variables for MUSL and ZLIB paths
-ENV MUSL_PATH=/lib/ld-musl-x86_64.so.1
-ENV ZLIB_PATH=/lib/libz.so.1
+# # Set required environment variables for MUSL and ZLIB paths
+# ENV MUSL_PATH=/lib/ld-musl-x86_64.so.1
+# ENV ZLIB_PATH=/lib/libz.so.1
 
-# Run PyInstaller to package the app
-RUN poetry run pyinstaller \
+# # Run PyInstaller to package the app
+RUN python -m poetry run pyinstaller \
   --noconfirm \
   tfdocs.spec
 
