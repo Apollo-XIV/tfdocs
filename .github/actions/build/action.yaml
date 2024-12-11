@@ -13,7 +13,7 @@ runs:
     - shell: bash
       run: |
         mkdir -p build
-        docker buildx build . \
+        docker-buildx build . \
           -f build-containers/$platform-build.dockerfile \
           -t tmp/$platform-build
 
@@ -22,6 +22,8 @@ runs:
           -v build:/result \
           tmp/$platform-build \
           sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
+
+        stat build/tfdocs-$platform
       env:
         platform: ${{ inputs.platform }}
 
