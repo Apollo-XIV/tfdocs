@@ -22,7 +22,7 @@ jobs:
       matrix:
         platform:
           - alpine
-          # - debian
+          - debian
           # - arch
           - fedora
     steps:

@@ -13,7 +13,12 @@ WORKDIR /python
 RUN wget https://www.python.org/ftp/python/3.11.10/Python-3.11.10.tgz && \
   tar xzf Python-3.11.10.tgz && \
   cd Python-3.11.10 && \
-  ./configure --enable-shared --enable-optimizations && \
+  ./configure \
+    --enable-shared \
+    --enable-optimizations \
+    --prefix=/usr/local \
+    LDFLAGS="-Wl,--rpath=/usr/local/lib" \
+    && \
   make -j 1 && \
   make altinstall && \
   mv python /usr/local/bin
