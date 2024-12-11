@@ -21,7 +21,7 @@ runs:
           --rm \
           -v build:/result \
           tmp/$platform-build \
-          sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
+          sh -c "cp /tfdocs/dist/tfdocs /result/tfdocs-$platform"
 
         stat build/tfdocs-$platform
       env:
