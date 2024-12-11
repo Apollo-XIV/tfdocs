@@ -19,7 +19,7 @@ runs:
 
         docker run \
           --rm \
-          -v $root/build:/result \
+          -v build:/result \
           tmp/$platform-build \
           sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
       env:
