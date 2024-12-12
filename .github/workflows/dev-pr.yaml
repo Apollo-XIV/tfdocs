@@ -19,6 +19,7 @@ jobs:
     permissions: write-all
     # use a matrix to run builds for each platform
     strategy:
+      fail-fast: false
       matrix:
         platform:
           - alpine
@@ -28,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Build
-        uses: ./.github/actions/build
+        uses: ./.github/actions/build-appimage
         with:
           platform: ${{ matrix.platform }}
 

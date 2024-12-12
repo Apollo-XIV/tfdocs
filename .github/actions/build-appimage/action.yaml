@@ -19,10 +19,11 @@ runs:
 
         docker run \
           --rm \
-          -v build:/result \
+          -v ./build:/result \
           tmp/$platform-build \
           sh -c "cp /tfdocs/dist/tfdocs /result/tfdocs-$platform"
 
+        ls build
         stat build/tfdocs-$platform
       env:
         platform: ${{ inputs.platform }}
