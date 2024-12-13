@@ -12,23 +12,9 @@ runs:
 
     - shell: bash
       run: |
-        mkdir -p build
-        docker-buildx build . \
-          -f build-containers/$platform-build.dockerfile \
-          -t tmp/$platform-build
-
-        docker run \
-          --rm \
-          -v ./build:/result \
-          tmp/$platform-build \
-          sh -c "cp /tfdocs/dist/tfdocs /result/tfdocs-$platform"
-
-        ls build
-        stat build/tfdocs-$platform
-      env:
-        platform: ${{ inputs.platform }}
+        run build-appimage
 
     - uses: actions/upload-artifact@v4
       with:
-        path: build/tfdocs-${{inputs.platform}}
-        name: ${{ inputs.platform }}-build
+        path: tfdocs.AppImage
+        name: tfdocs-appimage

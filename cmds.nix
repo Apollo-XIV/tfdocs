@@ -21,6 +21,10 @@ let
       popd >> /dev/null
     }
 
+    build-appimage() {
+      nix bundle --bundler github:ralismark/nix-appimage $root#default
+    }
+
     test-build() {
       PLATFORM="''${1:-"ubuntu"}"
       DOCKERFILE="build-containers/$PLATFORM.dockerfile"
