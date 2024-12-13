@@ -1,0 +1,18 @@
+name: Release
+on:
+  workflow_dispatch:
+
+jobs:
+  tag:
+    name: Tag Commit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create new tag
+        run: |
+          # find most recent tag on the branch
+          # if no tag can be found, use 0.0.0
+          # use semver to increment it by one
+            # if branch name is dev, do a patch increment
+            # if branch name is main, do a minor increment
+          # create a new tag
