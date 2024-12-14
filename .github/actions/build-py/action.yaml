@@ -1,0 +1,10 @@
+name: Build for PyPI
+description: Build TFDocs artefacts for PyPI publishing
+runs:
+  using: composite
+  steps:
+    - name: Setup Nix
+      uses: ./.github/actions/nix-setup
+    - shell: bash
+      run: |
+        poetry build
