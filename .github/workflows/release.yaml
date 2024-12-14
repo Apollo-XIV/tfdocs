@@ -73,11 +73,31 @@ jobs:
         env:
           tag: ${{github.ref_name}}
         run: |
-          gh release create $tag tfdocs.appimage
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          if [[ $branch -eq "main" ]]; then
+            inc="Minor"
+          elif [[ $branch -eq "dev" ]]; then
+            inc="Patch"
+            prerelease="--preprelease"
+          else
+            inc="PR Build"            
+            prerelease="--preprelease"
+          fi
+          
+          date=$(date +'%Y-%m-%d')
+          title="TFDocs $tag Release"
+          release_notes="$inc release of TFDocs, published on $date."
+
+          gh release create $tag \
+            $prerelease \
+            --title $title \
+            --verify-tag \
+            --notes $release_notes \
+            tfdocs.appimage
 
 
       # - name: Set current date
-      #   run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      #   run: echo "CURRENT_DATE=" >> $GITHUB_ENV
 
       # - uses: softprops/action-gh-release@v2
       #   with:
