@@ -24,10 +24,11 @@ runs:
         if [[ $tag -eq "" ]]; then
           tag="0.0.0"
         fi
-        # if branch name is dev, do a patch increment
         preid="none"
+        # if branch name is dev, do a patch increment
         if [[ $branch_name -eq "dev" ]]; then
           inc="patch"
+        # if branch name is main, do a minor increment
         elif [[ $branch_name -eq "main" ]]; then
           inc="minor"
         elif [[ $branch_name -eq "release" ]]; then
@@ -37,7 +38,6 @@ runs:
           inc="prerelease"
           preid="pr"
         fi
-        # if branch name is main, do a minor increment
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
         new_tag="v$new_tag"
@@ -47,4 +47,8 @@ runs:
         # create a new tag
         git tag $new_tag
         git push origin --tags
+
+        poetry verion "$new_tag"
+        git add pyproject.toml
+        git commit -m "ci: Bump version number"
 
