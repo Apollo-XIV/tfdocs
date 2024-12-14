@@ -61,6 +61,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
       - uses: ./.github/actions/tag-commit
         with:
           token: ${{secrets.GITHUB_TOKEN}}
