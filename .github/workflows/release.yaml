@@ -113,7 +113,7 @@ jobs:
           echo "Creating release $tag on branch $branch"
 
           # gh release create $tag
-          gh release create $tag --title $title --notes $release_notes tfdocs.AppImage
+          gh release create "$tag" --title "$title" --notes "$release_notes" tfdocs.AppImage
             # tfdocs.whl \
             # tfdocs.tar.gz
 
