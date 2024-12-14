@@ -23,6 +23,7 @@
         };
 
         pypkgs-build-requirements = {
+          nh3 = [ "maturin" ];
           textual_dev = [ "setuptools" "hatchling" ];
           textual-serve = [ "hatchling" ];
           propcache = [ "cython" "setuptools" "expandvars" ];
@@ -73,7 +74,8 @@
           projectDir = ./.;
           overrides = poetry_overrides;
           meta.mainProgram = "tfdocs";
-          # preferWheels = true;
+          # extrsa
+          preferWheels = true;
         };
         # packages.default = import ./build.nix {inherit pkgs deps;};
         packages.buildDeps = pkgs.stdenv.mkDerivation {

@@ -17,18 +17,21 @@ refmt = "tfdocs.utils:refmt"
 python = ">=3.11.4,<3.14"
 rich = "^13.8.1"
 result = "^0.17.0"
-pytest-asyncio = "^0.24.0"
 textual = "^0.82.0"
 ijson = "^3.3.0"
-textual-dev = "^1.6.1"
-setuptools = "^72.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 pytest-cov = "^5.0.0"
 pytest-asyncio = "^0.24.0"
 black = "^24.8.0"
+textual-dev = "^1.6.1"
+setuptools = "^72.0.0"
 pyinstaller = "^6.11.1"
+twine = { version = "^6.0.1", optional = true }
+
+[tool.poetry.extras]
+build = ["twine"]
 
 [build-system]
 requires = ["poetry-core"]
