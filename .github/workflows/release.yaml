@@ -107,8 +107,9 @@ jobs:
           fi
           
           date=$(date +'%Y-%m-%d')
-          title="TFDocs $tag Release"
-          release_notes="$inc release of TFDocs, published on $date."
+          title="TFDocs $tag"
+          commit_msg=$(git show -s --format=%B "$tag")
+          release_notes="$inc release of TFDocs, published on $date.\n $commit_msg"
 
           echo "Creating release $tag on branch $branch"
 
