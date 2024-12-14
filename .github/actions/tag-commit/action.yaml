@@ -36,6 +36,7 @@ runs:
         # if branch name is main, do a minor increment
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
+        new_tag="v$new_tag"
         # create a new tag
         git tag $new_tag
         git push origin --tags
