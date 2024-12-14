@@ -52,6 +52,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Download AppImage
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-appimage
+          path: tfdocs.appimage
+
       - name: Set current date
         run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
@@ -62,5 +68,5 @@ jobs:
             New release dated ${{env.CURRENT_DATE}}            
           files: |
             tfdocs.appimage
-            tfdocs.app
-            tfdocs.exe
+          # tfdocs.app
+          # tfdocs.exe
