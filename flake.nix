@@ -58,6 +58,7 @@
             commitlint
             husky
             nodejs_22
+            gh
             terraform
             python311Full
             docker

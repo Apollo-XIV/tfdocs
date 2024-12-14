@@ -53,6 +53,11 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.BRANCH_BYPASS_KEY }}
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
 
       - name: Download AppImage
         uses: actions/download-artifact@v4
@@ -64,16 +69,23 @@ jobs:
           ls
           stat tfdocs.appimage
 
-      - name: Set current date
-        run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Create Release
+        env:
+          tag: ${{github.ref_name}}
+        run: |
+          gh release create $tag tfdocs.appimage
 
-      - uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: |
-            New release dated ${{env.CURRENT_DATE}}            
-          fail_on_unmatched_files: true
-          files: |
-            tfdocs.appimage
+
+      # - name: Set current date
+      #   run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # - uses: softprops/action-gh-release@v2
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     body: |
+      #       New release dated ${{env.CURRENT_DATE}}            
+      #     fail_on_unmatched_files: true
+      #     files: |
+      #       tfdocs.appimage
           # tfdocs.app
           # tfdocs.exe
