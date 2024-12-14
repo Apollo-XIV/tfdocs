@@ -88,6 +88,7 @@ jobs:
       - name: Create Release
         env:
           tag: ${{github.ref_name}}
+          GH_TOKEN: ${{github.token}}
         run: |
           branch=$(git rev-parse --abbrev-ref HEAD)
           if [[ $branch -eq "main" ]]; then
