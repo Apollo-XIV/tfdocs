@@ -72,6 +72,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             New release dated ${{env.CURRENT_DATE}}            
+          fail_on_unmatched_files: true
           files: |
             tfdocs.appimage
           # tfdocs.app
