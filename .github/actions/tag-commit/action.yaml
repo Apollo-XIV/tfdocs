@@ -38,3 +38,4 @@ runs:
         # create a new tag
         git tag $new_tag
         git push origin --tags
+

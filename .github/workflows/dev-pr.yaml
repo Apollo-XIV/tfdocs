@@ -49,6 +49,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
         
   tag:
+    name: Create Tag
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
