@@ -1,6 +1,9 @@
 name: Build App
 description: none
 # inputs:
+  # platform:
+  #   description: The platform to build for
+  #   required: true
 runs:
   using: composite
   steps:
@@ -9,10 +12,5 @@ runs:
 
     - shell: bash
       run: |
-        run build
-        stat build/tfdocs
+        run build-appimage
 
-    - uses: actions/upload-artifact@v4
-      with:
-        path: build/tfdocs
-        name: alpine-build

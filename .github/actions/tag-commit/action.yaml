@@ -1,0 +1,46 @@
+name: Release
+description: Tag the current commit based on the branch
+inputs:
+  token:
+    required: true
+    description: Github token to use
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/nix-setup
+    - name: Create new tag
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        # find most recent tag on the branch
+        tag=$(git tag --merged | tail -n 1)
+        # if no tag can be found, use 0.0.0
+        if [[ $tag -eq "" ]] then
+          tag="0.0.0"
+        fi
+        # if branch name is dev, do a patch increment
+        preid="none"
+        if [[ $branch_name -eq "dev" ]]; then
+          inc="patch"
+        elif [[ $branch_name -eq "main" ]]; then
+          inc="minor"
+        elif [[ $branch_name -eq "release" ]]; then
+          inc="premajor"
+          preid="rc"
+        else
+          inc="preminor"
+          preid="pr"
+        fi
+        # if branch name is main, do a minor increment
+        # use semver to increment it by one
+        new_tag=$(semver -i $inc --preid $preid $tag)
+        new_tag="v$new_tag"
+        # create a new tag
+        git tag $new_tag
+        git push origin --tags
+

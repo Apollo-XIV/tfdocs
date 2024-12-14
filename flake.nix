@@ -32,7 +32,9 @@
           (final: prev: 
             builtins.mapAttrs (package: build-requirements: 
               (builtins.getAttr package prev).overridePythonAttrs (old: {
-                buildInputs = (old.buildInputs or []) ++ (builtins.map(pkg: if builtins.isString pkg then builtins.getAttr pkg prev else pkg) build-requirements);
+                buildInputs = (old.buildInputs or []) ++ (builtins.map(pkg: 
+                  if builtins.isString pkg then builtins.getAttr pkg prev else pkg) 
+                build-requirements);
               })
           ) pypkgs-build-requirements );
 
@@ -60,16 +62,19 @@
             python311Full
             docker
             docker-buildx
+            appimagekit
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
+            nodePackages.semver
           ];
       in {
-        # packages.default = pkgs.poetry2nix.mkPoetryApplication {
-        #   projectDir = ./.;
-        #   overrides = poetry_overrides;
-        #   # preferWheels = true;
-        # };
-        packages.default = import ./build.nix {inherit pkgs deps;};
+        packages.default = pkgs.poetry2nix.mkPoetryApplication {
+          projectDir = ./.;
+          overrides = poetry_overrides;
+          meta.mainProgram = "tfdocs";
+          # preferWheels = true;
+        };
+        # packages.default = import ./build.nix {inherit pkgs deps;};
         packages.buildDeps = pkgs.stdenv.mkDerivation {
           name = "build-deps";
           buildInputs = with pkgs; [

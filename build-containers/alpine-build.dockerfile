@@ -4,7 +4,6 @@ FROM alpine:3.20
 RUN mkdir -p /result
 # VOLUME /result
 
-ENV PYTHON_VER=3.8.2
 
 # Install Dependencies
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories
@@ -23,6 +22,7 @@ RUN poetry run pyinstaller \
   --noconfirm \
   tfdocs.spec
 
+RUN stat dist/tfdocs
 # # Bundle Binary into Static Binary using StaticX
 # RUN poetry run staticx dist/tfdocs tfdocs
 # due to certain python libraries requiring C-libs, this can't be used currently :/
