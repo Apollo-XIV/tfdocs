@@ -13,26 +13,6 @@ on:
 
 # All jobs must pass before merge
 jobs:
-  build-betas:
-    name: Create Beta Builds
-    runs-on: ubuntu-24.04
-    permissions: write-all
-    # use a matrix to run builds for each platform
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     platform:
-    #       - alpine
-    #       - debian
-    #       # - arch
-    #       - fedora
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Build
-        uses: ./.github/actions/build-appimage
-        # with:
-        #   platform: ${{ matrix.platform }}
-
   sync-environment:
     name: Sync Terraform Environment
     permissions: write-all
@@ -68,3 +48,10 @@ jobs:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
         
+  tag:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/tag-commit
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
