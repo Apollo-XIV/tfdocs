@@ -47,9 +47,17 @@ jobs:
         with:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  create-plan:
+    name: Terraform Plan
+    needs: code-ci
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
         
   tag:
     name: Create Tag
+    needs: code-ci
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
