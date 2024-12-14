@@ -31,10 +31,10 @@ runs:
         elif [[ $branch_name -eq "main" ]]; then
           inc="minor"
         elif [[ $branch_name -eq "release" ]]; then
-          inc="premajor"
+          inc="preminor"
           preid="rc"
         else
-          inc="preminor"
+          inc="prepatch"
           preid="pr"
         fi
         # if branch name is main, do a minor increment
