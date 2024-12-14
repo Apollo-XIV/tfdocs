@@ -21,17 +21,17 @@ runs:
         fi
         # if branch name is dev, do a patch increment
         preid="none"
-        if [ $branch_name -eq "dev" ]; then
+        if [[ $branch_name -eq "dev" ]]; then
           inc="patch"
-        elif [[ $branch_name -eq "main" ]] then
+        elif [[ $branch_name -eq "main" ]]; then
           inc="minor"
-        elif [[ $branch_name -eq "release" ]] then
+        elif [[ $branch_name -eq "release" ]]; then
           inc="premajor"
           preid="rc"
         else
           inc="preminor"
           preid="pr"
-        if
+        fi
         # if branch name is main, do a minor increment
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
