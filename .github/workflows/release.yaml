@@ -95,18 +95,18 @@ jobs:
             inc="Minor"
           elif [[ $branch -eq "dev" ]]; then
             inc="Patch"
-            prerelease="--preprelease"
+            prerelease="--prerelease"
           else
             inc="PR Build"            
-            prerelease="--preprelease"
+            prerelease="--prerelease"
           fi
           
           date=$(date +'%Y-%m-%d')
           title="TFDocs $tag Release"
           release_notes="$inc release of TFDocs, published on $date."
+          echo "Creating release $tag on branch $branch"
 
           gh release create $tag \
-            $prerelease \
             --title $title \
             --notes $release_notes \
             tfdocs.appimage
