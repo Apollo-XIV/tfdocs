@@ -48,6 +48,8 @@ jobs:
   create-release:
     name: Publish Release
     runs-on: ubuntu-24.04
+    needs:
+      - build-appimage
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
