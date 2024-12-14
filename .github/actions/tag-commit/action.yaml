@@ -34,7 +34,7 @@ runs:
           inc="preminor"
           preid="rc"
         else
-          inc="prepatch"
+          inc="prerelease"
           preid="pr"
         fi
         # if branch name is main, do a minor increment
