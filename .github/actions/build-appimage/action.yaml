@@ -14,7 +14,3 @@ runs:
       run: |
         run build-appimage
 
-    - uses: actions/upload-artifact@v4
-      with:
-        path: tfdocs.AppImage
-        name: tfdocs-appimage

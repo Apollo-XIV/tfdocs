@@ -7,25 +7,14 @@ on:
       - dev
 
 jobs:
-  build-betas:
-    name: Create Beta Builds
+  tag:
     runs-on: ubuntu-24.04
-    permissions: write-all
-    # use a matrix to run builds for each platform
-    strategy:
-      matrix:
-        platform:
-          - alpine
-          - fedora
-          # - debian
-          # - arch
     steps:
       - uses: actions/checkout@v4
-      - name: Run Build
-        uses: ./.github/actions/build
+      - uses: ./.github/actions/tag-commit
         with:
-          platform: ${{ matrix.platform }}
-
+          token: ${{secrets.GITHUB_TOKEN}}
+ 
   create-plan:
     name: Terraform Plan
     needs: build-betas
