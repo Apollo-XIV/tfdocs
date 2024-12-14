@@ -70,7 +70,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfdocs-appimage
-          path: tfdocs.appimage
+          path: tfdocs.AppImage
 
       - name: Download PyPI Artefacts
         uses: actions/download-artifact@v4
@@ -86,7 +86,7 @@ jobs:
 
       - run: |
           ls
-          stat tfdocs.appimage
+          stat tfdocs.AppImage
 
       # Create the release and upload builds
 
@@ -109,15 +109,13 @@ jobs:
           date=$(date +'%Y-%m-%d')
           title="TFDocs $tag Release"
           release_notes="$inc release of TFDocs, published on $date."
+
           echo "Creating release $tag on branch $branch"
 
-          gh release create $tag
-          # gh release create $tag \
-          #   --title $title \
-          #   --notes $release_notes \
-          #   tfdocs.appimage \
-          #   tfdocs.whl \
-          #   tfdocs.tar.gz
+          # gh release create $tag
+          gh release create $tag --title $title --notes $release_notes tfdocs.AppImage
+            # tfdocs.whl \
+            # tfdocs.tar.gz
 
 
       # - name: Set current date
