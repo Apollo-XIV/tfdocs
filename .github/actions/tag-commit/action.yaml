@@ -40,6 +40,9 @@ runs:
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
         new_tag="v$new_tag"
+        echo "Previous tag: $tag"
+        echo "Incrementing by $inc on $branch_name"
+        echo "Got new tag: $new_tag"
         # create a new tag
         git tag $new_tag
         git push origin --tags
