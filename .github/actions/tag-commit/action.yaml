@@ -44,11 +44,11 @@ runs:
         echo "Previous tag: $tag"
         echo "Incrementing by $inc on $branch_name"
         echo "Got new tag: $new_tag"
+        poetry verion "$new_tag"
+        git add pyproject.toml
+        git commit --amend --no-edit
         # create a new tag
         git tag $new_tag
         git push origin --tags
 
-        poetry verion "$new_tag"
-        git add pyproject.toml
-        git commit -m "ci: Bump version number"
 

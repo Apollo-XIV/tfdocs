@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-py
+      - name: Publish to PyPI
+        env:
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          twine upload \
+            --non-interactive \
+            --repository testpypi \
+            dist/*
 
   build-appimage:
     name: Create AppImage Build
@@ -48,6 +56,15 @@ jobs:
   #       with:
   #         path: tfdocs.exe
   #         name: tfdocs-win
+  publish-pypi:
+    name: Publish on PyPI
+    runs-on: ubuntu-24.04
+    needs: build-py
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
 
   create-release:
     name: Publish Release
