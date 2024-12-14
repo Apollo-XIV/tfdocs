@@ -7,6 +7,7 @@ inputs:
 runs:
   using: composite
   steps:
+    - uses: ./.github/actions/nix-setup
     - name: Create new tag
       shell: bash
       env:
