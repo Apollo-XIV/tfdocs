@@ -13,6 +13,9 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
         branch_name=$(git rev-parse --abbrev-ref HEAD)
         # find most recent tag on the branch
         tag=$(git tag --merged | tail -n 1)
