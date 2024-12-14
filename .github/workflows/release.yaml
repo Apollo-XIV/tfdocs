@@ -70,19 +70,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfdocs-appimage
-          path: tfdocs.AppImage
+          path: .
 
       - name: Download PyPI Artefacts
         uses: actions/download-artifact@v4
         with:
           name: tfdocs-whl
-          path: tfdocs.whl
+          path: .
 
       - name: Download PyPI Artefacts
         uses: actions/download-artifact@v4
         with:
           name: tfdocs-src
-          path: tfdocs.tar.gz
+          path: .
 
       - run: |
           ls
