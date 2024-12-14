@@ -60,6 +60,10 @@ jobs:
           name: tfdocs-appimage
           path: tfdocs.appimage
 
+      - run: |
+          ls
+          stat tfdocs.appimage
+
       - name: Set current date
         run: echo "CURRENT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
