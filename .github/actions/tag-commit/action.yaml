@@ -22,7 +22,7 @@ runs:
         # find most recent tag on the branch
         tag=$(git tag --merged | tail -n 1)
         # if no tag can be found, use 0.0.0
-        if [[ $tag -eq "" ]]; then
+        if [[ "$tag" = "" ]]; then
           tag="0.0.0"
         fi
         preid="none"
