@@ -92,14 +92,8 @@ jobs:
       - name: Download PyPI Artefacts
         uses: actions/download-artifact@v4
         with:
-          name: tfdocs-whl
-          path: .
-
-      - name: Download PyPI Artefacts
-        uses: actions/download-artifact@v4
-        with:
-          name: tfdocs-src
-          path: .
+          name: tfdocs-pypi
+          path: dist
 
       - run: |
           ls
@@ -136,8 +130,7 @@ jobs:
             --title "$title" \
             --notes "$release_notes" \
             tfdocs.AppImage \
-            tfdocs-0.1.0-py3-none-any.whl \
-            tfdocs-0.1.0.tar.gz
+            dist/* 
 
 
       # - name: Set current date
