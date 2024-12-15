@@ -50,7 +50,10 @@ runs:
         fi
         poetry version "$tidy_tag"
         git add pyproject.toml
-        git commit --amend --no-edit
+        old_message=$(git log -1 --pretty=%B)
+        git commit --amend -m "$old_message
+        
+        ci: bump version number"
         git push origin --force
         echo "Previous tag: $tag"
         echo "Incrementing by $inc on $branch_name"

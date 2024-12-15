@@ -58,6 +58,7 @@ jobs:
         
   tag:
     name: Create Tag
+    if: ! contains(github.event.head_commit.message, 'ci: bump version number')
     # needs: code-ci
     runs-on: ubuntu-24.04
     steps:
