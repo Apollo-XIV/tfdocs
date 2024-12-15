@@ -15,6 +15,7 @@ on:
 jobs:
   sync-environment:
     name: Sync Terraform Environment
+    needs: tag
     permissions: write-all
     uses: ./.github/workflows/sync-env.yaml
     secrets: inherit
@@ -57,7 +58,7 @@ jobs:
         
   tag:
     name: Create Tag
-    needs: code-ci
+    # needs: code-ci
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
