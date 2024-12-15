@@ -41,12 +41,17 @@ runs:
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
         new_tag="v$new_tag"
+        if [[ $preid -ne "none" ]]; then
+          tidy_tag=$(semver -i $new_tag)
+        else
+          tidy_tag=$new_tag
+        fi
+        poetry version "$tidy_tag"
+        git add pyproject.toml
+        git commit --amend --no-edit
         echo "Previous tag: $tag"
         echo "Incrementing by $inc on $branch_name"
         echo "Got new tag: $new_tag"
-        poetry version "$new_tag"
-        git add pyproject.toml
-        git commit --amend --no-edit
         # create a new tag
         git tag $new_tag
         git push origin --tags
