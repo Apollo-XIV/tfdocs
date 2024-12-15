@@ -43,6 +43,7 @@ runs:
         new_tag="v$new_tag"
         if [[ $preid -ne "none" ]]; then
           tidy_tag=$(semver -i $new_tag)
+          echo $tidy_tag
         else
           tidy_tag=$new_tag
         fi
