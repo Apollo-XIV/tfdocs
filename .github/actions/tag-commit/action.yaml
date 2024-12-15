@@ -44,7 +44,7 @@ runs:
         echo "Previous tag: $tag"
         echo "Incrementing by $inc on $branch_name"
         echo "Got new tag: $new_tag"
-        poetry verion "$new_tag"
+        poetry version "$new_tag"
         git add pyproject.toml
         git commit --amend --no-edit
         # create a new tag
