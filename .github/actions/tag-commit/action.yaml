@@ -26,12 +26,12 @@ runs:
         fi
         preid="none"
         # if branch name is dev, do a patch increment
-        if [[ $branch_name -eq "dev" ]]; then
+        if [[ "$branch_name" = "dev" ]]; then
           inc="patch"
         # if branch name is main, do a minor increment
-        elif [[ $branch_name -eq "main" ]]; then
+        elif [[ "$branch_name" = "main" ]]; then
           inc="minor"
-        elif [[ $branch_name -eq "release" ]]; then
+        elif [[ "$branch_name" = "release" ]]; then
           inc="preminor"
           preid="rc"
         else
@@ -41,11 +41,11 @@ runs:
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
         new_tag="v$new_tag"
-        if [[ $preid -ne "none" ]]; then
+        if [[ "$preid" = "none" ]]; then
+          tidy_tag=$new_tag
+        else
           tidy_tag=$(semver -i $new_tag)
           echo $tidy_tag
-        else
-          tidy_tag=$new_tag
         fi
         poetry version "$tidy_tag"
         git add pyproject.toml
