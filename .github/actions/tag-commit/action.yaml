@@ -48,13 +48,18 @@ runs:
           tidy_tag=$(semver -i $new_tag)
           echo $tidy_tag
         fi
-        poetry version "$tidy_tag"
-        git add pyproject.toml
-        old_message=$(git log -1 --pretty=%B)
-        git commit --amend -m "$old_message
-        
-        ci: bump version number"
-        git push origin --force
+        curr_ver=$(poetry version -s)
+        if [[ "$curr_ver" != "$tidy_tag" ]]; then
+          echo "bumping pyproject.toml"
+          poetry version "$tidy_tag"
+          git add pyproject.toml
+          old_message=$(git log -1 --pretty=%B)
+          git commit --amend -m "$old_message
+
+          ci: bump version number"
+          git push origin --force
+        fi
+       
         echo "Previous tag: $tag"
         echo "Incrementing by $inc on $branch_name"
         echo "Got new tag: $new_tag"
