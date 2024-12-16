@@ -42,14 +42,8 @@ runs:
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
         new_tag="v$new_tag"
-        if [[ "$preid" = "none" ]]; then
-          tidy_tag=$new_tag
-        else
-          tidy_tag=$(semver -i $new_tag)
-          echo $tidy_tag
-        fi
         curr_ver=$(poetry version -s)
-        if [[ "$curr_ver" != "$tidy_tag" ]]; then
+        if [[ "$curr_ver" != "$new_tag" ]]; then
           echo "bumping pyproject.toml"
           poetry version "$tidy_tag"
           git add pyproject.toml
