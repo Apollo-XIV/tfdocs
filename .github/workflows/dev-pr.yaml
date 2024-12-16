@@ -13,6 +13,21 @@ on:
 
 # All jobs must pass before merge
 jobs:
+
+  tag:
+    name: Create Tag
+    if: "! contains(github.event.commit.message, 'ci:')"
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
+      - uses: ./.github/actions/tag-commit
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+
   sync-environment:
     name: Sync Terraform Environment
     needs: tag
@@ -56,17 +71,3 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
         
-  tag:
-    name: Create Tag
-    if: "! contains(github.event.head_commit.message, 'ci: bump version number')"
-    # needs: code-ci
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{github.event.pull_request.head.ref}}
-          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
-      - uses: ./.github/actions/tag-commit
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
