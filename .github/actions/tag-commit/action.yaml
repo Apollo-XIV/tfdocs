@@ -37,7 +37,7 @@ runs:
           preid="rc"
         else
           inc="prerelease"
-          preid="pr"
+          preid="dev"
         fi
         # use semver to increment it by one
         new_tag=$(semver -i $inc --preid $preid $tag)
