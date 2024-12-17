@@ -53,13 +53,14 @@ runs:
 
           ci: bump version number"
           git push origin --force
+          ## The amended commit will cause the workflow to rerun and create a tag
+        else
+          ## Only create a new tag if the version number is appropriately bumped
+          echo "Previous tag: $tag"
+          echo "Incrementing by $inc on $branch_name"
+          echo "Got new tag: $new_tag"
+          # create a new tag
+          git tag $new_tag
+          git push origin --tags
         fi
-       
-        echo "Previous tag: $tag"
-        echo "Incrementing by $inc on $branch_name"
-        echo "Got new tag: $new_tag"
-        # create a new tag
-        git tag $new_tag
-        git push origin --tags
-
 
