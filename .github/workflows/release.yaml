@@ -55,6 +55,7 @@ jobs:
     needs: build-py
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Nix
         uses: ./.github/actions/nix-setup
 
@@ -65,13 +66,10 @@ jobs:
           path: dist
 
       - name: Publish to PyPI
-        env:
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-        run: |
-          twine upload \
-            --non-interactive \
-            --repository testpypi \
-            dist/*
+        uses: ./.github/actions/pypi-upload
+        with:
+          repository: testpypi
+          pypi-token: ${{ secrets.TEST_PYPI_TOKEN }}
 
   create-release:
     name: Publish Release
@@ -102,12 +100,7 @@ jobs:
           name: tfdocs-pypi
           path: dist
 
-      - run: |
-          ls
-          stat tfdocs.AppImage
-
       # Create the release and upload builds
-
       - name: Create Release
         env:
           tag: ${{github.ref_name}}
@@ -142,16 +135,3 @@ jobs:
             dist/* 
 
 
-      # - name: Set current date
-      #   run: echo "CURRENT_DATE=" >> $GITHUB_ENV
-
-      # - uses: softprops/action-gh-release@v2
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     body: |
-      #       New release dated ${{env.CURRENT_DATE}}            
-      #     fail_on_unmatched_files: true
-      #     files: |
-      #       tfdocs.appimage
-          # tfdocs.app
-          # tfdocs.exe
