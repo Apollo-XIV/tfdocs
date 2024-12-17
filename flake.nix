@@ -60,6 +60,7 @@
             python311Full
             docker
             docker-buildx
+            checkov
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
           ];
