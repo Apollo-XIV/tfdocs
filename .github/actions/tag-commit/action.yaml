@@ -40,10 +40,10 @@ runs:
           preid="dev"
         fi
         # use semver to increment it by one
-        new_tag=$(semver -i $inc --preid $preid $tag)
-        new_tag="v$new_tag"
+        new_brief_tag=$(semver -i $inc --preid $preid $tag)
+        new_tag="v$new_brief_tag"
         curr_ver=$(poetry version -s)
-        if [[ "$curr_ver" != "$new_tag" ]]; then
+        if [[ "$curr_ver" != "$new_brief_tag" ]]; then
           echo "bumping pyproject.toml"
           poetry version "$tidy_tag"
           git add pyproject.toml
