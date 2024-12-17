@@ -18,12 +18,6 @@ runs:
         checkov --directory .
 
     - if: inputs.plan != "none"
-      uses: actions/download-artifact@v4
-      with:
-        path: .
-        name: ${{inputs.plan}}
-
-    - if: inputs.plan != "none"
       shell: bash
       run: |
         terraform show -json plan | refmt

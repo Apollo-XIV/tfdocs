@@ -38,7 +38,12 @@ jobs:
           |  terraform-j2md \
           >> $GITHUB_STEP_SUMMARY
     
-      - name: Upload plan as artefact
+      - name: Scan Generated Plan File
+        uses: ./.github/actions/checkov-scan
+        with:
+          plan: true
+
+      - name: Upload plan as Artefact
         uses: actions/upload-artifact@v4
         with:
           name: plan

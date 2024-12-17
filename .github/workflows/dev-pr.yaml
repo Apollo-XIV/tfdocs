@@ -55,6 +55,9 @@ jobs:
         with:
           cmd: lint-fix
 
+      - name: Scan Infrastructure
+        uses: ./.github/actions/checkov-scan
+
       - name: Commit changes
         uses: ./.github/actions/commit
         with:
