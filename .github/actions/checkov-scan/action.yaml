@@ -10,14 +10,14 @@ runs:
   using: composite
   steps:
     # Need to have checked out the repo and setup nix
-    - if: inputs.plan == "none"
+    - if: inputs.plan == 'none'
       working-directory: infra
       shell: bash
       run: |
         # scan the infrastructure directory for misconfigurations
         checkov --directory .
 
-    - if: inputs.plan != "none"
+    - if: inputs.plan != 'none'
       shell: bash
       run: |
         terraform show -json plan | refmt
