@@ -44,8 +44,9 @@ runs:
         new_tag="v$new_brief_tag"
         curr_ver=$(poetry version -s)
         if [[ "$curr_ver" != "$new_brief_tag" ]]; then
+          echo "$curr_ver != $new_brief_tag"
           echo "bumping pyproject.toml"
-          poetry version "$tidy_tag"
+          poetry version "$new_tag"
           git add pyproject.toml
           old_message=$(git log -1 --pretty=%B)
           git commit --amend -m "$old_message
