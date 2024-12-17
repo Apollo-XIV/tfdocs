@@ -51,7 +51,7 @@ runs:
           old_message=$(git log -1 --pretty=%B)
           git commit --amend -m "$old_message
 
-          ci: bump version number"
+        ci: bump version number"
           git push origin --force
           ## The amended commit will cause the workflow to rerun and create a tag
         else
