@@ -12,15 +12,8 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/build-py
-      - name: Publish to PyPI
-        env:
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
-        run: |
-          twine upload \
-            --non-interactive \
-            --repository testpypi \
-            dist/*
+      - name: Run Poetry Build
+        uses: ./.github/actions/build-py
 
   build-appimage:
     name: Create AppImage Build
@@ -28,7 +21,7 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@v4
-      - name: Run Build
+      - name: Run Build AppImage
         uses: ./.github/actions/build-appimage
 
   # build-macos:
@@ -65,6 +58,20 @@ jobs:
       - name: Setup Nix
         uses: ./.github/actions/nix-setup
 
+      - name: Download PyPI Artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-pypi
+          path: dist
+
+      - name: Publish to PyPI
+        env:
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          twine upload \
+            --non-interactive \
+            --repository testpypi \
+            dist/*
 
   create-release:
     name: Publish Release
