@@ -1,5 +1,9 @@
 name: Dev Branch Merge
 
+concurrency:
+  group: dev-merge
+  cancel-in-progress: true
+
 # Triggers
 on:
   push:
