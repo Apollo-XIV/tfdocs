@@ -3,24 +3,26 @@ let
   cmds = ''
     #!/usr/bin/env bash
     build() {
-      curr_dir=$(pwd)
-      cd $root
+      pushd $root >> /dev/null
 
+      platform="''${1:-"debian"}"
 
       mkdir -p $root/build
       ${pkgs.docker-buildx}/bin/docker-buildx build . \
-        -f build-containers/static-build.dockerfile \
-        -t tmp/static-build
+        -f build-containers/$platform-build.dockerfile \
+        -t tmp/$platform-build
 
       ${pkgs.docker}/bin/docker run \
         --rm \
         -v $root/build:/result \
-        $@ \
-        tmp/static-build \
-        sh -c "set -e; cp dist/tfdocs /result"
+        tmp/$platform-build \
+        sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
 
-      
-      cd $curr_dir
+      popd >> /dev/null
+    }
+
+    build-appimage() {
+      nix bundle --bundler github:ralismark/nix-appimage $root#default
     }
 
     test-build() {

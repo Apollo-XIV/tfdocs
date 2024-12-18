@@ -1,0 +1,66 @@
+name: Release
+description: Tag the current commit based on the branch
+inputs:
+  token:
+    required: true
+    description: Github token to use
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/nix-setup
+    - name: Create new tag
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git fetch --prune --tags
+        git pull
+
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+        # find most recent tag on the branch
+        tag=$(git tag --merged | sort -V | tail -n 1)
+        # if no tag can be found, use 0.0.0
+        if [[ "$tag" = "" ]]; then
+          tag="0.0.0"
+        fi
+        preid="none"
+        # if branch name is dev, do a patch increment
+        if [[ "$branch_name" = "dev" ]]; then
+          inc="patch"
+        # if branch name is main, do a minor increment
+        elif [[ "$branch_name" = "main" ]]; then
+          inc="minor"
+        elif [[ "$branch_name" = "release" ]]; then
+          inc="preminor"
+          preid="rc"
+        else
+          inc="prerelease"
+          preid="dev"
+        fi
+        # use semver to increment it by one
+        new_tag=$(semver -i $inc --preid $preid $tag)
+        new_tag="v$new_tag"
+        curr_ver=$(poetry version -s)
+        if [[ "$curr_ver" != "$new_tag" ]]; then
+          echo "$curr_ver != $new_tag"
+          echo "bumping pyproject.toml"
+          poetry version "$new_tag"
+          git add pyproject.toml
+          old_message=$(git log -1 --pretty=%B)
+          git commit --amend -m "$old_message
+
+        ci: bump version number"
+          git push origin --force
+          ## The amended commit will cause the workflow to rerun and create a tag
+        else
+          ## Only create a new tag if the version number is appropriately bumped
+          echo "Previous tag: $tag"
+          echo "Incrementing by $inc on $branch_name"
+          echo "Got new tag: $new_tag"
+          # create a new tag
+          git tag $new_tag
+          git push origin --tags
+        fi
+
