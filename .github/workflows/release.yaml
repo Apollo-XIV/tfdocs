@@ -54,7 +54,8 @@ jobs:
     runs-on: ubuntu-24.04
     needs: build-py
     environment: 
-      name: testpypi
+      # use the test repo if it's an incremental tag
+      name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
     permissions:
       id-token: write
     steps:
