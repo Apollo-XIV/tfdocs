@@ -27,6 +27,7 @@ jobs:
           label: ${{ matrix.labels }}
         run: |
           echo $label
+          echo $labels
 
   sync-environment:
     name: Sync Terraform Environment
