@@ -1,0 +1,27 @@
+name: Scan IaC with Checkov
+description: Use the Checkov CLI tool to scan the infrastructure for misconfigurations
+inputs:
+  plan:
+    required: false
+    default: "none"
+    description: If provided, scan a plan file instead of the infra directory
+
+runs:
+  using: composite
+  steps:
+    # Need to have checked out the repo and setup nix
+    - if: inputs.plan == 'none'
+      working-directory: infra
+      shell: bash
+      run: |
+        # scan the infrastructure directory for misconfigurations
+        checkov --directory .
+
+    - if: inputs.plan != 'none'
+      shell: bash
+      run: |
+        pushd infra
+        terraform show -json plan > ../tf.plan.json
+        popd
+        cat tf.plan.json | refmt
+        checkov -f fmt.json
