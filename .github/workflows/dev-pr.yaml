@@ -15,6 +15,7 @@ on:
 jobs:
 
   debug:
+    if: contains(join('', github.event.pull_request.labels.*.name), 'test-release')
     name: Debug labels
     runs-on: ubuntu-24.04
     strategy:
