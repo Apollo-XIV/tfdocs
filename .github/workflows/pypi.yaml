@@ -1,0 +1,32 @@
+name: Publish to PyPI
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: false
+        default: pypi
+        type: string
+jobs:
+  publish-pypi:
+    name: Publish on PyPI
+    runs-on: ubuntu-24.04
+    environment: ${{inputs.repository}}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Download PyPI Artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-pypi
+          path: dist
+
+      - name: Publish to PyPI
+        run: |
+          twine upload \
+            --non-interactive \
+            --repository $repository \
+            --verbose \
+            dist/*

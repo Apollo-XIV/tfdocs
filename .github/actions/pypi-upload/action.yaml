@@ -1,9 +1,6 @@
 name: Publish on PyPI
 description: Publish python artefacts to PyPI
 inputs:
-  pypi-token:
-    required: true
-    description: The PyPI API Key to use
   repository:
     required: false
     default: pypi
@@ -14,10 +11,10 @@ runs:
     - name: Publish to PyPI
       shell: bash
       env:
-        TWINE_PASSWORD: ${{ inputs.pypi_token }}
         repository: ${{ inputs.repository }}
       run: |
         twine upload \
           --non-interactive \
           --repository $repository \
+          --verbose \
           dist/*

@@ -50,26 +50,9 @@ jobs:
   #         path: tfdocs.exe
   #         name: tfdocs-win
   publish-pypi:
-    name: Publish on PyPI
-    runs-on: ubuntu-24.04
     needs: build-py
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/nix-setup
-
-      - name: Download PyPI Artefacts
-        uses: actions/download-artifact@v4
-        with:
-          name: tfdocs-pypi
-          path: dist
-
-      - name: Publish to PyPI
-        uses: ./.github/actions/pypi-upload
-        with:
-          repository: testpypi
-          pypi-token: ${{ secrets.TEST_PYPI_TOKEN }}
+    secrets: inherit    
+    uses: ./.github/workflows/pypi.yaml
 
   create-release:
     name: Publish Release
