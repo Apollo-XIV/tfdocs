@@ -50,13 +50,32 @@ jobs:
   #         path: tfdocs.exe
   #         name: tfdocs-win
   publish-pypi:
-    needs: build-py
-    secrets: inherit    
+    name: Publish on PyPI
+    runs-on: ubuntu-24.04
+    env:
+      test_repo: true
+    environment: 
+      name: ${{ env.test_repo && 'testpypi' || 'pypi' }}
+      url: ${{ env.test_repo && 'https://test.pypi.org/p/tfdocs' || 'https://pypi.org/p/tfdocs' }}
     permissions:
       id-token: write
-    uses: ./.github/workflows/pypi.yaml
-    with:
-      test_repo: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Download PyPI Artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-pypi
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ env.test_repo && 'https://test.pypi.org/legacy/' || 'https://pypi.org/legacy/' }}
+          verbose: true
 
   create-release:
     name: Publish Release
