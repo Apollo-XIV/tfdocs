@@ -2,15 +2,21 @@ name: Publish to PyPI
 on:
   workflow_call:
     inputs:
-      repository:
+      test_repo:
         required: false
         default: pypi
         type: string
+# permissions:
+#   id-token: write
 jobs:
   publish-pypi:
     name: Publish on PyPI
     runs-on: ubuntu-24.04
-    environment: ${{inputs.repository}}
+    environment: 
+      name: ${{inputs.test_repo && 'testpypi' || 'pypi' }}
+      url: ${{ inputs.test_repo && 'https://test.pypi.org/p/tfdocs' || 'https://pypi.org/p/tfdocs' }}
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +30,6 @@ jobs:
           path: dist
 
       - name: Publish to PyPI
-        run: |
-          twine upload \
-            --non-interactive \
-            --repository $repository \
-            --verbose \
-            dist/*
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ inputs.test_repo && 'https://test.pypi.org/legacy/' || 'https://pypi.org/legacy/' }}

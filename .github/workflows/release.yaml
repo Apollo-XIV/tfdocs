@@ -54,7 +54,7 @@ jobs:
     secrets: inherit    
     uses: ./.github/workflows/pypi.yaml
     with:
-      repository: testpypi
+      test_repo: true
 
   create-release:
     name: Publish Release
