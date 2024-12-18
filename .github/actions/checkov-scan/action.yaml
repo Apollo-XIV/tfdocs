@@ -18,6 +18,7 @@ runs:
         checkov --directory .
 
     - if: inputs.plan != 'none'
+      working-directory: infra
       shell: bash
       run: |
         pushd infra
