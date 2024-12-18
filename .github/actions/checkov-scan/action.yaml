@@ -18,8 +18,10 @@ runs:
         checkov --directory .
 
     - if: inputs.plan != 'none'
-      working-directory: infra
       shell: bash
       run: |
-        terraform show -json plan | refmt
+        pushd infra
+        terraform show -json plan > ../tf.plan.json
+        popd infra
+        cat tf.plan.json | refmt
         checkov -f fmt.json
