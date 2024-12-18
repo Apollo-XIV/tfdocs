@@ -14,21 +14,6 @@ on:
 # All jobs must pass before merge
 jobs:
 
-  debug:
-    if: contains(join(github.event.pull_request.labels.*.name, ''), 'test-release')
-    name: Debug labels
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        labels: ${{ github.event.pull_request.labels.*.name }}
-    steps:
-      - env:
-          labels: ${{ join(github.event.pull_request.labels.*.name, '') }}
-          label: ${{ matrix.labels }}
-        run: |
-          echo $label
-          echo $labels
-
   sync-environment:
     name: Sync Terraform Environment
     permissions: write-all
@@ -72,7 +57,7 @@ jobs:
     uses: ./.github/workflows/tf-plan.yaml
 
   tag:
-    if: join(github.event.pull_request.labels.*.name, '') == 'test-release'
+    if: contains(join(github.event.pull_request.labels.*.name, ''), 'test-release')
     needs: code-ci
     name: Create Tag
     runs-on: ubuntu-24.04
