@@ -37,14 +37,10 @@ jobs:
         uses: ./.github/actions/nix-setup
 
       - name: Test Python code
-        uses: ./.github/actions/just
-        with:
-          cmd: py-test-cov-full
+        run: run py-test-cov-full
 
       - name: Lint code
-        uses: ./.github/actions/just
-        with:
-          cmd: lint-fix
+        run: run lint-fix
 
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan
@@ -56,6 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   create-plan:
+    if: always()
     name: Terraform Plan
     needs: code-ci
     permissions: write-all
