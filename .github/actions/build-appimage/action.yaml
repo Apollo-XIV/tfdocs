@@ -1,0 +1,21 @@
+name: Build App
+description: none
+# inputs:
+  # platform:
+  #   description: The platform to build for
+  #   required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup Nix
+      uses: ./.github/actions/nix-setup
+
+    - shell: bash
+      run: |
+        run build-appimage
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: tfdocs.AppImage
+        name: tfdocs-appimage
+

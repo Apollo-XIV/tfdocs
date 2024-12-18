@@ -1,6 +1,5 @@
-name: Build App
-description: none
-# inputs:
+name: Build for PyPI
+description: Build TFDocs artefacts for PyPI publishing
 runs:
   using: composite
   steps:
@@ -9,10 +8,9 @@ runs:
 
     - shell: bash
       run: |
-        run build
-        stat build/tfdocs
+        poetry build
 
     - uses: actions/upload-artifact@v4
       with:
-        path: build/tfdocs
-        name: alpine-build
+        path: dist/*
+        name: tfdocs-pypi

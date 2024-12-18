@@ -5,14 +5,15 @@ import os
 musl_path = os.environ.get('MUSL_PATH')
 zlib_path = os.environ.get('ZLIB_PATH')
 
-binary_paths = [
-    (p, ".")
-    for p in
-    [
-        musl_path,
-        zlib_path
-    ]
-]
+# binary_paths = [
+#     (p, ".")
+#     for p in
+#     [
+#         musl_path,
+#         zlib_path
+#     ]
+# ]
+binary_paths = []
 # print(binary_paths)
 
 a = Analysis(

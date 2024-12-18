@@ -1,0 +1,141 @@
+name: Release
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build-py:
+    name: Create PyPI Artefacts
+    runs-on: ubuntu-24.04
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Poetry Build
+        uses: ./.github/actions/build-py
+
+  build-appimage:
+    name: Create AppImage Build
+    runs-on: ubuntu-24.04
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Build AppImage
+        uses: ./.github/actions/build-appimage
+
+  # build-macos:
+  #   name: Build App for MacOS
+  #   runs-on: macos-latest-large
+  #   permissions: write-all
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run Build for MacOS
+  #       uses: ./.github/actions/build-macos
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         path: tfdocs.app
+  #         name: tfdocs-macos
+
+  # build-win:
+  #   name: Build EXE for Windows
+  #   runs-on: windows-latest
+  #   permissions: write-all
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Run Build for Windows
+  #       uses: ./.github/actions/build-win
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         path: tfdocs.exe
+  #         name: tfdocs-win
+  publish-pypi:
+    name: Publish on PyPI
+    runs-on: ubuntu-24.04
+    needs: build-py
+    environment: 
+      name: testpypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Download PyPI Artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-pypi
+          path: dist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ vars.PYPI_REPO_URL }}
+          verbose: true
+
+  create-release:
+    name: Publish Release
+    runs-on: ubuntu-24.04
+    needs:
+      - build-appimage
+      - build-py
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.BRANCH_BYPASS_KEY }}
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      # DOWNLOAD BUILDS
+
+      - name: Download AppImage
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-appimage
+          path: .
+
+      - name: Download PyPI Artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-pypi
+          path: dist
+
+      # Create the release and upload builds
+      - name: Create Release
+        env:
+          tag: ${{github.ref_name}}
+          GH_TOKEN: ${{github.token}}
+        run: |
+          branch=$(git rev-parse --abbrev-ref HEAD)
+          if [[ $branch -eq "main" ]]; then
+            inc="Minor"
+          elif [[ $branch -eq "dev" ]]; then
+            inc="Patch"
+            prerelease="--prerelease"
+          else
+            inc="PR Build"            
+            prerelease="--prerelease"
+          fi
+          
+          date=$(date +'%Y-%m-%d')
+          title="TFDocs $tag"
+          commit_msg=$(git show -s --format=%B "$tag")
+          release_notes="$inc release of TFDocs, published on $date.
+          Notes:
+          $commit_msg"
+
+          echo "Creating release $tag on branch $branch"
+
+          # gh release create $tag
+          gh release create "$tag" \
+            $prerelease \
+            --title "$title" \
+            --notes "$release_notes" \
+            tfdocs.AppImage \
+            dist/* 
+
+

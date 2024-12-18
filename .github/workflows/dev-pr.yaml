@@ -1,7 +1,7 @@
 name: Dev PR Checks
 
 concurrency:
-  group: dev-pr-${{github.events.pull_request.number}}
+  group: dev-pr-${{github.event.pull_request.number}}
   cancel-in-progress: true
 
 # Triggers
@@ -48,4 +48,11 @@ jobs:
         with:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  create-plan:
+    name: Terraform Plan
+    needs: code-ci
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
         
