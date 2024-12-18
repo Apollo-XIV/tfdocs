@@ -55,7 +55,6 @@ jobs:
     needs: build-py
     environment: 
       name: testpypi
-      # url: ${{ vars.PYPI_AUTH_URL }}
     permissions:
       id-token: write
     steps:
