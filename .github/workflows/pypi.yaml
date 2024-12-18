@@ -33,3 +33,4 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: ${{ inputs.test_repo && 'https://test.pypi.org/legacy/' || 'https://pypi.org/legacy/' }}
+          verbose: true
