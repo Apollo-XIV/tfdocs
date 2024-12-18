@@ -15,7 +15,7 @@ on:
 jobs:
 
   debug:
-    if: join('', github.event.pull_request.labels.*.name) == 'test-release'
+    # if: join('', github.event.pull_request.labels.*.name) == 'test-release'
     name: Debug labels
     runs-on: ubuntu-24.04
     strategy:
@@ -23,6 +23,7 @@ jobs:
         labels: ${{ github.event.pull_request.labels.*.name }}
     steps:
       - env:
+          labels: ${{ join('', github.envent.pull_request.labels.*.name) }}
           label: ${{ matrix.labels }}
         run: |
           echo $label
