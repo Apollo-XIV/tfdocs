@@ -22,6 +22,6 @@ runs:
       run: |
         pushd infra
         terraform show -json plan > ../tf.plan.json
-        popd infra
+        popd
         cat tf.plan.json | refmt
         checkov -f fmt.json
