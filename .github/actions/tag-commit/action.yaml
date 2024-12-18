@@ -20,7 +20,12 @@ runs:
 
         branch_name=$(git rev-parse --abbrev-ref HEAD)
         # find most recent tag on the branch
-        tag=$(git tag --merged | sort -V | tail -n 1)
+        if [[ "$branch_name" == "dev" || "$branch_name" == "main" ]]; then
+          tag=$(git tag --merged | sort -V | grep -Ev '(-dev|-pr)' | tail -n 1)
+        else
+          tag=$(git tag --merged | sort -V | tail -n 1)
+        fi
+        
         # if no tag can be found, use 0.0.0
         if [[ "$tag" = "" ]]; then
           tag="0.0.0"
