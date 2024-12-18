@@ -52,6 +52,8 @@ jobs:
   publish-pypi:
     needs: build-py
     secrets: inherit    
+    permissions:
+      id-token: write
     uses: ./.github/workflows/pypi.yaml
     with:
       test_repo: true
