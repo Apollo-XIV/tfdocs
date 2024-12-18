@@ -55,4 +55,19 @@ jobs:
     permissions: write-all
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
+
+  tag:
+    if: contains(github.event.pull_request.labels.*.name, 'test-release')
+    needs: code-ci
+    name: Create Tag
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
+      - uses: ./.github/actions/tag-commit
+        with:
+          token: ${{secrets.BRANCH_BYPASS_KEY}}
         
