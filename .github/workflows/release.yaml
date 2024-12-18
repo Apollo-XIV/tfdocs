@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-24.04
     environment: 
       name: testpypi
-      url: ${{ secrets.PYPI_AUTH_URL }}
+      # url: ${{ secrets.PYPI_AUTH_URL }}
     permissions:
       id-token: write
     steps:
