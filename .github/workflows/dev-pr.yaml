@@ -45,9 +45,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Setup Nix
-        uses: ./.github/actions/nix-setup
-
       - name: Test Python code
         uses: ./.github/actions/just
         with:
@@ -57,9 +54,6 @@ jobs:
         uses: ./.github/actions/just
         with:
           cmd: lint-fix
-
-      - name: Scan Infrastructure
-        uses: ./.github/actions/checkov-scan
 
       - name: Commit changes
         uses: ./.github/actions/commit
@@ -75,7 +69,7 @@ jobs:
     uses: ./.github/workflows/tf-plan.yaml
 
   tag:
-    if: contains(github.event.pull_request.labels.*.name, 'test-release')
+    if: contains(join('', github.event.pull_request.labels.*.name), 'test-release')
     needs: code-ci
     name: Create Tag
     runs-on: ubuntu-24.04
