@@ -14,6 +14,15 @@ on:
 # All jobs must pass before merge
 jobs:
 
+  debug:
+    name: Debug labels
+    runs-on: ubuntu-24.04
+    steps:
+      - env:
+          labels: ${{github.event.pull_request.labels.*.name}}
+        run: |
+          echo $labels
+
   sync-environment:
     name: Sync Terraform Environment
     permissions: write-all
