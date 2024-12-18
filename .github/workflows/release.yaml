@@ -52,9 +52,10 @@ jobs:
   publish-pypi:
     name: Publish on PyPI
     runs-on: ubuntu-24.04
+    needs: build-py
     environment: 
       name: testpypi
-      # url: ${{ secrets.PYPI_AUTH_URL }}
+      # url: ${{ vars.PYPI_AUTH_URL }}
     permissions:
       id-token: write
     steps:
@@ -72,7 +73,7 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: ${{ secrets.PYPI_REPO_URL }}
+          repository-url: ${{ vars.PYPI_REPO_URL }}
           verbose: true
 
   create-release:

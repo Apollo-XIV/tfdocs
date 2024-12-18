@@ -26,7 +26,7 @@ jobs:
           ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
       - uses: ./.github/actions/tag-commit
         with:
-          token: ${{secrets.GITHUB_TOKEN}}
+          token: ${{secrets.BRANCH_BYPASS_KEY}}
 
   sync-environment:
     name: Sync Terraform Environment
