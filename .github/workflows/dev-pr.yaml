@@ -15,7 +15,7 @@ on:
 jobs:
 
   debug:
-    if: join(github.event.pull_request.labels.*.name, '') == 'test-release'
+    if: contains(join(github.event.pull_request.labels.*.name, ''), 'test-release')
     name: Debug labels
     runs-on: ubuntu-24.04
     strategy:
@@ -72,7 +72,7 @@ jobs:
     uses: ./.github/workflows/tf-plan.yaml
 
   tag:
-    if: contains(join('', github.event.pull_request.labels.*.name), 'test-release')
+    if: join(github.event.pull_request.labels.*.name, '') == 'test-release'
     needs: code-ci
     name: Create Tag
     runs-on: ubuntu-24.04
