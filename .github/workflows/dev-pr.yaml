@@ -23,7 +23,7 @@ jobs:
         labels: ${{ github.event.pull_request.labels.*.name }}
     steps:
       - env:
-          labels: ${{ join('', github.envent.pull_request.labels.*.name) }}
+          labels: ${{ join(github.envent.pull_request.labels.*.name, '') }}
           label: ${{ matrix.labels }}
         run: |
           echo $label
