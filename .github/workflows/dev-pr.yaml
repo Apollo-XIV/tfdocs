@@ -33,6 +33,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
       - name: Test Python code
         uses: ./.github/actions/just
         with:
@@ -42,6 +45,9 @@ jobs:
         uses: ./.github/actions/just
         with:
           cmd: lint-fix
+
+      - name: Scan Infrastructure
+        uses: ./.github/actions/checkov-scan
 
       - name: Commit changes
         uses: ./.github/actions/commit
