@@ -64,6 +64,7 @@
             python311Full
             docker
             docker-buildx
+            checkov
             appimagekit
             checkov
             # Command Scripts Alias
