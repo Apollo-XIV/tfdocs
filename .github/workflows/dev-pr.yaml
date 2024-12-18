@@ -17,11 +17,14 @@ jobs:
   debug:
     name: Debug labels
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        labels: ${{ github.event.pull_request.labels.*.name }}
     steps:
       - env:
-          labels: ${{github.event.pull_request.labels.*.name}}
+          label: ${{ matrix.labels }}
         run: |
-          echo $labels
+          echo $label
 
   sync-environment:
     name: Sync Terraform Environment
