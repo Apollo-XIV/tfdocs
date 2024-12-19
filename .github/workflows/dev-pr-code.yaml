@@ -1,7 +1,7 @@
-name: Dev PR Checks
+name: Dev PR Code Checks
 
 concurrency:
-  group: dev-pr-${{github.event.pull_request.number}}
+  group: dev-pr-code-${{github.event.pull_request.number}}
   cancel-in-progress: true
 
 # Triggers
@@ -13,18 +13,9 @@ on:
 
 # All jobs must pass before merge
 jobs:
-
-  sync-environment:
-    name: Sync Terraform Environment
-    permissions: write-all
-    uses: ./.github/workflows/sync-env.yaml
-    secrets: inherit
-
   code-ci:
     name: Code CI Workflows
     permissions: write-all
-    needs:
-      - sync-environment
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -37,14 +28,10 @@ jobs:
         uses: ./.github/actions/nix-setup
 
       - name: Test Python code
-        uses: ./.github/actions/just
-        with:
-          cmd: py-test-cov-full
+        run: just py-test-cov-full
 
       - name: Lint code
-        uses: ./.github/actions/just
-        with:
-          cmd: lint-fix
+        run: just lint-fix
 
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan
@@ -55,10 +42,18 @@ jobs:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  create-plan:
-    name: Terraform Plan
+  tag:
+    if: contains(join(github.event.pull_request.labels.*.name, ''), 'test-release')
     needs: code-ci
-    permissions: write-all
-    secrets: inherit
-    uses: ./.github/workflows/tf-plan.yaml
+    name: Create Tag
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          ssh-key: ${{secrets.BRANCH_BYPASS_KEY}}
+      - uses: ./.github/actions/tag-commit
+        with:
+          token: ${{secrets.BRANCH_BYPASS_KEY}}
         
