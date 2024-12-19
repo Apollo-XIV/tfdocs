@@ -34,4 +34,36 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
 
+  check-plan-for-changes:
+    name: Check plan for changes
+    runs-on: ubuntu-24.04
+    needs: create-plan
+    outputs:
+      diff: ${{ steps.check.outputs.diff }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: plan
+          path: infra
+
+      - id: check
+        working-directory: infra
+        run: |
+          line_count=$(terraform show plan | wc -l)
+          if [ "$line_count" -gt 5 ]; then
+            echo "Changes detected"
+            echo "diff=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes detected"
+            echo "diff=false" >> $GITHUB_OUTPUT
+          fi
+
         
+  check-check-plan:
+    # if: ${{needs.check-plan-for-changes.outputs.diff == 'true' }}
+    needs: check-plan-for-changes
+    runs-on: ubuntu-24.04
+    steps:
+      - env:
+          diff: ${{needs.check-plan-for-changes.outputs.diff }}
+        run: echo $diff
