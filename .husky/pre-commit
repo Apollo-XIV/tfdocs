@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 set -e
 nix develop --command bash <<-EOF
-  just lint || exit 0
+  run lint || exit 0
 EOF

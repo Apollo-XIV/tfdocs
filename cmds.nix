@@ -69,13 +69,20 @@ let
 				from tfdocs.db.test_handler import MockDb
 				MockDb.delete()
 			EOF
-		  mypy tfdocs
-		  pytest --cov-report term:skip-covered --cov=tfdocs --no-cov-on-fail
+			status=0
+			{
+			  mypy tfdocs
+			} || status=1
+			{
+			  pytest --cov-report term:skip-covered --cov=tfdocs --no-cov-on-fail
+			} || status=1
+
 		  echo CLEANUP
 		  python <<-EOF
 				from tfdocs.db.test_handler import MockDb
 				MockDb.delete()
 			EOF
+			exit $status
 		}
 
 		py-test-cov-full() {
@@ -83,13 +90,19 @@ let
 				from tfdocs.db.test_handler import MockDb
 				MockDb.delete()
 			EOF
-		  mypy tfdocs
-		  pytest --cov-report term-missing --cov=tfdocs --cov-fail-under=80
+			status=0
+			{
+			  mypy tfdocs
+			} || status=1
+			{
+			  pytest --cov-report term-missing --cov=tfdocs --cov-fail-under=80
+			} || status=1
 		  echo CLEANUP
 		  python <<-EOF
 				from tfdocs.db.test_handler import MockDb
 				MockDb.delete()
 			EOF
+			exit $status
 		}
 
 		py-test-int() {
