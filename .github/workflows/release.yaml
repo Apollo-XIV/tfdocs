@@ -132,7 +132,6 @@ jobs:
           $commit_msg"
 
           echo "Creating release $tag on branch $branch"
-          echo "$prerelease"
 
           # gh release create $tag
           cmd="gh release create \"${tag}\" \
@@ -141,7 +140,6 @@ jobs:
             --notes \"${release_notes}\" \
             tfdocs.AppImage \
             dist/*"
-          echo "$cmd"
           url=$({
             
             bash -c "$cmd"
