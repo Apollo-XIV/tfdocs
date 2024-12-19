@@ -50,6 +50,7 @@ jobs:
       - id: check
         working-directory: infra
         run: |
+          terraform init
           line_count=$(terraform show plan | wc -l)
           if [ "$line_count" -gt 5 ]; then
             echo "Changes detected"
