@@ -116,10 +116,10 @@ jobs:
             inc="Minor"
           elif [[ $branch -eq "dev" ]]; then
             inc="Patch"
-            prerelease="--prerelease"
+            prerelease="--prerelease --draft"
           else
             inc="PR Build"            
-            prerelease="--prerelease --latest=false"
+            prerelease="--prerelease --draft"
           fi
           
           date=$(date +'%Y-%m-%d')

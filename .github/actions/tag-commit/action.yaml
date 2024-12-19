@@ -55,9 +55,7 @@ runs:
           poetry version "$new_tag"
           git add pyproject.toml
           old_message=$(git log -1 --pretty=%B)
-          git commit --amend -m "$old_message
-
-        ci: bump version number"
+          git commit --amend --no-edit
           git push origin --force
           ## The amended commit will cause the workflow to rerun and create a tag
         else
