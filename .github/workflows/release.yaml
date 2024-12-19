@@ -119,7 +119,7 @@ jobs:
             prerelease="--prerelease"
           else
             inc="PR Build"            
-            prerelease="--prerelease"
+            prerelease="--prerelease --latest=false"
           fi
           
           date=$(date +'%Y-%m-%d')
