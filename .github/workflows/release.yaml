@@ -130,15 +130,16 @@ jobs:
           $commit_msg"
 
           echo "Creating release $tag on branch $branch"
+          echo "$prerelease"
 
           # gh release create $tag
           url=$({
-            gh release create "$tag" \
+            bash -c "gh release create "$tag" \
             $prerelease \
             --title "$title" \
             --notes "$release_notes" \
             tfdocs.AppImage \
-            dist/*
+            dist/*"
           })
 
           echo "
