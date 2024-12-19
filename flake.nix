@@ -49,7 +49,6 @@
 
         deps =  with pkgs; [
             myEnv
-            just
             poetry
             zsh
             sqlite

@@ -1,10 +1,10 @@
-from tfdocs import main
+from tfdocs.__main__ import main
 import pytest
 from unittest.mock import patch, MagicMock
 
 
-@patch("tfdocs.parse_args")
-@patch("tfdocs.setup_logs")
+@patch("tfdocs.__main__.parse_args")
+@patch("tfdocs.__main__.setup_logs")
 @patch("logging.getLogger")
 def test_valid_main_call(mock_get_logger, mock_setup_logs, mock_parse_args):
     mock_parser = MagicMock()
@@ -25,7 +25,7 @@ def test_valid_main_call(mock_get_logger, mock_setup_logs, mock_parse_args):
         print_log_level=20, enable_log_streaming=False
     )
 
-    mock_get_logger.assert_called_once_with(__name__.split(".")[0])
+    mock_get_logger.assert_called_once_with("tfdocs.__main__")
 
     mock_logger.info.assert_called_once_with("Running command test-command")
 

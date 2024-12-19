@@ -28,10 +28,10 @@ jobs:
         uses: ./.github/actions/nix-setup
 
       - name: Test Python code
-        run: just py-test-cov-full
+        run: run py-test-cov-full
 
       - name: Lint code
-        run: just lint-fix
+        run: run lint-fix
 
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan

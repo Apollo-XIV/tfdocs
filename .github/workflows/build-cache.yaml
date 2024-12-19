@@ -20,5 +20,5 @@ jobs:
       - name: Build nix cache
         shell: bash
         run: |
-          which just
+          which run
           echo "CACHE BUILT"

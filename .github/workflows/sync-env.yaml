@@ -23,7 +23,7 @@ jobs:
       - name: Apply backend.tf
         run: |
           unset AWS_PROFILE
-          just update-env
+          run update-env
         env:
           TF_VAR_ENV: dev
           AWS_REGION: eu-west-1
