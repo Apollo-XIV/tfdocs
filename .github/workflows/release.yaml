@@ -142,7 +142,7 @@ jobs:
           })
 
           echo "
-          ***(New Release $tag)[$url]***
+          ***[New Release $tag]($url)***
 
           ---
           # $title
