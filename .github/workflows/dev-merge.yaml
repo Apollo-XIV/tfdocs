@@ -34,7 +34,7 @@ jobs:
 
   
   apply-plan:
-    if: ${{needs.create-plan.diff == 'true' }}
+    if: ${{needs.create-plan.outputs.diff == 'true' }}
     permissions: write-all
     name: Apply Terraform Plan
     needs: create-plan
