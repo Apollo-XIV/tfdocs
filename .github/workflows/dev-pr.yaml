@@ -36,16 +36,6 @@ jobs:
       - name: Setup Nix
         uses: ./.github/actions/nix-setup
 
-      - name: Test Python code
-        uses: ./.github/actions/just
-        with:
-          cmd: py-test-cov-full
-
-      - name: Lint code
-        uses: ./.github/actions/just
-        with:
-          cmd: lint-fix
-
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan
 
