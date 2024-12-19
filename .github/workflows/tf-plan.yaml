@@ -1,14 +1,29 @@
 name: Terraform Plan
 on:
   workflow_call:
+    inputs:
+      env:
+        type: string
+        default: dev
+        description: The value to pass as TF_VAR_ENV
+    outputs:
+      diff:
+        description: Whether or not the plan proposes any changes
+        value: ${{ jobs.tf-plan.outputs.diff }}
 jobs:
   tf-plan:
     name: Terraform Plan
     permissions: write-all
     runs-on: ubuntu-24.04
+    outputs:
+      diff: ${{ steps.check.outputs.diff }}
     defaults:
       run:
         working-directory: infra
+    env:
+      TF_VAR_ENV: ${{ inputs.env }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,10 +39,6 @@ jobs:
           unset AWS_PROFILE
           terraform init
           terraform plan -out=plan
-        env:
-          TF_VAR_ENV: dev
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Scan Generated Plan File
         uses: ./.github/actions/checkov-scan
@@ -53,3 +64,21 @@ jobs:
         with:
           name: plan
           path: infra/plan
+
+      - id: check
+        working-directory: infra
+        env:
+          TF_VAR_ENV: dev
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          unset AWS_PROFILE
+          terraform init
+          line_count=$(terraform show plan | wc -l)
+          if [ "$line_count" -gt 5 ]; then
+            echo "Changes detected"
+            echo "diff=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes detected"
+            echo "diff=false" >> $GITHUB_OUTPUT
+          fi
