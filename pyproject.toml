@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tfdocs"
-version = "v0.2.12-dev.0"
+version = "v0.2.12-dev.1"
 description = ""
 authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"

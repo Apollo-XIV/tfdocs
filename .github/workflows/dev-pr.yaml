@@ -14,17 +14,9 @@ on:
 # All jobs must pass before merge
 jobs:
 
-  sync-environment:
-    name: Sync Terraform Environment
-    permissions: write-all
-    uses: ./.github/workflows/sync-env.yaml
-    secrets: inherit
-
   code-ci:
     name: Code CI Workflows
     permissions: write-all
-    needs:
-      - sync-environment
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -45,22 +37,11 @@ jobs:
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan
 
-      - name: Scan Infrastructure
-        uses: ./.github/actions/checkov-scan
-
       - name: Commit changes
         uses: ./.github/actions/commit
         with:
           message: "ci: linting"
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  create-plan:
-    if: always()
-    name: Terraform Plan
-    needs: code-ci
-    permissions: write-all
-    secrets: inherit
-    uses: ./.github/workflows/tf-plan.yaml
 
   tag:
     if: contains(join(github.event.pull_request.labels.*.name, ''), 'test-release')
@@ -76,4 +57,20 @@ jobs:
       - uses: ./.github/actions/tag-commit
         with:
           token: ${{secrets.BRANCH_BYPASS_KEY}}
+
+  sync-environment:
+    if: github.event.action == 'opened'
+    name: Sync Terraform Environment
+    permissions: write-all
+    uses: ./.github/workflows/sync-env.yaml
+    secrets: inherit
+
+  create-plan:
+    if: always()
+    name: Terraform Plan
+    needs: sync-environment
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
+
         
