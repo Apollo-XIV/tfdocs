@@ -7,6 +7,7 @@ from textual.reactive import reactive
 from textual.widget import Widget
 
 from tfdocs.models.block import Block
+from tfdocs.models.default_providers import make_welcome_block
 
 
 class Viewer(Widget, can_focus=True, can_focus_children=True):
@@ -30,7 +31,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
     ]
 
     block: reactive[Block | None] = reactive(
-        Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True
+        make_welcome_block(), recompose=True
     )
 
     @property

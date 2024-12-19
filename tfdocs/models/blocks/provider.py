@@ -13,15 +13,19 @@ class Provider(Block):
         """
         Returns all providers in the cache as objects with prefetched names
         """
-        res = cls._db.sql(
+        try:
+            res = cls._db.sql(
+                """
+                SELECT block_id, block_name FROM block 
+                WHERE block_type == 'Provider';
             """
-            SELECT block_id, block_name FROM block 
-            WHERE block_type == 'Provider';
-        """
-        ).fetchall()
-        log.debug(f"Tried listing all providers in the cache, got: {res}")
+            ).fetchall()
+            log.debug(f"Tried listing all providers in the cache, got: {res}")
+            return [Provider(type="Provider", hash=p[0], name=p[1]) for p in res]
+        except Exception as e:
+            log.warn(f"Couldn't list providers in the database: {e}")
+            return []
 
-        return [Provider(type="Provider", hash=p[0], name=p[1]) for p in res]
 
     @classmethod
     def from_name(cls, name: str) -> Union["Provider", None]:
@@ -70,29 +74,36 @@ class Provider(Block):
         """
         Lists all Resources belonging to the provider
         """
-        res = self._db.sql(
-            """
-            SELECT block_id, block_name FROM block
-            WHERE block_type == 'Resource'
-            AND parent_id == ?;
-        """,
-            (self.id,),
-        ).fetchall()
+        try:
+            res = self._db.sql(
+                """
+                SELECT block_id, block_name FROM block
+                WHERE block_type == 'Resource'
+                AND parent_id == ?;
+            """,
+                (self.id,),
+            ).fetchall()
 
-        return [(r[0], r[1]) for r in res]
-        # return [Resource(type="Resource", hash=r[0], name=r[1]) for r in res]
+            return [(r[0], r[1]) for r in res]
+        except Exception as e:
+            log.warn(f"Couldn't list resources in the database: {e}")
+            return [("none", "Couldn't get resources from the provider")]
 
     def list_datasources(self):
         """
         Lists all DataSources belonging to the provider
         """
-        res = self._db.sql(
-            """
-            SELECT block_id, block_name FROM block
-            WHERE block_type == 'DataSource'
-            AND parent_id == ?;
-        """,
-            (self.id,),
-        ).fetchall()
+        try:
+            res = self._db.sql(
+                """
+                SELECT block_id, block_name FROM block
+                WHERE block_type == 'DataSource'
+                AND parent_id == ?;
+            """,
+                (self.id,),
+            ).fetchall()
 
-        return [(d[0], d[1]) for d in res]
+            return [(d[0], d[1]) for d in res]
+        except Exception as e:
+            log.warn(f"Couldn't list data sources in the database: {e}")
+            return [("none", "Couldn't get resources from the provider")]
