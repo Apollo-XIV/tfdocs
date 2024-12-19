@@ -112,7 +112,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
         run: |
           branch=$(git rev-parse --abbrev-ref HEAD)
-          pre release=""
+          prerelease=""
           if [[ "$branch" -eq "main" ]]; then
             inc="Minor"
           elif [[ "$branch" -eq "dev" ]]; then
@@ -134,14 +134,15 @@ jobs:
           echo "$prerelease"
 
           # gh release create $tag
+          cmd="gh release create \"${tag}\" \
+            ${prerelease} \
+            --title \"${title}\" \
+            --notes \"${release_notes}\" \
+            tfdocs.AppImage \
+            dist/*"
+          echo "$cmd"
           url=$({
-            cmd="gh release create \"${tag}\" \
-              ${prerelease} \
-              --title \"${title}\" \
-              --notes \"${release_notes}\" \
-              tfdocs.AppImage \
-              dist/*"
-            echo "$cmd"
+            
             bash -c "$cmd"
           })
 
