@@ -45,6 +45,9 @@ jobs:
       - name: Scan Infrastructure
         uses: ./.github/actions/checkov-scan
 
+      - name: Scan Infrastructure
+        uses: ./.github/actions/checkov-scan
+
       - name: Commit changes
         uses: ./.github/actions/commit
         with:
