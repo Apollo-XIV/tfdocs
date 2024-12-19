@@ -26,7 +26,6 @@ class Provider(Block):
             log.warn(f"Couldn't list providers in the database: {e}")
             return []
 
-
     @classmethod
     def from_name(cls, name: str) -> Union["Provider", None]:
         """

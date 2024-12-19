@@ -30,9 +30,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    block: reactive[Block | None] = reactive(
-        make_welcome_block(), recompose=True
-    )
+    block: reactive[Block | None] = reactive(make_welcome_block(), recompose=True)
 
     @property
     def has_focus_within(self):

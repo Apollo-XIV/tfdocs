@@ -52,9 +52,7 @@ class PaneLayout(Static):
         # load the 'welcome' provider by default
         make_none_provider()
     )
-    block: reactive[Block | None] = reactive(
-        make_welcome_block()
-    )
+    block: reactive[Block | None] = reactive(make_welcome_block())
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="app-grid"):

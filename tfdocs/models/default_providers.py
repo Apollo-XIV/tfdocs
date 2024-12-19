@@ -12,7 +12,9 @@ def make_none_provider() -> Provider:
 
 
 def make_welcome_block() -> Block:
-    return Block(document=dedent('''
+    return Block(
+        document=dedent(
+            """
         # Welcome to TFDocs!
         ---←↓↑→
         ## Navigating the UI
@@ -46,4 +48,6 @@ def make_welcome_block() -> Block:
         > TIP
         >
         > You can also use your mouse if you prefer! Most modern terminals support mouse interactions; click to change focus or tab, select options, and you can even scroll.
-    '''))
+    """
+        )
+    )

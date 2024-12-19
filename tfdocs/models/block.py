@@ -127,9 +127,10 @@ class Block(LazyObject):
 
     @property
     def document(self) -> str:
-        '''
-            Formats a block into a markdown document
-        '''
+        """
+        Formats a block into a markdown document
+        """
+
         def make_document():
             attributes = "\n".join(["- " + a.document for a in self.attributes])
             blocks = "\n".join([b.document for b in self.blocks])
@@ -150,6 +151,7 @@ class Block(LazyObject):
             )
             log.info(doc)
             return doc
+
         return self._late_bind("_document", make_document)
 
     # ---------            STATIC METHODS             ----------
