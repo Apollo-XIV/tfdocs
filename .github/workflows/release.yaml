@@ -55,7 +55,8 @@ jobs:
     needs: build-py
     environment: 
       # use the test repo if it's an incremental tag
-      name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
+      # name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
+      name: pypi
     permissions:
       id-token: write
     steps:
