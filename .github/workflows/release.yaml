@@ -49,14 +49,14 @@ jobs:
   #       with:
   #         path: tfdocs.exe
   #         name: tfdocs-win
+
   publish-pypi:
     name: Publish on PyPI
     runs-on: ubuntu-24.04
     needs: build-py
     environment: 
       # use the test repo if it's an incremental tag
-      # name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
-      name: pypi
+      name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
     permissions:
       id-token: write
     steps:
