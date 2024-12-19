@@ -19,15 +19,12 @@ on:
 # All jobs must pass before merge
 jobs:
   sync-environment:
-    # only bother with syncing envs when the PR is opened, otherwise the user can do it
-    if: github.event.action == 'opened'
     name: Sync Terraform Environment
     permissions: write-all
     uses: ./.github/workflows/sync-env.yaml
     secrets: inherit
 
   create-plan:
-    if: always()
     name: Terraform Plan
     needs: sync-environment
     permissions: write-all
