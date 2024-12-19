@@ -1,65 +1,164 @@
 {pkgs}:
 let 
   cmds = ''
-    #!/usr/bin/env bash
-    build() {
-      pushd $root >> /dev/null
+		#!/usr/bin/env bash
 
-      platform="''${1:-"debian"}"
+		################
+		# BUILD COMMANDS
+		################
 
-      mkdir -p $root/build
-      ${pkgs.docker-buildx}/bin/docker-buildx build . \
-        -f build-containers/$platform-build.dockerfile \
-        -t tmp/$platform-build
+		build() {
+		  pushd $root >> /dev/null
 
-      ${pkgs.docker}/bin/docker run \
-        --rm \
-        -v $root/build:/result \
-        tmp/$platform-build \
-        sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
+		  platform="''${1:-"debian"}"
 
-      popd >> /dev/null
-    }
+		  mkdir -p $root/build
+		  ${pkgs.docker-buildx}/bin/docker-buildx build . \
+		    -f build-containers/$platform-build.dockerfile \
+		    -t tmp/$platform-build
 
-    build-appimage() {
-      nix bundle --bundler github:ralismark/nix-appimage $root#default
-    }
+		  ${pkgs.docker}/bin/docker run \
+		    --rm \
+		    -v $root/build:/result \
+		    tmp/$platform-build \
+		    sh -c "set -e; cp dist/tfdocs /result/tfdocs-$platform"
 
-    test-build() {
-      PLATFORM="''${1:-"ubuntu"}"
-      DOCKERFILE="build-containers/$PLATFORM.dockerfile"
-      TAGNAME="tfdocs:$PLATFORM"
+		  popd >> /dev/null
+		}
 
-      build # run the build command first
+		build-appimage() {
+		  nix bundle --bundler github:ralismark/nix-appimage $root#default
+		}
 
-      # add bin to container
-      mkdir -p build-containers/executable
-      cp build/bin/tfdocs build-containers/executable
+		test-build() {
+		  PLATFORM="''${1:-"ubuntu"}"
+		  DOCKERFILE="build-containers/$PLATFORM.dockerfile"
+		  TAGNAME="tfdocs:$PLATFORM"
 
-      docker build \
-      -f $DOCKERFILE \
-      -t $TAGNAME \
-      --build-arg BASE_IMAGE="$PLATFORM:latest" \
-      $root
+		  build # run the build command first
 
-      
-      docker run -it $TAGNAME
-    }
+		  # add bin to container
+		  mkdir -p build-containers/executable
+		  cp build/bin/tfdocs build-containers/executable
 
-    # Example function for testing
-    test() {
-      echo "Running test task..."
-      # Add your test commands here
-    }
+		  docker build \
+		  -f $DOCKERFILE \
+		  -t $TAGNAME \
+		  --build-arg BASE_IMAGE="$PLATFORM:latest" \
+		  $root
 
-    # Example function for cleaning
-    clean() {
-      echo "Running clean task..."
-      rm .tfdocs.db || true
-      rm .test.tfdocs.db || true
-      rm -rf dist
-      rm -rf build
-    }
+
+		  docker run -it $TAGNAME
+		}
+
+		###############
+		# TEST COMMANDS
+		###############    
+
+		py-test() {
+		  python <<-EOF
+				from tfdocs.db.test_handler import MockDb
+				MockDb.delete()
+			EOF
+		  mypy tfdocs
+		}
+
+
+		py-test-cov() {
+		  python <<-EOF
+				from tfdocs.db.test_handler import MockDb
+				MockDb.delete()
+			EOF
+		  mypy tfdocs
+		  pytest --cov-report term:skip-covered --cov=tfdocs --no-cov-on-fail
+		  echo CLEANUP
+		  python <<-EOF
+				from tfdocs.db.test_handler import MockDb
+				MockDb.delete()
+			EOF
+		}
+
+		py-test-cov-full() {
+		  python <<-EOF
+				from tfdocs.db.test_handler import MockDb
+				MockDb.delete()
+			EOF
+		  mypy tfdocs
+		  pytest --cov-report term-missing --cov=tfdocs --cov-fail-under=80
+		  echo CLEANUP
+		  python <<-EOF
+				from tfdocs.db.test_handler import MockDb
+				MockDb.delete()
+			EOF
+		}
+
+		py-test-int() {
+		  mypy tfdocs
+		  pytest --cov-report html --cov=tfdocs
+		  xdg-open htmlcov/index.html
+		}
+
+		###############
+		# LINTING COMMANDS
+		###############    
+
+		lint() {
+		  py-lint
+		  tf-lint 
+		}
+
+		py-lint() {
+		  black --check .
+		}
+
+		tf-lint() {
+		  tflint || true
+		}
+
+		lint-fix() {
+		  py-lint-fix
+		}
+
+		py-lint-fix() {
+		  black .
+		}
+
+		###############
+		# UTILITY COMMANDS
+		###############    
+
+		repeat() {
+		  cmd="$1"
+		  cmd="''${cmd:-echo}"
+
+		  trap 'echo "Exiting..."; exit' INT # Clean exit on Ctrl+C
+
+		  while true; do
+		    bash -c "$cmd"
+		    read -p "Press Enter to run '$cmd' again..." choice
+		    [[ "$choice" == "q" ]] && break
+		  done
+		}
+
+		update-env() {
+		  env="$1"
+		  env="''${env:-dev}"
+		  cd envs
+		  echo "> initialising terraform"
+		  terraform init >> /dev/null
+		  echo "> syncing backend and environment-based inputs"
+		  terraform apply --auto-approve -var ENV=$env >> /dev/null
+		  echo "> backend updated successfully"
+		}
+
+		# Example function for cleaning
+		clean() {
+		  echo "Running clean task..."
+		  rm .tfdocs.db || true
+		  rm .test.tfdocs.db || true
+		  rm -rf dist
+		  rm -rf build
+		}
   '';
 in
 pkgs.tfdocsUtils.mkCmdRunner cmds

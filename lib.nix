@@ -25,7 +25,7 @@ let
         "$command" "$@"
       else
         echo "Error: '$command' is not a valid command."
-        echo "Available commands: build, test, clean"
+        # echo "Available commands: build, test, clean"
         exit 1
       fi
     '';
