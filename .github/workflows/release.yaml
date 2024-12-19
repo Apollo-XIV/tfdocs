@@ -116,10 +116,10 @@ jobs:
             inc="Minor"
           elif [[ $branch -eq "dev" ]]; then
             inc="Patch"
-            prerelease="--prerelease --draft"
+            prerelease="--prerelease"
           else
             inc="PR Build"            
-            prerelease="--prerelease --draft"
+            prerelease="--prerelease --latest=false --draft"
           fi
           
           date=$(date +'%Y-%m-%d')
@@ -142,8 +142,8 @@ jobs:
           })
 
           echo "
-          ***New Release Created***
-          URL: $url
+          ***(New Release $tag)[$url]***
+
           ---
           # $title
           $release_notes
