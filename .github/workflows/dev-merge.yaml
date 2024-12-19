@@ -11,6 +11,7 @@ on:
       - dev
 
 jobs:
+
   tag:
     name: Create Tag
     runs-on: ubuntu-24.04
@@ -31,7 +32,9 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/tf-plan.yaml
 
+  
   apply-plan:
+    if: ${{needs.create-plan.diff == 'true' }}
     permissions: write-all
     name: Apply Terraform Plan
     needs: create-plan
@@ -71,5 +74,6 @@ jobs:
       - name: Commit changes
         uses: ./.github/actions/commit
         with:
-          message: "ci: terraform apply"
+          message: "[no ci]: terraform apply"
           token: ${{ secrets.GITHUB_TOKEN }}
+
