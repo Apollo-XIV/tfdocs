@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "tfdocs"
-version = "v0.2.11"
-description = ""
+name = "tfdocs-cli"
+version = "v0.2.12-dev.16"
+description = "Terraform provider documentation viewer for the CLI"
 authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"
 packages = [{include = "tfdocs"}]

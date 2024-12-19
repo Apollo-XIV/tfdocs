@@ -49,12 +49,14 @@ jobs:
   #       with:
   #         path: tfdocs.exe
   #         name: tfdocs-win
+
   publish-pypi:
     name: Publish on PyPI
     runs-on: ubuntu-24.04
     needs: build-py
     environment: 
-      name: testpypi
+      # use the test repo if it's an incremental tag
+      name: ${{ contains(github.ref, '-') && 'testpypi' || 'pypi' }}
     permissions:
       id-token: write
     steps:
@@ -111,14 +113,16 @@ jobs:
           GH_TOKEN: ${{github.token}}
         run: |
           branch=$(git rev-parse --abbrev-ref HEAD)
-          if [[ $branch -eq "main" ]]; then
+          echo $branch
+          prerelease=""
+          if [[ "$branch" == "main" ]]; then
             inc="Minor"
-          elif [[ $branch -eq "dev" ]]; then
+          elif [[ "$branch" == "dev" ]]; then
             inc="Patch"
             prerelease="--prerelease"
           else
             inc="PR Build"            
-            prerelease="--prerelease"
+            prerelease="--prerelease --latest=false --draft"
           fi
           
           date=$(date +'%Y-%m-%d')
@@ -131,11 +135,23 @@ jobs:
           echo "Creating release $tag on branch $branch"
 
           # gh release create $tag
-          gh release create "$tag" \
-            $prerelease \
-            --title "$title" \
-            --notes "$release_notes" \
+          cmd="gh release create \"${tag}\" \
+            ${prerelease} \
+            --title \"${title}\" \
+            --notes \"${release_notes}\" \
             tfdocs.AppImage \
-            dist/* 
+            dist/*"
+          url=$({
+            
+            bash -c "$cmd"
+          })
+
+          echo "
+          ***[New Release $tag]($url)***
+
+          ---
+          # $title
+          $release_notes
+          " >> $GITHUB_STEP_SUMMARY
 
 
