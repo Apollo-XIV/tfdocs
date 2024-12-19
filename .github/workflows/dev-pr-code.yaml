@@ -1,7 +1,7 @@
-name: Dev PR Checks
+name: Dev PR Code Checks
 
 concurrency:
-  group: dev-pr-${{github.event.pull_request.number}}
+  group: dev-pr-code-${{github.event.pull_request.number}}
   cancel-in-progress: true
 
 # Triggers
@@ -13,7 +13,6 @@ on:
 
 # All jobs must pass before merge
 jobs:
-
   code-ci:
     name: Code CI Workflows
     permissions: write-all
@@ -57,20 +56,4 @@ jobs:
       - uses: ./.github/actions/tag-commit
         with:
           token: ${{secrets.BRANCH_BYPASS_KEY}}
-
-  sync-environment:
-    if: github.event.action == 'opened'
-    name: Sync Terraform Environment
-    permissions: write-all
-    uses: ./.github/workflows/sync-env.yaml
-    secrets: inherit
-
-  create-plan:
-    if: always()
-    name: Terraform Plan
-    needs: sync-environment
-    permissions: write-all
-    secrets: inherit
-    uses: ./.github/workflows/tf-plan.yaml
-
         
