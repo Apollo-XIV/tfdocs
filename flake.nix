@@ -65,6 +65,7 @@
             docker-buildx
             checkov
             appimagekit
+            checkov
             # Command Scripts Alias
             (import ./cmds.nix {inherit pkgs;})
             nodePackages.semver

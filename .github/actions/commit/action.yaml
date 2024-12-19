@@ -20,16 +20,6 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    # - shell: bash
-    #   run: git stash
-
-    # - name: Pull latest changes to avoid conflicts
-    #   shell: bash
-    #   run: git pull origin ${{ github.event.pull_request.head.ref }}
-
-    # - shell: bash
-    #   run: git stash pop || true
-
     - if: ${{inputs.amend == 'false'}}
       name: Commit changes
       shell: bash

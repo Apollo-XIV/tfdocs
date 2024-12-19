@@ -1,0 +1,32 @@
+name: Dev PR Terraform Checks
+
+concurrency:
+  group: dev-pr-terraform-${{github.event.pull_request.number}}
+  cancel-in-progress: true
+
+# Triggers
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - '**.tf'
+      - 'envs/**'
+      - 'infra/**'
+      - 'tests/**'
+  merge_group:
+
+# All jobs must pass before merge
+jobs:
+  sync-environment:
+    name: Sync Terraform Environment
+    permissions: write-all
+    uses: ./.github/workflows/sync-env.yaml
+    secrets: inherit
+
+  create-plan:
+    name: Terraform Plan
+    needs: sync-environment
+    permissions: write-all
+    secrets: inherit
+    uses: ./.github/workflows/tf-plan.yaml
