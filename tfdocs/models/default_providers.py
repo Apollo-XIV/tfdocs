@@ -15,8 +15,14 @@ def make_welcome_block() -> Block:
     return Block(
         document=dedent(
             """
-        # Welcome to TFDocs!
-        ---←↓↑→
+        ```
+          ________________
+         /_  __/ ____/ __ \\____  __________
+          / / / /_  / / / / __ \\/ ___/ ___/
+         / / / __/ / /_/ / /_/ / /__(__  )
+        /_/ /_/   /_____/\\____/\\___/____/v0.2.15
+        ```
+         > **Terraform Documentation Viewer**
         ## Navigating the UI
         ### Shifting Focus
         ```

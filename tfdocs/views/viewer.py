@@ -18,6 +18,10 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
             background: $panel;
             border: round $primary;
             row-span: 3;
+            scrollbar-size: 1 1;
+        }
+
+        Viewer > * {
             scrollbar-size-vertical: 1;
         }
 
