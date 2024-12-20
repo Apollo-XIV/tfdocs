@@ -164,6 +164,25 @@ let
 		  echo "> backend updated successfully"
 		}
 
+		refmt() {
+			local in; read in;
+			# takes STDIN json input and outputs it via STDOUT formatted
+			python3 - <<-EOF
+				import json
+				import sys
+				raw = json.loads("''${in}")
+				fmt_json = json.dumps(raw, indent = 2)
+				sys.stdout.write(f"{fmt_json}\n")
+			EOF
+		}
+
+		watchlog() {
+			python3 - <<-EOF
+				from tfdocs.logging.watch_logs import main
+				main()
+			EOF
+		}
+
 		# Example function for cleaning
 		clean() {
 		  echo "Running clean task..."
