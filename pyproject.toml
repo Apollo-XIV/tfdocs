@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tfdocs-cli"
-version = "v0.2.16"
+version = "v0.2.17"
 description = "Terraform provider documentation viewer for the CLI"
 authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"
@@ -15,6 +15,7 @@ rich = "^13.8.1"
 result = "^0.17.0"
 textual = "^0.82.0"
 ijson = "^3.3.0"
+rapidfuzz = "^3.11.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
