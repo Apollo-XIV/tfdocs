@@ -82,14 +82,13 @@ def select_provider(query: str) -> Provider:
     if len(providers) > 1:
         selector = SelectProvider([p.name for p in providers])
         i = selector.run(inline=True)
-        return providers[i]
+        return providers[i]  # type: ignore
     # if exactly one is found, return that
     if len(providers) == 1:
         return providers[0]
     # if none are found error and exit
-    else:
-        print(f"[red]Couldn't find a provider from the query \"{query}\"[/]")
-        exit(1)
+    print(f"[red]Couldn't find a provider from the query \"{query}\"[/]")
+    exit(1)
 
 
 class SelectProvider(App):

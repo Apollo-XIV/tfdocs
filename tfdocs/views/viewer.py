@@ -1,3 +1,4 @@
+import logging
 from textwrap import dedent
 from textual.app import ComposeResult
 from textual.containers import VerticalScroll
@@ -9,6 +10,7 @@ from textual.widget import Widget
 from tfdocs.models.block import Block
 from tfdocs.models.default_providers import make_welcome_block
 
+log = logging.getLogger()
 
 class Viewer(Widget, can_focus=True, can_focus_children=True):
     CSS_PATH = "styles/viewer.tcss"
@@ -34,14 +36,15 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    open_document: reactive[Block | None] = reactive(make_welcome_block().document, recompose=True)
+    open_document: reactive[str | None] = reactive(make_welcome_block().document, recompose=True)
 
     @property
     def has_focus_within(self):
         """Are any descendants focused?"""
         try:
             focused = self.screen.focused
-        except NoScreen:
+        except Exception as e:
+            log.debug(e)
             return False
         node = focused
         while node is not None:

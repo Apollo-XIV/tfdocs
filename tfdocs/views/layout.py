@@ -59,7 +59,7 @@ class PaneLayout(Static):
 
     open_document: reactive[str | None] = reactive(make_welcome_block().document)
 
-    def __init__(self, open_to: Block | None):
+    def __init__(self, open_to: Block | None = None):
         self.open_to = open_to
         super().__init__()
 
@@ -76,10 +76,13 @@ class PaneLayout(Static):
         if provider is not None:
             self.provider = provider
             self.mutate_reactive(PaneLayout.provider)
-        doc = Block.from_id(str(message.option.id)).document
-        self.open_document = doc
-        self.mutate_reactive(PaneLayout.open_document)
-        log.debug(f"Mutating: {self.provider} {self.open_document}")
+        new_block = Block.from_id(str(message.option.id))
+        if new_block is not None:
+            self.open_document = new_block.document
+            self.mutate_reactive(PaneLayout.open_document)
+            log.debug(f"Mutating: {self.provider} {self.open_document}")
+        else:
+            log.warn("Couldn't load the new document page")
 
     def on_mount(self):
         if self.open_to is not None:
