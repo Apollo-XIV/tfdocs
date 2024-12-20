@@ -183,6 +183,10 @@ let
 			EOF
 		}
 
+		website() {
+			python3 -m web
+		}
+
 		# Example function for cleaning
 		clean() {
 		  echo "Running clean task..."
