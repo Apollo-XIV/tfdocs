@@ -13,7 +13,7 @@ def test_valid_main_call(mock_get_logger, mock_setup_logs, mock_parse_args):
         "serve_logs": False,
         "func": MagicMock(name="mock_func"),
         "command": "test-command",
-        "provider": None
+        "provider": None,
     }
     mock_parse_args.return_value = (mock_parser, mock_args)
 

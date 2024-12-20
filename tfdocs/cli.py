@@ -69,13 +69,14 @@ def parse_args():
 
 def select_provider(query: str) -> Provider:
     """
-        Process the given user input and figure out exactly what provider they 
-        want to open
+    Process the given user input and figure out exactly what provider they
+    want to open
     """
     MATCH_THRESHHOLD = 90
     # fuzzy search for a provider by name in the database
     providers = [
-        p for p in Provider.list_providers()
+        p
+        for p in Provider.list_providers()
         if fuzz.partial_ratio(query, p.name) > MATCH_THRESHHOLD
     ]
     # if more than one is found, prompt the user to select one
@@ -87,7 +88,7 @@ def select_provider(query: str) -> Provider:
     if len(providers) == 1:
         return providers[0]
     # if none are found error and exit
-    print(f"[red]Couldn't find a provider from the query \"{query}\"[/]")
+    print(f'[red]Couldn\'t find a provider from the query "{query}"[/]')
     exit(1)
 
 

@@ -3,6 +3,7 @@
     It is reponsible for ensuring that at whatever screen-size the UI is legible
     and the UX is pleasant.
 """
+
 import logging
 from textual import on
 from textual.app import ComposeResult
