@@ -3,22 +3,23 @@
     It is reponsible for ensuring that at whatever screen-size the UI is legible
     and the UX is pleasant.
 """
-
-from textual import log, on
-from textual.screen import Screen
+import logging
+from textual import on
 from textual.app import ComposeResult
 from textual.widgets import Static, OptionList
 from textual.reactive import reactive
-from textual.containers import Container, Horizontal, Vertical
+from textual.containers import Horizontal, Vertical
 from textual.binding import Binding
 
-from tfdocs.utils import try_wrap
 from tfdocs.models.block import Block
 from tfdocs.models.blocks.provider import Provider
 from tfdocs.models.default_providers import make_welcome_block, make_none_provider
 from tfdocs.views.viewer import Viewer
 from tfdocs.views.switcher import Switcher
 from tfdocs.views.special import Special
+
+
+log = logging.getLogger()
 
 
 class PaneLayout(Static):
@@ -52,28 +53,29 @@ class PaneLayout(Static):
         # load the 'welcome' provider by default
         make_none_provider()
     )
-    block: reactive[Block | None] = reactive(make_welcome_block())
+    open_document: reactive[str | None] = reactive(make_welcome_block().document)
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="app-grid"):
-            yield Viewer(classes="pane focussed").data_bind(PaneLayout.block)
+            yield Viewer(classes="pane focussed").data_bind(PaneLayout.open_document)
             yield RightPanel(classes="").data_bind(PaneLayout.provider)
 
     @on(OptionList.OptionSelected)
     def handle_select(self, message: OptionList.OptionSelected):
         provider = Provider.from_name(str(message.option.prompt))
+        self.cycle_focus(forward=True)
         if provider is not None:
             self.provider = provider
             self.mutate_reactive(PaneLayout.provider)
-        doc = Block.from_id(str(message.option.id))
-        self.block = doc
-        self.mutate_reactive(PaneLayout.block)
-        log(f"Mutating: {self.provider} {self.block}")
+        doc = Block.from_id(str(message.option.id)).document
+        self.open_document = doc
+        self.mutate_reactive(PaneLayout.open_document)
+        log.debug(f"Mutating: {self.provider} {self.open_document}")
 
     def on_mount(self):
         viewer = self.query_one(Viewer)
         viewer.focus()
-        log(f"Viewer Styles: {viewer.styles}")
+        log.debug(f"Viewer Styles: {viewer.styles}")
 
     async def action_cycle_focus_forward(self):
         self.cycle_focus(forward=True)
@@ -105,7 +107,7 @@ class PaneLayout(Static):
             else:
                 self.query_one(RightPanel).add_class("focussed")
 
-            log(
+            log.debug(
                 f"""
             prev focus:
              - type       = {child}
@@ -120,7 +122,7 @@ class PaneLayout(Static):
         new_focus_pane = res[new_focussed_index]
         new_focus_pane.focus()
         new_focus_pane.add_class("focussed")
-        log(
+        log.debug(
             f"""
             new focus classes: 
              - type       = {new_focus_pane}
@@ -130,11 +132,11 @@ class PaneLayout(Static):
         """
         )
 
-        log(f"focussed: {res[new_focussed_index]}")
+        log.debug(f"focussed: {res[new_focussed_index]}")
 
     def on_resize(self):
         if self.size.width < 90:
-            log("The Window is small, switching to thin-layout")
+            log.debug("The Window is small, switching to thin-layout")
             self.query_one(Viewer).add_class("thin-layout")
             self.query_one(RightPanel).add_class("thin-layout")
         else:
@@ -180,7 +182,7 @@ class RightPanel(Static):
 
     def on_resize(self):
         if self.size.height < 40:
-            log("The Window is short, switching to short-layout")
+            log.debug("The Window is short, switching to short-layout")
             self.query_one(Special).add_class("short-layout")
             self.query_one(Switcher).add_class("short-layout")
         else:

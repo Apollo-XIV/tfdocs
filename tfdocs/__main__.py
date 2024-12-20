@@ -12,9 +12,10 @@ def main():
 
     if "func" in args:
         command = args['command']
+        provider = args['provider']
         log.info(f"Running command {command}")
         try:
-            if command is None:
+            if command is None and provider is not None:
                 provider = select_provider(args['provider'])
                 print(provider)
                 # args["func"](provider)

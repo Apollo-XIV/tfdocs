@@ -104,7 +104,7 @@ class Attribute(LazyObject):
         if self.computed:
             types += ", computed"
         desc = ""
-        if self.description != None:
+        if self.description != "None":
             desc += f": {self.description}"
         string = f"**{self.name}** (*{types}*){desc}"
         return string
