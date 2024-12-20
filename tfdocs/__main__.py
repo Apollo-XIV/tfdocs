@@ -1,5 +1,5 @@
 from tfdocs.logging import setup_logs
-from tfdocs.cli import parse_args
+from tfdocs.cli import parse_args, select_provider
 import logging
 
 
@@ -15,8 +15,9 @@ def main():
         log.info(f"Running command {command}")
         try:
             if command is None:
-                pass
-                args["func"](args["provider"])
+                provider = select_provider(args['provider'])
+                print(provider)
+                # args["func"](provider)
             else:
                 args["func"]()
         except Exception as e:
