@@ -20,6 +20,8 @@ from tfdocs.views.special import Special
 
 
 log = logging.getLogger()
+THIN_WIDTH = 90
+SHORT_HEIGHT = 40
 
 
 class PaneLayout(Static):
@@ -44,6 +46,7 @@ class PaneLayout(Static):
             display: none;
         }
     """
+
     BINDINGS = [
         Binding("tab", "cycle_focus_forward", priority=True),
         Binding("shift+tab", "cycle_focus_back", priority=True),
@@ -53,7 +56,12 @@ class PaneLayout(Static):
         # load the 'welcome' provider by default
         make_none_provider()
     )
+
     open_document: reactive[str | None] = reactive(make_welcome_block().document)
+
+    def __init__(self, open_to: Block | None):
+        self.open_to = open_to
+        super().__init__()
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="app-grid"):
@@ -63,7 +71,8 @@ class PaneLayout(Static):
     @on(OptionList.OptionSelected)
     def handle_select(self, message: OptionList.OptionSelected):
         provider = Provider.from_name(str(message.option.prompt))
-        self.cycle_focus(forward=True)
+        if self.size.width < THIN_WIDTH:
+            self.cycle_focus(forward=True)
         if provider is not None:
             self.provider = provider
             self.mutate_reactive(PaneLayout.provider)
@@ -73,6 +82,11 @@ class PaneLayout(Static):
         log.debug(f"Mutating: {self.provider} {self.open_document}")
 
     def on_mount(self):
+        if self.open_to is not None:
+            self.provider = self.open_to
+            self.open_document = self.open_to.document
+            self.mutate_reactive(PaneLayout.provider)
+            self.mutate_reactive(PaneLayout.open_document)
         viewer = self.query_one(Viewer)
         viewer.focus()
         log.debug(f"Viewer Styles: {viewer.styles}")
@@ -135,7 +149,7 @@ class PaneLayout(Static):
         log.debug(f"focussed: {res[new_focussed_index]}")
 
     def on_resize(self):
-        if self.size.width < 90:
+        if self.size.width < THIN_WIDTH:
             log.debug("The Window is small, switching to thin-layout")
             self.query_one(Viewer).add_class("thin-layout")
             self.query_one(RightPanel).add_class("thin-layout")
@@ -181,21 +195,21 @@ class RightPanel(Static):
             yield Switcher(classes="pane").data_bind(RightPanel.provider)
 
     def on_resize(self):
-        if self.size.height < 40:
+        if self.size.height < SHORT_HEIGHT:
             log.debug("The Window is short, switching to short-layout")
             self.query_one(Special).add_class("short-layout")
             self.query_one(Switcher).add_class("short-layout")
         else:
             self.query_one(Special).remove_class("short-layout")
             self.query_one(Switcher).remove_class("short-layout")
-        if self.size.width >= 90:
+        if self.size.width >= THIN_WIDTH:
             self.query_one(Vertical).add_class("wide")
         else:
             self.query_one(Vertical).remove_class("wide")
 
     def on_blur(self):
         # if using short layout and not thin-layout
-        if self.size.height < 40 and self.size.width > 90:
+        if self.size.height < SHORT_HEIGHT and self.size.width > THIN_WIDTH:
             # whenever the element loses focus, add display persistence for most
             # recently focussed pane
             try:

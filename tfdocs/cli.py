@@ -1,13 +1,17 @@
-import logging
 import argparse
+import time
+from rich import print
 from textual import on
 from textual.app import App
 from textual.widgets import OptionList
 from rapidfuzz import fuzz
+
 import tfdocs.logging.watch_logs as watch_logs
 import tfdocs.db.args as init
+
 from tfdocs.models.blocks.provider import Provider
 from tfdocs.views.app import app
+from tfdocs.views.list import List
 
 
 def parse_args():
@@ -68,7 +72,7 @@ def select_provider(query: str) -> Provider:
         Process the given user input and figure out exactly what provider they 
         want to open
     """
-    MATCH_THRESHHOLD = 60
+    MATCH_THRESHHOLD = 90
     # fuzzy search for a provider by name in the database
     providers = [
         p for p in Provider.list_providers()
@@ -78,14 +82,14 @@ def select_provider(query: str) -> Provider:
     if len(providers) > 1:
         selector = SelectProvider([p.name for p in providers])
         i = selector.run(inline=True)
-        print(i)
         return providers[i]
     # if exactly one is found, return that
     if len(providers) == 1:
         return providers[0]
     # if none are found error and exit
     else:
-        raise ValueError("Couldn't find a provider matching that query")
+        print(f"[red]Couldn't find a provider from the query \"{query}\"[/]")
+        exit(1)
 
 
 class SelectProvider(App):
@@ -93,11 +97,12 @@ class SelectProvider(App):
         self.options = options
         super().__init__()
 
+    def action_cursor_down(self):
+        self.query_one(List).action_cursor_down()
+
     def compose(self):
-        yield OptionList(*self.options)
+        yield List(self.options)
 
     @on(OptionList.OptionSelected)
-    def on_option_list_option_selected(self, event):
-        print("AAAAAAAAAAa")
-        print(event)
-        self.exit(0)
+    def handle_select(self, message: OptionList.OptionSelected):
+        self.exit(message.option_index)

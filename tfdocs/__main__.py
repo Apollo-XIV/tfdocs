@@ -17,8 +17,7 @@ def main():
         try:
             if command is None and provider is not None:
                 provider = select_provider(args['provider'])
-                print(provider)
-                # args["func"](provider)
+                args["func"](provider)
             else:
                 args["func"]()
         except Exception as e:
