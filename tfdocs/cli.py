@@ -52,7 +52,7 @@ def parse_args():
         "--provider",
         action="store",
         default=None,
-        help="Send logs to log viewing server",
+        help="Opens the GUI to the given provider directly",
     )
 
     args = vars(parser.parse_args())
