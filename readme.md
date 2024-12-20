@@ -5,7 +5,17 @@ TFDocs is a command-line tool that lets you view provider documentation from the
 
 ## Usage
 ### Setup
+Before you can view any documentation, you need to initialise the cache. First, navigate to a directory with terraform initialised and run the following command:
+```
+  tfdocs init
+```
+This will create a cache file called `.tfdocs.db` in the directory that the command was run. When TFDocs runs, it searches for a cache in the local directory. If you want to run tfdocs from another directory you can move the cache in the filesystem.
+<!-- If you want to run tfdocs from another directory you can either pass the -c flag, or you can move the cache in the filesystem. -->
+
 ### Commands
+- `tfdocs`: Top-level entrypoint for the interface. Running this command will open the graphical view of the program
+  - `init`: Sub-command that must be run at least once in a working directory in order to generate the local cache
+  <!-- - `<provider-name>`: Opens the graphical view directly to the specified provider -->
 
 ## Installation
 > ### Coming Soon: Install Script (trivial, not recommended for secure environments)
