@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tfdocs-cli"
-version = "v0.2.15"
+version = "v0.2.16"
 description = "Terraform provider documentation viewer for the CLI"
 authors = ["acrease <alex@crease.sh>"]
 readme = "readme.md"
@@ -8,10 +8,6 @@ packages = [{include = "tfdocs"}]
 
 [tool.poetry.scripts]
 tfdocs = "tfdocs.__main__:main"
-tfd-ui = "tfdocs.views.app:app"
-components = "tfdocs.views.component_viewer:app"
-watchlog = "tfdocs.logging.watch_logs:main"
-refmt = "tfdocs.utils:refmt"
 
 [tool.poetry.dependencies]
 python = "^3.11,<3.14"

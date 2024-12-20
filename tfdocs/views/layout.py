@@ -15,6 +15,7 @@ from textual.binding import Binding
 from tfdocs.utils import try_wrap
 from tfdocs.models.block import Block
 from tfdocs.models.blocks.provider import Provider
+from tfdocs.models.default_providers import make_welcome_block, make_none_provider
 from tfdocs.views.viewer import Viewer
 from tfdocs.views.switcher import Switcher
 from tfdocs.views.special import Special
@@ -33,7 +34,7 @@ class PaneLayout(Static):
         RightPanel {
             max-width: 50;
         }
-        
+
         .focussed {
             display: block !important;
         }
@@ -48,11 +49,10 @@ class PaneLayout(Static):
     ]
 
     provider: reactive[Provider | None] = reactive(
-        Provider.from_name("registry.terraform.io/hashicorp/archive")
+        # load the 'welcome' provider by default
+        make_none_provider()
     )
-    block: reactive[Block | None] = reactive(
-        Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d")
-    )
+    block: reactive[Block | None] = reactive(make_welcome_block())
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="app-grid"):

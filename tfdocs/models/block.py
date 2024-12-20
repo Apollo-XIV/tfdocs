@@ -35,12 +35,13 @@ class Block(LazyObject):
 
     def __init__(
         self,
-        type: str,
+        type: str = "misc",
         name: str | None = None,
         hash: str | None = None,
         parent_path: str | None = None,
         parent_hash: str | None = None,
         attributes: list["Attribute"] | None = None,
+        document: str | None = None,
         blocks: list["Block"] | None = None,
     ):
         self._block_type = type
@@ -49,6 +50,7 @@ class Block(LazyObject):
         self._parent_path = parent_path
         self._parent_hash = parent_hash
         self._attributes = attributes
+        self._document = document
         self._blocks = blocks
 
     @property
@@ -125,25 +127,32 @@ class Block(LazyObject):
 
     @property
     def document(self) -> str:
-        attributes = "\n".join(["- " + a.document for a in self.attributes])
-        blocks = "\n".join([b.document for b in self.blocks])
-        doc = (
-            dedent(
-                f"""
-                # {self.name}
-                ## Attributes
-            """
+        """
+        Formats a block into a markdown document
+        """
+
+        def make_document():
+            attributes = "\n".join(["- " + a.document for a in self.attributes])
+            blocks = "\n".join([b.document for b in self.blocks])
+            doc = (
+                dedent(
+                    f"""
+                    # {self.name}
+                    ## Attributes
+                """
+                )
+                + attributes
+                + dedent(
+                    f"""
+                     ## Nested Blocks
+                """
+                )
+                + blocks
             )
-            + attributes
-            + dedent(
-                f"""
-                 ## Nested Blocks
-            """
-            )
-            + blocks
-        )
-        log.info(doc)
-        return doc
+            log.info(doc)
+            return doc
+
+        return self._late_bind("_document", make_document)
 
     # ---------            STATIC METHODS             ----------
 

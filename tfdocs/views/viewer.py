@@ -7,6 +7,7 @@ from textual.reactive import reactive
 from textual.widget import Widget
 
 from tfdocs.models.block import Block
+from tfdocs.models.default_providers import make_welcome_block
 
 
 class Viewer(Widget, can_focus=True, can_focus_children=True):
@@ -17,6 +18,10 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
             background: $panel;
             border: round $primary;
             row-span: 3;
+            scrollbar-size: 1 1;
+        }
+
+        Viewer > * {
             scrollbar-size-vertical: 1;
         }
 
@@ -29,9 +34,7 @@ class Viewer(Widget, can_focus=True, can_focus_children=True):
         Binding("k", "scroll_up", "Scroll Up", show=False),
     ]
 
-    block: reactive[Block | None] = reactive(
-        Block.from_id("3c09cf2d1f63e6886c1ff5bd2a9fa49d"), recompose=True
-    )
+    block: reactive[Block | None] = reactive(make_welcome_block(), recompose=True)
 
     @property
     def has_focus_within(self):
