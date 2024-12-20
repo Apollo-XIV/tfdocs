@@ -1,7 +1,9 @@
+import logging
 import argparse
 import tfdocs.logging.watch_logs as watch_logs
 import tfdocs.db.args as init
 from tfdocs.views.app import app
+
 
 
 def parse_args():
@@ -15,7 +17,10 @@ def parse_args():
     # subcommands
     subparsers = parser.add_subparsers(title="subcommands", dest="command")
 
-    subcommands = {"init": init.parse_args, "watch-logs": watch_logs.parse_args}
+    subcommands = {
+        "init": init.parse_args,
+        "watch-logs": watch_logs.parse_args,
+    }
 
     for key, command in subcommands.items():
         command(subparsers)
@@ -34,17 +39,15 @@ def parse_args():
         default=False,
         help="Send logs to log viewing server",
     )
+    parser.add_argument(
+        "-p",
+        "--provider",
+        action="store",
+        default=None,
+        help="Send logs to log viewing server",
+    )
 
-    # try:
     args = vars(parser.parse_args())
-    # except SystemExit as e:
-    # print("test")
-    # raise argparse.ArgumentError(None, e)
-
-    command_key = args["command"]
-
-    # if command_key not in subcommands and command_key is not None:
-    #     raise argparse.ArgumentError(None, f"Invalid command '{command_key}'")
 
     # make sure verbosity is in the correct range and prepare for logging module
     if args["verbose"] not in range(0, 3):
@@ -54,3 +57,9 @@ def parse_args():
     args["verbose"] = 30 - 10 * args["verbose"]
 
     return parser, args
+
+def select_provider():
+    """
+        Process the given user input and figure out exactly what provider they 
+        want to open
+    """

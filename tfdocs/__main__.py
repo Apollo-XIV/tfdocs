@@ -8,11 +8,17 @@ def main():
 
     setup_logs(print_log_level=args["verbose"], enable_log_streaming=args["serve_logs"])
     log = logging.getLogger(__name__)
+    log.debug(args)
 
     if "func" in args:
-        log.info(f"Running command {args['command']}")
+        command = args['command']
+        log.info(f"Running command {command}")
         try:
-            args["func"]()
+            if command is None:
+                pass
+                args["func"](args["provider"])
+            else:
+                args["func"]()
         except Exception as e:
             log.fatal(f"Caught an unhandled error, exiting...: {e}")
             exit(1)
