@@ -29,7 +29,7 @@ The top-level entrypoint for the interface is called `tfdocs`. Running this comm
 ## Installation
 > ### Coming Soon: Install Script (trivial, not recommended for secure environments)
 > Too busy to fuss with any of the more involved methods? Run this command in a Linux or Mac terminal to install the program:
-> `curl tfdocs.crease.sh | bash`
+> `curl tfdocs.crease.sh/install | bash`
 
 ### PipX (simple, requires Python and PipX, works for any platform)
 Tfdocs is published on PyPI under the name `tfdocs-cli`. You can add Tfdocs to a project by running `pip install tfdocs-cli`. If you want to install Tfdocs system-wide in a reliable fashion, it's recommended to use *pipx* instead of `pip install -U tfdocs-cli`. You can use *pipx* like so:
@@ -47,7 +47,7 @@ This is the current primary method of installation for different platforms. In t
   ```
     mv tfdocs.AppImage /usr/local/bin
   ```
-3. Start a new terminal session, or source your .<shell>rc file again
+3. Start a new terminal session, or source your shell's init script (i.e. `.bashrc`) again
   ```
     source ~/.bashrc
   ```
