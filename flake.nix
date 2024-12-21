@@ -63,6 +63,7 @@
             python311Full
             docker
             docker-buildx
+            awscli2
             checkov
             appimagekit
             checkov

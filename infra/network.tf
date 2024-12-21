@@ -1,8 +1,8 @@
 locals {
-  vpc_cidr             = "10.100.0.0/16"
-  address_space        = [for block in cidrsubnets(local.vpc_cidr, 1, 1) : cidrsubnets(block, 2, 2)]
-  public_subnet_cidrs  = local.address_space[0]
-  private_subnet_cidrs = local.address_space[1]
+  vpc_cidr             = "10.100.0.0/24"
+  address_space        = cidrsubnets(local.vpc_cidr, 2, 2, 2, 2)          # Split into 4 CIDR blocks
+  public_subnet_cidrs  = [local.address_space[0], local.address_space[1]] # Use the first two blocks
+  private_subnet_cidrs = [local.address_space[2], local.address_space[3]] # Use the next two blocks
 }
 
 module "network" {
