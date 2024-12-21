@@ -63,6 +63,7 @@
             python311Full
             docker
             docker-buildx
+            vscode-langservers-extracted
             awscli2
             checkov
             appimagekit

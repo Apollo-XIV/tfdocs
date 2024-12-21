@@ -1,0 +1,19 @@
+
+body {
+  color: black;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+#main {
+  background-color: gray;
+  border-radius: 1rem;
+}
+
+header {
+  width: 50rem;
+  line-height: 4rem;
+  padding-top: -1rem;
+  background-color: red;
+}

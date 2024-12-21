@@ -184,7 +184,11 @@ let
 		}
 
 		website() {
-			python3 -m web
+			python3 web/__init__.py
+		}
+
+		prod-site() {
+			gunicorn -w 4 web:app
 		}
 
 		# Example function for cleaning
