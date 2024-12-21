@@ -51,7 +51,9 @@ resource "aws_lb_listener" "frontend_https" {
 }
 
 resource "aws_lb_target_group" "main" {
-
+  vpc_id   = module.network.vpc_id
+  port     = 80
+  protocol = "HTTP"
 }
 
 resource "aws_security_group" "lb" {
