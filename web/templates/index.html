@@ -9,14 +9,32 @@
 <body>
   <div id="main">
     <header>
-      <h1>TFDocs</h1>
+      <h1><a href="/">TFDocs</a></h1>
     </header>
     <main>
-      <p>This is a simple Flask application with an external CSS file.</p>
-      <p>Edit the <code>styles.css</code> file in the <code>static/css</code> directory to customize your styles.</p>
+      <p><i>Terraform documentation viewer for the command-line.</i></p>
+      <p>
+        TFDocs is a command-line application that makes it easy to view the
+        Terraform documentation. TFDocs provides an intuitive GUI containing
+        all of the available information from your local directory, storing it
+        in a local cache so it can be used offline.
+      </p>
+      <h3>Installation</h3>
+      <code>pipx install tfdocs</code>
+      <p style="text-align: center; line-height: 0.5rem;">or</p>
+      <code>curl tfdocs.crease.sh/install | bash</code>
+      <h3>Releases</h3>
+      <p> The following recent versions of TFDocs are available. You can view all releases <a href="/releases">here</a></p>
+      <or>
+        {% for release in releases %}
+          <li><a href="/releases/{{release}}">{{release}}</a></li>
+        {% endfor %}
+      </or>
     </main>
     <footer>
-      <p>&copy; 2024 Your Project Name</p>
+      <a href="https://github.com/Apollo-XIV/tfdocs">TFDocs on Github</a>
+      <br />
+      <a href="https://pypi.org/p/tfdocs-cli">TFDocs on PyPI</a>
     </footer>
   </div>
 </body>

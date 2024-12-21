@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Homepage for TFDocs">
+  <title>TFDocs | {{version}}</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <div id="main">
+    <header>
+      <h1><a href="/">TFDocs</a> | {{version}}</h1>
+    </header>
+    <main>
+      <p>
+        TFDocs is a command-line application that makes it easy to view the
+        Terraform documentation. TFDocs provides an intuitive GUI containing
+        all of the available information from your local directory, storing it
+        in a local cache so it can be used offline.
+      </p>
+      <a class="button" href="/releases/{{version}}/download">Download AppImage (Linux Only)</a>
+      <p>
+        After downloading the AppImage, it needs to be moved to a location on
+        your user's PATH. Check your distribution's documentation for more
+        information on manually installing an executable.
+      </p>
+      <code>
+        mv ~/Downloads/tfdocs.AppImage /usr/local/bin
+      </code>
+      <h3>Non-Linux Installation</h3>
+      <p>
+        You can install TFDocs on any platform that supports Python. TFDocs is
+        published on PyPI, meaning that it can be installed via pip:
+      <p>
+      <p>Virtual Environment install: <code>pip install tfdocs-cli</code>
+      <p>User-wide install: <code>pip install -U tfdocs-cli</code>
+      <p>
+        or most-easily with pipx, a package manager for python applications.
+      </p>
+      <code>
+        pipx install tfdocs-cli=={{version}}
+      </code>
+      </p>
+    </main>
+    <footer>
+      <a href="https://github.com/Apollo-XIV/tfdocs">TFDocs on Github</a>
+      <br />
+      <a href="https://pypi.org/p/tfdocs-cli">TFDocs on PyPI</a>
+    </footer>
+  </div>
+</body>
+</html>

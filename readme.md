@@ -31,9 +31,9 @@ pipx install tfdocs-cli
 ### Manual Installation on Linux (any distro, no requirements)
 This is the current primary method of installation for different platforms. In the future, different repositories for different platforms will be provided.
 1. Download the AppImage file from the 'Releases' section on GitHub
-   ```
-     curl https://github.com/Apollo-XIV/tfdocs/releases/latest/PLATFORM.AppImage
-   ```
+  ```
+    curl https://github.com/Apollo-XIV/tfdocs/releases/latest/PLATFORM.AppImage
+  ```
 2. Move the executable somewhere on your PATH, typically `/usr/bin`
   ```
     mv tfdocs.AppImage /usr/local/bin

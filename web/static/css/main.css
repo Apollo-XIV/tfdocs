@@ -1,19 +1,61 @@
 
 body {
-  color: black;
+  background-color: #3b383d;
   display: flex;
   align-items: center;
   flex-direction: column;
+  font-family: "courier";
 }
+
+code, h1, li, h3, h2, p, a {
+  color: white;
+}
+
+h1 > a {
+  text-decoration: none;
+}
+
 
 #main {
   background-color: gray;
+  max-width: 40rem;
+  gap: 1rem;
+  width: 100%;
   border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+main, header, footer {
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 header {
   width: 50rem;
-  line-height: 4rem;
   padding-top: -1rem;
-  background-color: red;
+  background-color: purple;
+}
+
+footer {
+  background-color: dimgrey;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.button {
+  background-color: purple;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  &:hover {
+    background-color: #4a1160;
+  }
+}
+
+code {
+  display: block;
+  padding: 1rem;
+  background-color: dimgrey;
+  border-radius: 0.5rem;
 }
