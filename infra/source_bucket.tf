@@ -28,7 +28,7 @@ data "archive_file" "source_code" {
 
 # Upload the archive to S3
 resource "aws_s3_object" "app_archive" {
-  bucket       = aws_s3_bucket.artefacts.id
+  bucket       = aws_s3_bucket.source_code.id
   key          = "app.zip"
   source       = data.archive_file.source_code.output_path
   content_type = "application/zip"

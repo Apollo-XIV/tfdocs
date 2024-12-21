@@ -1,22 +1,30 @@
-
 body {
   background-color: #3b383d;
   display: flex;
   align-items: center;
+  align-content: middle;
   flex-direction: column;
   font-family: "courier";
+  height: 100%;
 }
 
-code, h1, li, h3, h2, p, a {
+code,
+h1,
+li,
+h3,
+h2,
+p,
+a {
   color: white;
 }
 
-h1 > a {
+h1>a {
   text-decoration: none;
 }
 
 
 #main {
+  margin-top: 4rem;
   background-color: gray;
   max-width: 40rem;
   gap: 1rem;
@@ -27,7 +35,9 @@ h1 > a {
   overflow: hidden;
 }
 
-main, header, footer {
+main,
+header,
+footer {
   padding-left: 2rem;
   padding-right: 2rem;
 }
@@ -48,6 +58,7 @@ footer {
   background-color: purple;
   padding: 1rem;
   border-radius: 0.5rem;
+
   &:hover {
     background-color: #4a1160;
   }

@@ -184,7 +184,7 @@ let
 		}
 
 		website() {
-			python3 web/__init__.py
+			python3 -m web
 		}
 
 		prod-site() {

@@ -77,6 +77,32 @@ jobs:
           repository-url: ${{ vars.PYPI_REPO_URL }}
           verbose: true
 
+  upload-to-s3:
+    if: ${{ !contains(github.ref, "-") }}
+    name: Upload AppImage to artefact s3
+    runs-on: ubuntu-24.04
+    needs:
+      - build-appimage
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix-setup
+
+      - name: Download AppImage
+        uses: actions/download-artifact@v4
+        with:
+          name: tfdocs-appimage
+          path: .
+
+      - name: Upload to storage bucket
+        env:
+          bucket_name: tfdocs-dev-artefacts
+          tag: ${{github.ref}}
+        run: |
+          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
+      
+
   create-release:
     name: Publish Release
     runs-on: ubuntu-24.04

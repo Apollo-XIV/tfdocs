@@ -52,8 +52,11 @@ resource "aws_lb_listener" "frontend_https" {
 
 resource "aws_lb_target_group" "main" {
   vpc_id   = module.network.vpc_id
-  port     = 80
+  port     = 8000
   protocol = "HTTP"
+  tags = {
+    Name = "${local.prefix}-tg"
+  }
 }
 
 resource "aws_security_group" "lb" {
@@ -74,8 +77,8 @@ resource "aws_security_group" "lb" {
   // load balancer can only send traffic to the private subnets on port 80
   egress {
     cidr_blocks = module.network.private_subnet_objects[*].cidr_block
-    from_port   = 80
-    to_port     = 80
+    from_port   = 8000
+    to_port     = 8000
     protocol    = "tcp"
   }
 }

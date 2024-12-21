@@ -64,7 +64,7 @@
             docker
             docker-buildx
             vscode-langservers-extracted
-            awscli2
+            awscli
             checkov
             appimagekit
             checkov

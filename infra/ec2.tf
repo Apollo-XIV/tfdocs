@@ -28,13 +28,13 @@ resource "aws_launch_template" "tmpl" {
     nix-shell -p awscli2
 
     mkdir -p /var/www/tfdocs
-    aws s3 cp s3://${aws_s3_bucket.artefacts.bucket}/${aws_s3_object.app_archive.key} /var/www/tfdocs
+    aws s3 cp s3://${aws_s3_bucket.source_code.bucket}/${aws_s3_object.app_archive.key} /var/www/tfdocs
     chown -R webuser:webuser /var/www/tfdocs
 
     cd /var/www/tfdocs
     nix develop
-    # Start the webserver
-    sudo -u webuser nohup python3 -m web &
+    # Start the webserver on :8000
+    sudo -u webuser nohup run prod-site &
   EOF
   )
 
