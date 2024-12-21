@@ -1,9 +1,9 @@
 resource "aws_lb" "entrypoint" {
   name                       = "${local.prefix}-lb"
+  subnets                    = module.network.public_subnets
   internal                   = false
   load_balancer_type         = "application"
   security_groups            = [aws_security_group.lb.id]
-  subnets                    = var.network.public_subnet_objects[*].id
   enable_deletion_protection = false
 }
 
@@ -50,6 +50,10 @@ resource "aws_lb_listener" "frontend_https" {
   }
 }
 
+resource "aws_lb_target_group" "main" {
+
+}
+
 resource "aws_security_group" "lb" {
   name   = "${local.prefix}-lb-sg"
   vpc_id = module.network.vpc_id
@@ -58,8 +62,8 @@ resource "aws_security_group" "lb" {
   dynamic "ingress" {
     for_each = toset([80, 443])
     content {
-      from_port   = each.key
-      to_port     = each.key
+      from_port   = ingress.key
+      to_port     = ingress.key
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     }
@@ -67,7 +71,7 @@ resource "aws_security_group" "lb" {
 
   // load balancer can only send traffic to the private subnets on port 80
   egress {
-    cidr_blocks = var.network.private_subnet_objects[*].cidr_block
+    cidr_blocks = module.network.private_subnet_objects[*].cidr_block
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
