@@ -104,7 +104,7 @@ data "cloudinit_config" "base" {
       chown -R webuser:webuser /var/www/tfdocs
 
       cd /var/www/tfdocs
-      nix develop
+      nix develop .#web
       # Start the webserver on :8000
       sudo -u webuser nohup run prod-site &
     EOF

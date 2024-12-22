@@ -20,7 +20,8 @@ resource "aws_instance" "jumpbox" {
 
   lifecycle {
     replace_triggered_by = [
-      aws_launch_template.tmpl
+      aws_launch_template.tmpl,
+      aws_s3_object.app_archive
     ]
   }
 }
