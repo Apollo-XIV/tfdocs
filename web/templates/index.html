@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,6 +7,7 @@
   <title>TFDocs</title>
   <link rel="stylesheet" href="/static/css/main.css" />
 </head>
+
 <body>
   <div id="main">
     <header>
@@ -20,14 +22,15 @@
         in a local cache so it can be used offline.
       </p>
       <h3>Installation</h3>
-      <code>pipx install tfdocs</code>
+      <code>pipx install tfdocs-cli</code>
       <p style="text-align: center; line-height: 0.5rem;">or</p>
       <code>curl tfdocs.crease.sh/install | bash</code>
       <h3>Releases</h3>
-      <p> The following recent versions of TFDocs are available. You can view all releases <a href="/releases">here</a></p>
+      <p> The following recent versions of TFDocs are available. You can view all releases <a href="/releases">here</a>
+      </p>
       <or>
         {% for release in releases %}
-          <li><a href="/releases/{{release}}">{{release}}</a></li>
+        <li><a href="/releases/{{release}}">{{release}}</a></li>
         {% endfor %}
       </or>
     </main>
@@ -38,4 +41,5 @@
     </footer>
   </div>
 </body>
+
 </html>
