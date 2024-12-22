@@ -28,7 +28,7 @@ def releases():
 def release_latest():
     """Redirect to the latest version of the app"""
     latest_release = list_available_releases()[0]
-    return render_template("releases.html", version=latest_release)
+    return render_template("release.html", version=latest_release)
 
 
 @app.route("/releases/latest/download")

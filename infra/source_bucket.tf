@@ -26,12 +26,22 @@ data "archive_file" "source_code" {
   )
 }
 
+resource "null_resource" "reupload_trigger" {
+  triggers = {
+    src_hash = "${data.archive_file.source_code.output_sha}"
+  }
+}
+
 # Upload the archive to S3
 resource "aws_s3_object" "app_archive" {
   bucket       = aws_s3_bucket.source_code.id
   key          = "app.zip"
   source       = data.archive_file.source_code.output_path
   content_type = "application/zip"
+
+  lifecycle {
+    replace_triggered_by = [null_resource.reupload_trigger]
+  }
 }
 
 #-------------  CREATE S3 BUCKET FOR SOURCE CODE

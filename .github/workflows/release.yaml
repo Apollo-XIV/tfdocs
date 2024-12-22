@@ -97,11 +97,13 @@ jobs:
 
       - name: Upload to storage bucket
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           bucket_name: tfdocs-dev-artefacts
           tag: ${{github.ref}}
         run: |
-          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
-      
+          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs."$tag".AppImage
+
 
   create-release:
     name: Publish Release

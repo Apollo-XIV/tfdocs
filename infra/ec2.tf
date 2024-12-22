@@ -66,6 +66,10 @@ resource "aws_launch_template" "tmpl" {
     ]
     associate_public_ip_address = false
   }
+
+  lifecycle {
+    replace_triggered_by = [aws_s3_object.app_archive]
+  }
 }
 
 
