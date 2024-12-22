@@ -106,7 +106,7 @@ data "cloudinit_config" "base" {
       cd /var/www/tfdocs
       nix develop .#web
       # Start the webserver on :8000
-      sudo -u webuser nohup run prod-site &
+      sudo -u webuser nohup gunicorn -w 4 web:app &
     EOF
   }
 }
