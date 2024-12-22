@@ -167,12 +167,21 @@ let
 		refmt() {
 			local in; read in;
 			# takes STDIN json input and outputs it via STDOUT formatted
-			python3 - <<-EOF
+			cat $in | python3 - <<-EOF
 				import json
 				import sys
-				raw = json.loads("''${in}")
+
+				raw_json = json.loads(''${in})
 				fmt_json = json.dumps(raw, indent = 2)
 				sys.stdout.write(f"{fmt_json}\n")
+			EOF
+		}
+
+		test-stdin() {
+			python3 - <<-EOF
+				import sys
+				import json
+				print(json.load(sys.stdin))
 			EOF
 		}
 

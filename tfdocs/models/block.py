@@ -1,7 +1,6 @@
 import logging
-from textwrap import dedent
+from textwrap import dedent, indent
 from typing import Tuple, Union
-from abc import abstractmethod
 
 # ----
 from tfdocs.utils import hash_path
@@ -139,15 +138,11 @@ class Block(LazyObject):
                     f"""
                     # {self.name}
                     ## Attributes
-                """
+                    """
                 )
                 + attributes
-                + dedent(
-                    f"""
-                     ## Nested Blocks
-                """
-                )
-                + blocks
+                + "## Nested Blocks"
+                + indent(blocks, "> ")
             )
             log.info(doc)
             return doc

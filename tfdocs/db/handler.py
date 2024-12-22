@@ -37,10 +37,10 @@ class Db:
         try:
             lock.acquire(True)
             if params is None:
-                log.debug(f"executing query: {query}\nwith_params: {query}")
+                log.debug(f"executing query {query}")
                 res = cursor.execute(query)
             else:
-                log.debug(f"executing query {query}")
+                log.debug(f"executing query: {query}\nwith_params: {params}")
                 res = cursor.execute(query, params)
         finally:
             lock.release()

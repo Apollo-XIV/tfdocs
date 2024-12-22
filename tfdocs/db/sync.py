@@ -147,7 +147,7 @@ def parse_attribute(name, attr_data: dict, parent_path=None) -> Attribute | None
     return Attribute(
         attribute_name=name,
         attribute_type=from_some(attr_type),
-        description=attr_data.get("description", "No Description Provided"),
+        description=attr_data.get("description", "None"),
         description_type=DescType.from_str(
             str(attr_data.get("description_kind", "plain"))
         ),

@@ -23,7 +23,6 @@
         };
 
         pypkgs-build-requirements = {
-          nh3 = [ "maturin" ];
           textual_dev = [ "setuptools" "hatchling" ];
           textual-serve = [ "hatchling" ];
           propcache = [ "cython" "setuptools" "expandvars" ];
