@@ -55,7 +55,7 @@ jobs:
           |  terraform-j2md \
           >> $GITHUB_STEP_SUMMARY
     
-      - name: Scan Generated Plan File
+      - name: Scan Generated Plan File for Misconfigurations
         uses: ./.github/actions/checkov-scan
         with:
           plan: true
@@ -67,11 +67,7 @@ jobs:
           path: infra/plan
 
       - id: check
-        working-directory: infra
-        env:
-          TF_VAR_ENV: dev
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        name: Check Plan for Changes
         run: |
           unset AWS_PROFILE
           terraform init
