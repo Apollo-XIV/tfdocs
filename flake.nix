@@ -62,6 +62,8 @@
             python311Full
             docker
             docker-buildx
+            vscode-langservers-extracted
+            awscli
             checkov
             appimagekit
             checkov
@@ -87,11 +89,19 @@
           ];
         };
 
+
         devShells.default = pkgs.mkShellNoCC {
           packages = deps;
           AWS_PROFILE="personal-aws";
           GLIBC_PATH=pkgs.glibc;
           ZLIB_PATH=pkgs.zlib;
+        };
+
+        devShells.web = pkgs.mkShell {
+          packages = with pkgs; [
+            myEnv
+            python311Full
+          ];
         };
       }
     );

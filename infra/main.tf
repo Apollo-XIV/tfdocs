@@ -1,5 +1,44 @@
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = ">=4.48.0"
+    }
+  }
+}
 
-resource "local_file" "test_file" {
-  filename = "test.txt"
-  content  = ""
+locals {
+  prefix = "tfdocs-${var.env}"
+}
+
+provider "aws" {
+  region = "eu-west-1"
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
+variable "cloudflare_api_token" {
+  type = string
+}
+
+resource "aws_instance" "jumpbox" {
+  // Used to ssh into autoscaling instances and troubleshoot
+  count                       = var.bastion ? 1 : 0
+  associate_public_ip_address = true
+  subnet_id                   = module.network.public_subnets[0]
+  user_data_replace_on_change = true
+
+  launch_template {
+    id      = aws_launch_template.tmpl.id
+    version = aws_launch_template.tmpl.latest_version
+  }
+
+  lifecycle {
+    replace_triggered_by = [
+      aws_launch_template.tmpl,
+      aws_s3_object.app_archive
+    ]
+  }
 }

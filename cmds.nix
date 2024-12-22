@@ -192,6 +192,14 @@ let
 			EOF
 		}
 
+		website() {
+			python3 -m web
+		}
+
+		prod-site() {
+			gunicorn -w 4 web:app
+		}
+
 		# Example function for cleaning
 		clean() {
 		  echo "Running clean task..."

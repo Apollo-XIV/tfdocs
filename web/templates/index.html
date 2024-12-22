@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Homepage for TFDocs">
+  <title>TFDocs</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+
+<body>
+  <div id="main">
+    <header>
+      <h1><a href="/">TFDocs</a></h1>
+    </header>
+    <main>
+      <p><i>Terraform documentation viewer for the command-line.</i></p>
+      <p>
+        TFDocs is a command-line application that makes it easy to view the
+        Terraform documentation. TFDocs provides an intuitive GUI containing
+        all of the available information from your local directory, storing it
+        in a local cache so it can be used offline.
+      </p>
+      <h3>Installation</h3>
+      <code>pipx install tfdocs-cli</code>
+      <p style="text-align: center; line-height: 0.5rem;">or</p>
+      <code>curl tfdocs.crease.sh/install | bash</code>
+      <h3>Releases</h3>
+      <p> The following recent versions of TFDocs are available. You can view all releases <a href="/releases">here</a>
+      </p>
+      <or>
+        {% for release in releases %}
+        <li><a href="/releases/{{release}}">{{release}}</a></li>
+        {% endfor %}
+      </or>
+    </main>
+    <footer>
+      <a href="https://github.com/Apollo-XIV/tfdocs">TFDocs on Github</a>
+      <br />
+      <a href="https://pypi.org/p/tfdocs-cli">TFDocs on PyPI</a>
+    </footer>
+  </div>
+</body>
+
+</html>

@@ -1,2 +1,4 @@
 name: dev
 apply: true
+bastion: false
+node_count: 1
