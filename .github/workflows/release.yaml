@@ -78,7 +78,7 @@ jobs:
           verbose: true
 
   upload-to-s3:
-    if: ${{ !contains(github.ref, "-") }}
+    if: ${{ !contains(github.ref, '-') }}
     name: Upload AppImage to artefact s3
     runs-on: ubuntu-24.04
     needs:
