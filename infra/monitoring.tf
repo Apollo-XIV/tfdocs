@@ -96,4 +96,26 @@ locals {
       }
     }
   ]
+
+  asg_widgets = [
+    {
+      type   = "metric"
+      x      = 6
+      y      = 12
+      width  = 6
+      height = 6
+      properties = {
+        metrics = [[
+          "AWS/AutoScaling",
+          "GroupMinSize",
+          "AutoScalingGroupName",
+          aws_autoscaling_group.site.name
+        ]]
+        title  = "ASG Desired Capacity"
+        period = 300
+        region = data.aws_region.current.name
+        stat   = "Average"
+      }
+    }
+  ]
 }
