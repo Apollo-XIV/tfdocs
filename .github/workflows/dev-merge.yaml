@@ -57,6 +57,11 @@ jobs:
           name: plan
           path: infra
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: Web-Source-Code
+          path: infra
+
       - name: Terraform Apply
         run: |
           unset AWS_PROFILE
