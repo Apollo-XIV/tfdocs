@@ -5,7 +5,8 @@ resource "aws_cloudwatch_dashboard" "dash" {
   dashboard_body = jsonencode({
     widgets = concat(
       local.s3_widgets,
-      local.alb_widgets
+      local.alb_widgets,
+      local.asg_widgets
     )
   })
 }
@@ -100,14 +101,14 @@ locals {
   asg_widgets = [
     {
       type   = "metric"
-      x      = 6
+      x      = 0
       y      = 12
       width  = 6
       height = 6
       properties = {
         metrics = [[
           "AWS/AutoScaling",
-          "GroupMinSize",
+          "GroupDesiredCapacity",
           "AutoScalingGroupName",
           aws_autoscaling_group.site.name
         ]]
@@ -115,6 +116,27 @@ locals {
         period = 300
         region = data.aws_region.current.name
         stat   = "Average"
+      }
+    },
+    {
+      type   = "metric"
+      x      = 6
+      y      = 12
+      width  = 6
+      height = 6
+      properties = {
+        metrics = [[
+          "AWS/EC2",
+          "CPUUtilization",
+          "AutoScalingGroupName",
+          aws_autoscaling_group.site.name
+        ]]
+        title   = "ASG CPU Utilisation"
+        period  = 300
+        stacked = false
+        stat    = "Average"
+        view    = "timeSeries"
+        region  = data.aws_region.current.name
       }
     }
   ]
