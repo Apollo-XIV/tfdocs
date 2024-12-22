@@ -1,6 +1,6 @@
 apply      = "true"
-bastion    = "true"
+bastion    = "false"
 env        = "dev"
 name       = "dev"
-node_count = "0"
+node_count = "1"
 role_arn   = "arn:aws:iam::013948180024:role/tfdocs-iac-role"

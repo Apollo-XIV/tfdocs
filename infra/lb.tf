@@ -8,6 +8,7 @@ resource "aws_lb" "entrypoint" {
 }
 
 resource "aws_lb_listener" "frontend" {
+  count             = 0
   load_balancer_arn = aws_lb.entrypoint.arn
   port              = "80"
   protocol          = "HTTP"
@@ -19,8 +20,6 @@ resource "aws_lb_listener" "frontend" {
 }
 
 resource "aws_lb_listener" "redirect" {
-  // disabled until I have a certificate
-  count             = 0
   load_balancer_arn = aws_lb.entrypoint.arn
   port              = "80"
   protocol          = "HTTP"
@@ -36,17 +35,15 @@ resource "aws_lb_listener" "redirect" {
 }
 
 resource "aws_lb_listener" "frontend_https" {
-  // disabled until I have a certificate
-  count             = 0
   load_balancer_arn = aws_lb.entrypoint.arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = ""
-  certificate_arn   = ""
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = aws_acm_certificate.cloudflare_origin.arn
 
   default_action {
     type             = "forward"
-    target_group_arn = ""
+    target_group_arn = aws_lb_target_group.main.arn
   }
 }
 

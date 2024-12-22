@@ -3,6 +3,10 @@
 
 TFDocs is a command-line tool that lets you view provider documentation from the terminal.
 
+> WARNING:
+>
+> This application is still under active development and has bugs! If you decide to use it anyways and anything goes wrong, please open an issue on the github repo describing the bug and any steps to recreate (if you can, if not just a description of the issue will suffice).
+
 ## Usage
 ### Setup
 Before you can view any documentation, you need to initialise the cache. First, navigate to a directory with terraform initialised and run the following command:

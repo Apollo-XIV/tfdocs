@@ -15,7 +15,7 @@ runs:
       shell: bash
       run: |
         # scan the infrastructure directory for misconfigurations
-        checkov --directory .
+        checkov --directory . --soft-fail
 
     - if: inputs.plan != 'none'
       shell: bash

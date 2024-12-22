@@ -12,3 +12,4 @@ build
 dist
 test_data.tf
 app.zip
+secrets.auto.tfvars
