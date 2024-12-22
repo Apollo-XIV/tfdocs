@@ -20,8 +20,10 @@ module "backend" {
   ENV = var.ENV
 
   variables = {
-    name  = "string"
-    apply = "bool"
+    name       = "string"
+    apply      = "bool"
+    bastion    = "bool"
+    node_count = "number"
   }
 
   approved_arns = [
