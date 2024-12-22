@@ -66,6 +66,12 @@ jobs:
           name: plan
           path: infra/plan
 
+      - name: Upload Web Source Zip as Artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Web-Source-Code
+          path: infra/app.zip
+
       - id: check
         name: Check Plan for Changes
         run: |
