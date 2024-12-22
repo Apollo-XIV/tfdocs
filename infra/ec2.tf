@@ -104,9 +104,17 @@ data "cloudinit_config" "base" {
       chown -R webuser:webuser /var/www/tfdocs
 
       cd /var/www/tfdocs
-      nix develop .#web
       # Start the webserver on :8000
-      sudo -u webuser nohup gunicorn -w 4 web:app &
+      # sudo -u webuser nohup \
+      #   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; \
+      #   nix develop .#web \
+      #   gunicorn -w 4 --bind 0.0.0.0:8000 web:app &
+
+      sudo -u webuser nohup bash -c '
+        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; \
+        nix develop .#web --command \
+        gunicorn -w 4 --bind 0.0.0.0:8000 web:app \
+      ' &
     EOF
   }
 }
