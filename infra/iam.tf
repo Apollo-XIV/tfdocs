@@ -31,6 +31,11 @@ resource "aws_iam_role" "web" {
   assume_role_policy = data.aws_iam_policy_document.instance_assume_role.json
 }
 
+resource "aws_iam_role_policy_attachment" "web_cloudwatch_agent" {
+  role       = aws_iam_role.web.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 data "aws_iam_policy_document" "instance_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]

@@ -13,7 +13,7 @@ resource "tls_cert_request" "https" {
 
   subject {
     common_name  = ""
-    organization = "Terraform Test"
+    organization = "TFDocs"
   }
 }
 

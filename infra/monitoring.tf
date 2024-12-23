@@ -69,7 +69,7 @@ locals {
           "AWS/ApplicationELB",
           "RequestCount",
           "LoadBalancer",
-          aws_lb.entrypoint.id
+          aws_lb.entrypoint.arn_suffix
         ]]
         title  = "LB Request Count"
         period = 60
@@ -88,7 +88,7 @@ locals {
           "AWS/ApplicationELB",
           "TargetResponseTime",
           "LoadBalancer",
-          aws_lb.entrypoint.id
+          aws_lb.entrypoint.arn_suffix
         ]]
         title  = "LB Response Time"
         period = 60

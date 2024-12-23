@@ -9,7 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   period              = 60
   statistic           = "Average"
   threshold           = 70
-  alarm_actions       = [aws_autoscaling_policy.scale_out]
+  alarm_actions       = [aws_autoscaling_policy.scale_out.arn]
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.site.name
@@ -37,7 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   period              = 60
   statistic           = "Average"
   threshold           = 30
-  alarm_actions       = [aws_autoscaling_policy.scale_in]
+  alarm_actions       = [aws_autoscaling_policy.scale_in.arn]
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.site.name

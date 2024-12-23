@@ -82,9 +82,19 @@ data "cloudinit_config" "base" {
     content = yamlencode({
       packages = [
         "awscli",
-        "unzip"
+        "unzip",
+        "wget"
       ]
     })
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      cloudwatch_agent_dl_url="https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb"
+      wget "$cloudwatch_agent_dl_url"
+      sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+    EOF
   }
 
   part {
@@ -126,9 +136,8 @@ data "cloudinit_config" "base" {
 
 resource "aws_autoscaling_group" "site" {
   name                = "${local.prefix}-asg"
-  min_size            = 0
+  min_size            = 1
   max_size            = 2
-  desired_capacity    = var.node_count
   target_group_arns   = [aws_lb_target_group.main.arn]
   vpc_zone_identifier = module.network.private_subnets
 
@@ -140,19 +149,11 @@ resource "aws_autoscaling_group" "site" {
   instance_refresh {
     strategy = "Rolling"
   }
-
 }
 
 resource "aws_security_group" "site" {
   name   = "${local.prefix}-site-sg"
   vpc_id = module.network.vpc_id
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     from_port = 1024
