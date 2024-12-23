@@ -1,23 +1,5 @@
 #------------- ASG Resources
 
-locals {
-  nixos_ami = "ami-0e7d1823ac80520e6"
-}
-
-data "aws_ami" "nixos" {
-  owners      = ["427812963091"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["nixos/24.11*"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
-
 data "aws_ami" "ubuntu_latest" {
   most_recent = true
 
@@ -82,10 +64,12 @@ data "cloudinit_config" "base" {
     content = yamlencode({
       packages = [
         "awscli",
-        "unzip"
+        "unzip",
+        "wget"
       ]
     })
   }
+
 
   part {
     content_type = "text/x-shellscript"
@@ -108,11 +92,6 @@ data "cloudinit_config" "base" {
       chown -R webuser:webuser /var/www/tfdocs
 
       cd /var/www/tfdocs
-      # Start the webserver on :8000
-      # sudo -u webuser nohup \
-      #   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; \
-      #   nix develop .#web \
-      #   gunicorn -w 4 --bind 0.0.0.0:8000 web:app &
 
       sudo -u webuser nohup bash -c '
         . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; \
@@ -121,14 +100,22 @@ data "cloudinit_config" "base" {
       ' &
     EOF
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      cloudwatch_agent_dl_url="https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb"
+      wget "$cloudwatch_agent_dl_url"
+      sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+    EOF
+  }
 }
 
 
 resource "aws_autoscaling_group" "site" {
   name                = "${local.prefix}-asg"
-  min_size            = 0
+  min_size            = 1
   max_size            = 2
-  desired_capacity    = var.node_count
   target_group_arns   = [aws_lb_target_group.main.arn]
   vpc_zone_identifier = module.network.private_subnets
 
@@ -141,18 +128,13 @@ resource "aws_autoscaling_group" "site" {
     strategy = "Rolling"
   }
 
+  health_check_grace_period = 600
+  health_check_type         = "ELB"
 }
 
 resource "aws_security_group" "site" {
   name   = "${local.prefix}-site-sg"
   vpc_id = module.network.vpc_id
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   ingress {
     from_port = 1024

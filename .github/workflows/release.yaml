@@ -102,7 +102,8 @@ jobs:
           bucket_name: tfdocs-dev-artefacts
           tag: ${{github.ref}}
         run: |
-          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs."$tag".AppImage
+          unset AWS_PROFILE
+          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
 
 
   create-release:

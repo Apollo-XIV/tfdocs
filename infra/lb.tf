@@ -5,6 +5,12 @@ resource "aws_lb" "entrypoint" {
   load_balancer_type         = "application"
   security_groups            = [aws_security_group.lb.id]
   enable_deletion_protection = false
+
+  access_logs {
+    bucket  = module.log_bucket.s3_bucket_id
+    enabled = true
+    prefix  = "alb"
+  }
 }
 
 resource "aws_lb_listener" "frontend" {
@@ -68,6 +74,7 @@ resource "aws_security_group" "lb" {
       to_port     = ingress.key
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
+      # cidr_blocks = ["20.223.228.255/32"]
     }
   }
 
