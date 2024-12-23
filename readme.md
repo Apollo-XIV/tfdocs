@@ -49,7 +49,7 @@ This is the current primary method of installation for different platforms. In t
   ```
 2. Move the executable somewhere on your PATH, typically `/usr/bin/local`
   ```
-    mv tfdocs.AppImage /usr/local/bin
+    mv tfdocs.AppImage /usr/local/bin/tfdocs
   ```
 3. Start a new terminal session, or source your shell's init script (i.e. `.bashrc`) again
   ```
