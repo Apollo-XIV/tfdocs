@@ -103,7 +103,7 @@ jobs:
           tag: ${{github.ref}}
         run: |
           unset AWS_PROFILE
-          aws s3 cp build/tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
+          aws s3 cp tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
 
 
   create-release:
