@@ -21,10 +21,17 @@
 **So I can** save time and avoid the welcome page
 
 ---
-**As a** User
+**As a** TFDocs User
 
 **I want to be able to** install the program on multiple platforms
 
-**So I can** use the tool I'm familiar with wherever I choose
+**So I can** use the tool I'm familiar with wheresoever I choose
+
+---
+**As a** new developer
+
+**I want to be able to** easily install the program
+
+**So I can** still benefit without being an advanced user
 
 ---
