@@ -27,5 +27,15 @@ Nix is a complicated piece of software, but equally potent. Instead of installin
 #### Future Improvements
 In the future, I'd definitely like to strive for a static executable. The easiest way to do this is to use a language more suited to doing so. Python was never intended to be used like this in its original design, and this issue I'm facing is a sign that my choice of language doesn't 100% match the application I'm building. Strong contenders for languages to use instead are Rust (a language I'm personally fond of) and Go (very popular in both the DevOps field and for command-line applications).
 
+### Summary
+With that, the build process now creates the following assets:
+- A prebuilt Python Wheel (`.whl`)
+- A Tar archive containing the source-code (`.tar.gz`)
+- A Linux AppImage (`.AppImage`)
+
 ## Creating Github Releases
+The first method I'm using to distribute the AppImage is through GitHub releases. These are simply pages availale on the homepage of the repo. These are relatively simple to create using the GitHub CLI tool (`gh`). This process is automated through GitHub actions, with draft releases being created off of PR branches (optionally) and proper releases created off of Dev and Main.
+
+## Using the Website
+While downloading through the GitHub repo is a fine solution, newer Linux users might find it slightly hard to understand and it's easy for people to make mistakes. To simplify this, the website has an endpoint (`/install`) that returns an installation script. This means that in order to install the program, all a user has to run is `curl tfdocs.crease.sh/install | bash` and it'll install the program.
 
