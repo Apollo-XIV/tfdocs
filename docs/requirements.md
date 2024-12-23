@@ -1,5 +1,4 @@
 # User Requirements
----
 **As a** Terraform Developer
 
 **I want to be able to** view the terraform documentation without an internet connection
