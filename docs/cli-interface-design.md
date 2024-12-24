@@ -30,3 +30,6 @@ The init process does the following steps:
 #### Top-level Specific Arguments
 - `--provider PROVIDER`: Open the GUI directly to a specified provider
 
+## GUI
+![TFDocs opening page](imgs/TFDocs-Open.png)
+![TFDocs AWS](imgs/TFDocs-AWS.png)
