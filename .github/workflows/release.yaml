@@ -100,10 +100,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           bucket_name: tfdocs-dev-artefacts
-          tag: ${{github.ref}}
         run: |
           unset AWS_PROFILE
-          aws s3 cp tfdocs.AppImage s3://"$bucket_name"/"$tag"/tfdocs.AppImage
+          version=$(poetry version -s)
+          aws s3 cp tfdocs.AppImage s3://"$bucket_name"/"$version"/tfdocs.AppImage
 
 
   create-release:
