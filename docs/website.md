@@ -3,4 +3,6 @@ The website is necessary to act as a distribution platform for the software. It 
 
 ![Web UI](imgs/TFDocs-WEB.png)
 
+It also allows me to provide some more detailed installation instructions for the user.
+
 ![Web Release UI](imgs/TFDocs-Web-Release.png)
