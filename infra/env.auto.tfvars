@@ -1,5 +1,5 @@
 apply      = "true"
-bastion    = "false"
+bastion    = "true"
 env        = "dev"
 name       = "dev"
 node_count = "1"
