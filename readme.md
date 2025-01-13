@@ -55,3 +55,4 @@ This is the current primary method of installation for different platforms. In t
   ```
     source ~/.bashrc
   ```
+  
